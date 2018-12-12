@@ -13,7 +13,11 @@ define('CorePath',realpath(SitePath.'/core'));//核心类目录
 
 //设置autoload
 require SitePath.'/autoload.php';
+//核心类
 \Spoon\Autoload::addNamespace('\\Spoon',CorePath);
+//拓展类
+\Spoon\Autoload::addNamespace('\\Spoon\\Extension',realpath(SitePath.'/extensions'));
+//应用类
 \Spoon\Autoload::addNamespace('\\App',realpath(SitePath.'/apps'));
 
 //加载配置
@@ -22,16 +26,22 @@ require SitePath.'/autoload.php';
 //设置时区
 \date_default_timezone_set(\Spoon\Config::get('timezone','Asia/Shanghai'));
 
-return;
+//路由分配并响应结果
+\Spoon\Router::assign()->send();
 
-//路由分配
-$url=isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'';
-$url=strtolower(trim($url,'/'));
+// // 发送响应
+// \Spoon\Response::send();
 
-$method=$_SERVER['REQUEST_METHOD'];
-$payload=file_get_contents('php://input');//请求原始数据
+// return;
 
-\Spoon\Response::send();
+// //路由分配
+// $url=isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'';
+// $url=strtolower(trim($url,'/'));
+
+// $method=$_SERVER['REQUEST_METHOD'];
+// $payload=file_get_contents('php://input');//请求原始数据
+
+// \Spoon\Response::send();
 // var_dump($_SERVER['PATH_INFO']);
 // header('Access-Control-Allow-Origin:*');
 // var_dump(headers_list());

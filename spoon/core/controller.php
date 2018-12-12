@@ -1,9 +1,9 @@
 <?php
 /**
- * 控制器类
+ * 控制器基类
  */
 namespace Spoon;
-class Controller{
+abstract class Controller{
     protected $_view=null;
     protected $_model=null;
 
@@ -15,8 +15,6 @@ class Controller{
         return $this->model;
     }
 
-    public function process(){
-        
-    }
+    public abstract function process();
 }
 ?>
