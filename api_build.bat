@@ -1,0 +1,3 @@
+@echo off
+@echo build Document of APIs...
+apidoc -i .\spoon\apps -o .\docs\apis\
