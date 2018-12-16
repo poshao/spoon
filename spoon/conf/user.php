@@ -7,7 +7,7 @@
 return array(
     'logger'=>array(
         'enable'=>true,
-        'level'=>'error',
+        'level'=>'debug',
         // 'file'=>'C:/123.log'
     )
 );

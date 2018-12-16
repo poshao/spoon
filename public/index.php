@@ -10,6 +10,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 //常量设置
 define('SitePath',realpath(__DIR__.'/../spoon'));//网站目录
 define('CorePath',realpath(SitePath.'/core'));//核心类目录
+define('AppPath',realpath(SitePath.'/apps'));//应用目录
 
 //设置autoload
 require SitePath.'/autoload.php';
@@ -26,11 +27,19 @@ require SitePath.'/autoload.php';
 //设置时区
 \date_default_timezone_set(\Spoon\Config::get('timezone','Asia/Shanghai'));
 
-//路由分配并响应结果
-\Spoon\Router::assign()->send();
+if(!\getenv('spoon_test_unit',true)){
+    //路由分配并响应结果
+    try{
+        \Spoon\Router::process();
+    }catch(\Spoon\Exception $e){
+        $e->render();
+    }
+}else{
+    //加载单元测试
+    include __DIR__.'/../test/process.php';
+}
 
-// // 发送响应
-// \Spoon\Response::send();
+
 
 // return;
 
@@ -48,13 +57,13 @@ require SitePath.'/autoload.php';
 
 //返回响应
 
-    $method=$_SERVER['REQUEST_METHOD'];
-    $url=$_SERVER['PATH_INFO'];
-    $protocol=$_SERVER['SERVER_PROTOCOL'];
-    $request_contenttype=$_SERVER['CONTENT_TYPE'];
-    $accept_contenttype=$_SERVER['HTTP_ACCEPT'];// */*任意格式
-    $payload=file_get_contents('php://input');//请求原始数据
-    $query=$_SERVER['QUERY_STRING'];
+    // $method=$_SERVER['REQUEST_METHOD'];
+    // $url=$_SERVER['PATH_INFO'];
+    // $protocol=$_SERVER['SERVER_PROTOCOL'];
+    // $request_contenttype=$_SERVER['CONTENT_TYPE'];
+    // $accept_contenttype=$_SERVER['HTTP_ACCEPT'];// */*任意格式
+    // $payload=file_get_contents('php://input');//请求原始数据
+    // $query=$_SERVER['QUERY_STRING'];
 
     // var_dump($method,$url,$protocol,$request_contenttype,$accept_contenttype,$payload,$query,$_REQUEST);
     // header("HTTP/1.1 401 Unauthozied");

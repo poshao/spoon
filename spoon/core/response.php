@@ -58,7 +58,7 @@ class Response{
     /**
      * 发送响应文件格式
      *
-     * @param string $conntentType
+     * @param string $contentType
      * @return void
      */
     public static function setContentType($contentType,$charset='utf-8'){
@@ -91,6 +91,31 @@ class Response{
                 file_put_contents('php://output',$data);
                 break;
         }
+    }
+
+    /**
+     * 发送数据
+     *
+     * @param mixed $data 数据
+     * @param int $code 状态码
+     * @param string $contentType 数据格式
+     * @param string $charset 编码格式 ''表示不发送编码参数
+     * @param string $outType 'text'|'binary' 输出格式
+     * @return void
+     */
+    public static function sendJSON($data,$code=200,$contentType='application/json',$charset='utf-8',$outType='text'){
+        self::send(\json_encode($data),$code,$contentType,$charset,$outType);
+    }
+
+    /**
+     * 发送错误信息
+     *
+     * @param int $code 状态码
+     * @param string $message 错误信息
+     * @return void
+     */
+    public static function sendError($code,$message){
+        self::send(\json_encode(array('error'=>$message)),$code);
     }
 }
 ?>

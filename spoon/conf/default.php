@@ -10,7 +10,7 @@ return array(
      * 默认值: false
      */
     'debug'=>false,
-    
+
     /**
      * 日志相关设置
      */

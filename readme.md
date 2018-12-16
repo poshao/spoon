@@ -1,5 +1,18 @@
 # 一个简单的RESTful的PHP框架
 
+## 功能说明
+    参数检查:
+    require,option
+    length,length-max,length-min
+
+    1.数值 max,min
+    2.布尔值 true|false
+    3.列表项 item1| item2 | item3
+    4.文本
+    5.正则表达式
+
+
+
 ## 已完成
 1. 配置类 Spoon\Core\Config.php
 2. 日志类 Spoon\Core\Logger.php
