@@ -1,6 +1,43 @@
 # 一个简单的RESTful的PHP框架
 
-## 功能说明
+## 1. 请求流程
+                                   开始
+                                    ↓
+    +-----+                  +--------------+
+    |  E  |                  | 1.Request    |
+    |  R  |                  +--------------+
+    |  R  |                         ↓
+    |  O  |                  +--------------+
+    |  R  |                  | 2.Router     |
+    |     |                  +--------------+
+    |  H  |                         ↓
+    |  A  |  +--------+      +--------------+      +---------+
+    |  N  |  | 4.View |  ←→  | 3.Controller |  ←→  | 5.Model |
+    |  D  |  +--------+      +--------------+      +---------+
+    |  L  |                         ↓
+    |  E  |                  +--------------+
+    |  R  |                  | 6.Response   |
+    +-----+                  +--------------+
+                                    ↓
+                                   结束
+    流程顺序：
+        Request -> Router -> Controller[View/Model] -> Response
+
+> Error Handler: 错误处理
+
+> Request: 用户请求 包含 URL,Method,Filter,Data
+
+> Router: 路由分发 根据URL进行初级任务分发
+
+> View: 视图层 初步验证参数,返回结果
+
+> Controller: 控制器 调用Model层并将结果反馈给View
+
+> Model: 模型 资源操作，如数据库，打印机，Socket IO等
+
+> Response: 响应数据 封装view提供的数据(根据请求的 Accept数据格式 对结果转码输出)
+
+## 2.功能说明
     参数检查:
     require,option
     length,length-max,length-min
@@ -10,9 +47,7 @@
     3.列表项 item1| item2 | item3
     4.文本
     5.正则表达式
-
-
-
+    
 ## 已完成
 1. 配置类 Spoon\Core\Config.php
 2. 日志类 Spoon\Core\Logger.php
