@@ -17,7 +17,7 @@ require SitePath.'/autoload.php';
 //核心类
 \Spoon\Autoload::addNamespace('\\Spoon',CorePath);
 //拓展类
-\Spoon\Autoload::addNamespace('\\Spoon\\Extension',realpath(SitePath.'/extensions'));
+\Spoon\Autoload::addNamespace('\\Spoon\\Extensions',realpath(SitePath.'/extensions'));
 //应用类
 \Spoon\Autoload::addNamespace('\\App',realpath(SitePath.'/apps'));
 

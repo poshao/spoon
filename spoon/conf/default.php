@@ -12,6 +12,12 @@ return array(
     'debug'=>false,
 
     /**
+     * 应用相关设置
+     */
+    'apps'=>array(
+
+    ),
+    /**
      * 日志相关设置
      */
     'logger'=>array(

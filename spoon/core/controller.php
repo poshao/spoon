@@ -8,6 +8,7 @@ abstract class Controller{
     protected $_model=null;
 
     public function __construct(){
+        //初始化同时初始化视图类和模型类
         $controlClass=\get_called_class();
         $viewClass=\str_replace('Controller','View',$controlClass);
         $this->view=new $viewClass;

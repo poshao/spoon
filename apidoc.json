@@ -1,7 +1,13 @@
 {
     "name":"Spoon",
     "version":"0.1.0",
-    "description":"RESTful 基本框架",
-    "title":"Spoon framework",
-    "url":"https://localhost/v1"
+    "description":"用户认证接口文档",
+    "title":"用户认证接口文档",
+    "url":"https://localhost",
+    "sampleUrl":"https://localhost",
+    "template":{
+        "forceLanguage":"zh_cn",
+        "withCompare": true,
+  	    "withGenerator": false
+    }
 }

@@ -1,9 +1,9 @@
 set names utf8;
 
-drop database if exists `SpoonTest`;
-create database `SpoonTest` default charset utf8 collate utf8_general_ci;
+drop database if exists `Spoon`;
+create database `Spoon` default charset utf8 collate utf8_general_ci;
 
-use `SpoonTest`;
+use `Spoon`;
 
 #用户认证数据库
 

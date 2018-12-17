@@ -61,6 +61,19 @@ class Config{
         }
     }
 
+    /**
+     * 根据应用名称获取配置
+     *
+     * @param string $appname 应用名称
+     * @return array
+     */
+    public static function getByApps($appname){
+        if(isset(self::get('apps')[$appname])){
+            return self::get('apps')[$appname];
+        }
+        return null;
+    }
+
     public static function list(){
         echo json_encode(self::$_configs);
     }
