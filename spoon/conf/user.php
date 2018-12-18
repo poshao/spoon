@@ -5,6 +5,7 @@
  * 覆盖系统默认配置
  */
 return array(
+    'debug'=>true,
     'logger'=>array(
         'enable'=>true,
         'level'=>'debug',

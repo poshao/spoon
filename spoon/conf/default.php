@@ -7,9 +7,20 @@ return array(
      * 调试模式
      * 
      * 可选值: true, false
+     *      true:显示完成的错误提示信息, false:仅显示错误信息
      * 默认值: false
      */
     'debug'=>false,
+
+    /**
+     * 安全相关设定
+     */
+    'security'=>array(
+        /**
+         * 加密盐值
+         */
+        'salt'=>'i am Gelute',
+    ),
 
     /**
      * 应用相关设置
