@@ -25,6 +25,16 @@ abstract class Controller{
     }
 
     /**
+     * 获取参数值(同View->get)
+     *
+     * @param string $key 参数名
+     * @return mixed
+     */
+    public function get($key){
+        return $this->view()->get($key);
+    }
+
+    /**
      * 分配函数
      *
      * @return void

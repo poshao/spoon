@@ -132,5 +132,14 @@ abstract class View{
         return true;
     }
     
+    /**
+     * 发送Json序列化数据
+     *
+     * @param array $data 响应数据
+     * @return void
+     */
+    public function sendJSON($data){
+        \Spoon\Response::sendJSON($data);
+    }
 }
 ?>

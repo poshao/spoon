@@ -52,11 +52,19 @@
 1. 配置类 Spoon\Core\Config.php
 2. 日志类 Spoon\Core\Logger.php
 
+## 常用加密算法
+* DES
+* AES
+* RSA
+* Base64
+* MD5
+* SHA1
+
 # 参考文档
 * [RBAC用户管理设计](./docs/RBAC.md)
 * [HTTP报文结构](./docs/HTTP.md)
 * [RESTful设计指南](./docs/RESTful_design.md)
-
+* [NotORM使用说明](./docs/notorm.md)
 # 其他设置
 #### 响应头隐藏PHP信息
 修改php.ini中参数 

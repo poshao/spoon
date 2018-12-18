@@ -11,7 +11,6 @@ use `Spoon`;
 drop table if exists `auth_users`;
 create table `auth_users`(
     `id` int(11) primary key auto_increment not null,
-    `psid` int(11) not null comment '全球员工号',
     `workid` int(11) not null comment '工号',
     `username_en` varchar(30) comment '英文名字',
     `username_zh` varchar(30) comment '中文名字',

@@ -13,9 +13,21 @@ class Users extends \Spoon\Controller{
      */
     public function doMain(){
         switch(\strtolower($_SERVER['REQUEST_METHOD'])){
+            case 'get'://查询部分或完整用户信息
+
+                break;
             case 'post'://create user
                 $this->createUser();
-            break;
+                break;
+            case 'put'://更新用户信息
+
+                break;
+            case 'patch'://更新部分用户信息
+
+                break;
+            case 'delete'://删除用户
+
+                break;
         }
         // Response::sendJSON(array('user'=>__CLASS__));
     }
@@ -37,35 +49,25 @@ class Users extends \Spoon\Controller{
      * }
      * 
      * @apiSuccess {int} userid 用户编码
-     * @apiSuccess {string} workid 工号
-     * @apiSuccess {string} password 密码
      * @apiSuccessExample {json} 成功响应:
      * {
-     *      "userid":1,
-     *      "workid":"8020507",
-     *      "password":"123456"
+     *      "userid":1
      * }
      * @apiSampleRequest /auth/v1/users
      * @apiPermission user_register
      */
     private function createUser(){
         //检查参数
-        
-        $this->view()->checkParams(array('workid','username','password'));
+        $this->view()->checkParams(array('workid','password'));
+
         //检查数据库
-        
-        $user=$this->model()->getUser();
-        foreach($user as $k=>$v){
-            echo $k.' : '.$v.'<br/>';
+        $userid=$this->model()->create($this->get('workid'),$this->get('password'));
+        if($userid===false){
+            throw new \Spoon\Exception('user already register',400);
         }
-        //写入数据库
 
         //响应客户端
-        // Response::sendJSON(array(
-        //     'workid'=>$this->view()->get('workid'),
-        //     'password'=>$this->view()->get('password'),
-        //     'username'=>$this->view()->get('username'),
-        // ));
+        $this->view()->sendJSON(array('userid'=>$id));
     }
 }
 

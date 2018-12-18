@@ -18,13 +18,29 @@ class Users extends \Spoon\Model{
     }
 
     /**
-     * 检查用户是否存在
+     * 获取用户ID
      *
-     * @param int $userid 用户编号
-     * @return bool
+     * @param string $workid 用户编号
+     * @return int
      */
-    public function exists($userid){
-        return $this->db()->users()->where('id',$userid)->count()>0;
+    public function getId($workid){
+        return $this->db()->users()->select('id')->where('workid',$workid)->fetch()['id'];
+    }
+
+    /**
+     * 创建用户
+     *
+     * @param string $workid 工号
+     * @param string $password 密码
+     * @return int 用户工号 或 false
+     */
+    public function create($workid,$password){
+        $id=$this->getId($workid);
+        if(!empty($id)) return false;
+
+        $data=array('workid'=>$workid,'password'=>$password);
+        $row=$this->db()->users()->insert($data);
+        return $row['id'];
     }
 
     /**
