@@ -25,6 +25,10 @@ return array(
                 'charset'=>'utf8',
                 'prefix'=>'auth_'
             ),
+            /**
+             * 密码加密盐值(若不设置则使用 security->salt)
+             */
+            'salt'=>'hello world',
         ),
     )
 );

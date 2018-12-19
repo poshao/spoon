@@ -32,7 +32,7 @@ class Users extends \Spoon\Model{
      *
      * @param string $workid 工号
      * @param string $password 密码
-     * @return int 用户工号 或 false
+     * @return int 用户编号 或 false
      */
     public function create($workid,$password){
         $id=$this->getId($workid);
@@ -44,12 +44,44 @@ class Users extends \Spoon\Model{
     }
 
     /**
+     * 更新用户信息
+     *
+     * @param string $workid
+     * @param array $info
+     * @return int 用户编号 或 false
+     */
+    public function update($workid,$info){
+        $id=$this->getId($workid);
+
+        $effect=$this->db()->users()->where('id',$id)->update($info);
+        if($effect===false) return false;
+
+        return $id;
+    }
+
+    /**
      * 获取用户信息
+     *
+     * @param string $workid
+     * @param array $fields 字段名称
+     * @return array
+     */
+    public function getUser($workid,$fields=null){
+        if($fields===null){
+            $fields='id,workid,username,depart';
+        }
+        $id=$this->getId($workid);
+        $row=$this->db()->users()->select($fields)->where('id',$id)->fetch();
+        return $row;
+    }
+
+    /**
+     * 获取用户清单
      *
      * @return void
      */
-    public function getUser(){
-        return $this->db()->users()->select('*')->where('id',1)->fetch();
+    public function listUsers(){
+        return $this->db()->users()->select('id,workid')->fetchPairs('id');
     }
 }
 

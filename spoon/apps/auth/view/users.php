@@ -16,6 +16,19 @@ class Users extends \Spoon\View{
             'username'=>array(
                 'type'=>'text',
                 'length-max'=>20
+            ),
+            'depart'=>array(
+                'type'=>'list',
+                'list'=>array('LOG')
+            ),
+            'infofields'=>array(
+                'type'=>'list',
+                'list'=>array('username','depart')
+            ),
+            'info'=>array(
+                'type'=>'array',
+                'require'=>array(),
+                'optional'=>array('username','depart')
             )
         );
     }
