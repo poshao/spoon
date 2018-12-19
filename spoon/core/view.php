@@ -40,6 +40,26 @@ abstract class View{
     }
 
     /**
+     * 设置参数值
+     *
+     * @param string $key 键名
+     * @param mixed $value
+     * @return void
+     */
+    public function set($key,$value){
+        return $this->_params[$key]=$value;
+    }
+
+    /**
+     * 参数个数
+     *
+     * @return int
+     */
+    public function paramsCount(){
+        return \count($this->_params);
+    }
+    
+    /**
      * 新增一条验证规则
      *
      * @param string $key 参数名
@@ -65,23 +85,28 @@ abstract class View{
      *
      * @param array $req_params 必选参数
      * @param array $opt_params 可选参数
+     * @param array $params 参数数组(默认为请求参数)
      * @return bool
      * @throws Exception
      */
-    public function checkParams($req_params,$opt_params=null){
+    public function checkParams($req_params,$opt_params=null,$params=null){
+        if(!\is_array($params)){
+            $params=$this->_params;
+        }
         foreach($req_params as $k=>$v){
-            if(!isset($this->_params[$v]) || !$this->check($this->_params[$v],$this->_rules[$v])){
+            if(!isset($params[$v]) || !$this->check($params[$v],$this->_rules[$v])){
                 throw new Exception('参数检查错误 '.$v.':'.json_encode($this->_rules[$v]));
             }
         }
 
         if(!empty($opt_params)){
             foreach($opt_params as $k=>$v){
-                if(isset($this->_params[$v]) && !$this->check($this->_params[$v],$this->_rules[$v])){
+                if(isset($params[$v]) && !$this->check($params[$v],$this->_rules[$v])){
                     throw new Exception('可选参数检查错误 '.$v.':'.json_encode($this->_rules[$v]));
                 }
             }
         }
+        return true;
     }
 
     /**
@@ -99,6 +124,7 @@ abstract class View{
         // array('type'=>'list','list'=>array('item1','item2'));
         // array('type'=>'text','length'=>10);
         // array('type'=>'regex','pattern'=>'/^hello$/');
+        // array('type'=>'array','require'=>array('rule1','rule1'),'optional'=>array('rule3','rule4'))
 
         if(!\is_array($rule)){
             // Logger::debug('invalid rule: $rule is not array');
@@ -120,6 +146,10 @@ abstract class View{
                 return isset($rule['list']) && \is_array($rule['list']) && \in_array($param,$rule['list']);
                 break;
             case 'text'://文本
+
+                break;
+            case 'array'://数组
+                return $this->checkParams($rule['require'],$rule['optional'],$param);
                 break;
             default:
                 throw new Exception('type not support');

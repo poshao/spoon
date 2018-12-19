@@ -12,15 +12,13 @@ drop table if exists `auth_users`;
 create table `auth_users`(
     `id` int(11) primary key auto_increment not null,
     `workid` int(11) not null comment '工号',
-    `username_en` varchar(30) comment '英文名字',
-    `username_zh` varchar(30) comment '中文名字',
+    `username` varchar(30) comment '用户名',
     `password` varchar(64) not null comment '密码',
     `depart` varchar(30) comment '部门',
     `status` varchar(10) not null default 'unaudited' comment '用户状态',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;
-ALTER TABLE `auth_users` ADD UNIQUE INDEX `psid_unique` (`psid` ASC);
 ALTER TABLE `auth_users` ADD UNIQUE INDEX `workid_unique` (`workid` ASC);
 
 #创建角色表

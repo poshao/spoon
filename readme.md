@@ -47,6 +47,7 @@
     3.列表项 item1| item2 | item3
     4.文本
     5.正则表达式
+    6.数组
     
 ## 已完成
 1. 配置类 Spoon\Core\Config.php
