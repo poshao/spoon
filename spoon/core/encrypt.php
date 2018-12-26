@@ -16,8 +16,8 @@ class Encrypt{
      */
     public static function hashPassword($password,$salt=''){
         if(empty($salt))$salt=Config::get('security')['salt'];
-        $data=\microtime(true).$password.$salt;
-        return \base64_encode(\md5(\uniqid($data).\sha1($data).$salt));
+        $data='helloworld'.$password.$salt;
+        return \base64_encode(\md5($salt.\md5($data).$salt.\sha1($data).$salt));
     }
 
 
