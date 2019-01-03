@@ -26,6 +26,11 @@ return array(
                 'prefix'=>'auth_'
             ),
             /**
+             * 令牌有效时间(秒)
+             */
+            'token_timeout'=>3600,
+            
+            /**
              * 密码加密盐值(若不设置则使用 security->salt)
              */
             'salt'=>'hello world',

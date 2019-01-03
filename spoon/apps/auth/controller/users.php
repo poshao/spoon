@@ -1,7 +1,5 @@
 <?php
 namespace App\Auth\Controller;
-use \App\Auth\Model\Users as mUsers;
-use \App\Auth\View\Users as vUsers;
 use \Spoon\Response;
 use \Spoon\Exception;
 
@@ -59,9 +57,13 @@ class Users extends \Spoon\Controller{
      *      "userid":1
      * }
      * @apiSampleRequest /auth/v1/users
-     * @apiPermission user_register
+     * @apiPermission app_auth_user_register
      */
     private function createUser(){
+        //检查登录状态及权限
+        $verify=\Spoon\DI::getDI('verify');
+        if(!empty($verify)) $verify->CheckPermission('app_auth_user_register');
+        
         //检查参数
         $this->view()->checkParams(array('workid','password'));
 
@@ -103,9 +105,12 @@ class Users extends \Spoon\Controller{
      *      "userid":1
      * }
      * @apiSampleRequest /auth/v1/users
-     * @apiPermission user_update
+     * @apiPermission app_auth_user_update
      */
     private function updateUser(){
+        $verify=\Spoon\DI::getDI('verify');
+        if(!empty($verify)) $verify->CheckPermission('app_auth_user_update');
+
         $this->view()->checkParams(array('workid','info'));
         $userid=$this->model()->update($this->get('workid'),$this->get('info'));
         if(empty($userid)){
@@ -141,9 +146,12 @@ class Users extends \Spoon\Controller{
      *      }
      * }
      * @apiSampleRequest /auth/v1/users
-     * @apiPermission user_getinfo
+     * @apiPermission app_auth_user_getinfo
      */
     private function getInfo(){
+        $verify=\Spoon\DI::getDI('verify');
+        if(!empty($verify)) $verify->CheckPermission('app_auth_user_getinfo');
+
         $this->view()->checkParams(array('workid'),array('infofields'));
         $user=$this->model()->getUser($this->get('workid'),$this->get('infofields'));
         $this->view()->sendJSON(array('userinfo'=>$user));
@@ -168,9 +176,12 @@ class Users extends \Spoon\Controller{
      *      }
      * }
      * @apiSampleRequest /auth/v1/users
-     * @apiPermission user_list
+     * @apiPermission app_auth_user_list
      */
     private function listUsers(){
+        $verify=\Spoon\DI::getDI('verify');
+        if(!empty($verify)) $verify->CheckPermission('app_auth_user_list');
+
         $this->view()->sendJSON(array('users'=>$this->model()->listUsers()));
     }
 }
