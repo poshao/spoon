@@ -100,5 +100,30 @@ class NotORM extends NotORM_Abstract {
 		}
 		return $return;
 	}
-	
+
+	/**
+	 * 处理复杂逻辑查询并返回查询结果
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return PDO
+	 */
+	function queryAndFetchAll($sql,$params){
+		$result=$this->connection->prepare($sql);
+		if(!$result->execute($params)) return false;
+		return $result->fetchAll();
+	}
+
+	/**
+	 * 处理复杂查询
+	 *
+	 * @param string $sql
+	 * @param array $params
+	 * @return PDOStatement
+	 */
+	function query($sql,$params){
+		$result=$this->connection->prepare($sql);
+		if(!$result->execute($params)) return false;
+		return $result;
+	}
 }
