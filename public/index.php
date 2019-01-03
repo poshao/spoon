@@ -27,6 +27,23 @@ require SitePath.'/autoload.php';
 //设置时区
 \date_default_timezone_set(\Spoon\Config::get('timezone','Asia/Shanghai'));
 
+//验证代码解析(Authorization)
+//spoon + base64(id=123456&token=124==)
+$auth=apache_request_headers()['Authorization'];
+if($auth!=null && \strpos($auth,'spoon ')===0){
+    $params=\explode('&',base64_decode(substr($auth,6)));
+    $p=array();
+    foreach($params as $k=>$v){
+        $kv=\explode('=',$v,2);
+        $p[$kv[0]]=$kv[1];
+    }
+    $_POST['auth_workid']=$p['id'];
+    $_POST['auth_token']=$p['token'];
+}
+
+//注入验证模块
+\Spoon\DI::setDI('verify',new \App\Auth\Controller\Verify());
+
 if(!\getenv('spoon_test_unit',true)){
     //路由分配并响应结果
     try{
