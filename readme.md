@@ -37,7 +37,17 @@
 
 > Response: 响应数据 封装view提供的数据(根据请求的 Accept数据格式 对结果转码输出)
 
-## 2.功能说明
+## 2.认证方式
+    请求头：Authorization
+    认证方法：spoon
+    附带数据：id=8888888&token=qweqwads= base64编码
+``` http
+GET https:://url HTTP/1.1
+Authorization:spoon aWQ9ODAyMDUwNyZ0b2tlbj1aVFZpWkdSbE5UZGtOMk5tT0RWbE56azBZMk16TTJZMU5UTXpaR1JrTmpJPQ==
+```
+verify类完成对权限的验证
+
+## 3.功能说明
     参数检查:
     require,option
     length,length-max,length-min
@@ -52,6 +62,9 @@
 ## 已完成
 1. 配置类 Spoon\Core\Config.php
 2. 日志类 Spoon\Core\Logger.php
+3. 加密类 Spoon\Core\Encrypt.php
+4. 工具类 Spoon\Core\Util.php
+5. 依赖注入类 Spoon\Core\Di.php
 
 ## 常用加密算法
 * DES
