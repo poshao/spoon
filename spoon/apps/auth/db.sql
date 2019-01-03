@@ -49,7 +49,6 @@ drop table if exists `auth_permissions`;
 create table `auth_permissions`(
     `id` int(11) primary key auto_increment not null,
     `permissionname` varchar(50) not null comment '权限名称',
-    `url` varchar(100) not null comment '权限代码',
     `description` varchar(100) comment '描述',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
@@ -101,3 +100,42 @@ create table `auth_ref_user_group`(
     `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;
 ALTER TABLE `auth_ref_user_group` ADD UNIQUE INDEX `usergroup_unique`(`userid` ASC,`groupid` ASC);
+
+################################
+#insert Permission Data
+################################
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_list','列举用户列表');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_update','更新用户信息');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_getinfo','获取用户信息');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_register','用户注册');
+
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_login','用户登录');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
+
+################################
+#insert Role Data
+################################
+insert into auth_roles(`rolename`,`description`) values ('administrator','系统管理员');
+
+################################
+# add permissions for admin Role
+################################
+insert into auth_ref_role_permission(`roleid`,`permissionid`) select 1,id from auth_permissions;
+
+################################
+# 函数 检查用户权限
+################################
+drop FUNCTION if exists `checkPermission`;
+delimiter $$
+CREATE FUNCTION `checkPermission`(p_userid int(11),p_permission varchar(50)) RETURNS int(10)
+BEGIN
+declare rlst int(10) default 0;
+SELECT COUNT(*) into rlst FROM `auth_ref_role_permission` WHERE `roleid` IN (SELECT `roleid` FROM `auth_groups` WHERE `id` IN (SELECT `groupid` FROM `auth_ref_user_group` WHERE `userid` = p_userid)
+      UNION ALL
+      SELECT `roleid` FROM `auth_ref_user_role` WHERE `auth_ref_user_role`.`userid` = p_userid) AND `permissionid` IN (SELECT `id` FROM `auth_permissions` WHERE `permissionname` = p_permission);
+
+RETURN rlst;
+END$$
+delimiter ;
+
+
