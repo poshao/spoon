@@ -102,6 +102,21 @@ create table `auth_ref_user_group`(
 ALTER TABLE `auth_ref_user_group` ADD UNIQUE INDEX `usergroup_unique`(`userid` ASC,`groupid` ASC);
 
 ################################
+# 函数 检查用户权限
+################################
+drop FUNCTION if exists `checkPermission`;
+delimiter $$
+CREATE FUNCTION `checkPermission`(p_userid int(11),p_permission varchar(50)) RETURNS int(10)
+BEGIN
+declare rlst int(10) default 0;
+SELECT COUNT(*) into rlst FROM `auth_ref_role_permission` WHERE `roleid` IN (SELECT `roleid` FROM `auth_groups` WHERE `id` IN (SELECT `groupid` FROM `auth_ref_user_group` WHERE `userid` = p_userid)
+      UNION ALL
+      SELECT `roleid` FROM `auth_ref_user_role` WHERE `auth_ref_user_role`.`userid` = p_userid) AND `permissionid` IN (SELECT `id` FROM `auth_permissions` WHERE `permissionname` = p_permission);
+RETURN rlst;
+END$$
+delimiter ;
+
+################################
 #insert Permission Data
 ################################
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_list','列举用户列表');
@@ -123,19 +138,11 @@ insert into auth_roles(`rolename`,`description`) values ('administrator','系统
 insert into auth_ref_role_permission(`roleid`,`permissionid`) select 1,id from auth_permissions;
 
 ################################
-# 函数 检查用户权限
+#insert Permission Data
 ################################
-drop FUNCTION if exists `checkPermission`;
-delimiter $$
-CREATE FUNCTION `checkPermission`(p_userid int(11),p_permission varchar(50)) RETURNS int(10)
-BEGIN
-declare rlst int(10) default 0;
-SELECT COUNT(*) into rlst FROM `auth_ref_role_permission` WHERE `roleid` IN (SELECT `roleid` FROM `auth_groups` WHERE `id` IN (SELECT `groupid` FROM `auth_ref_user_group` WHERE `userid` = p_userid)
-      UNION ALL
-      SELECT `roleid` FROM `auth_ref_user_role` WHERE `auth_ref_user_role`.`userid` = p_userid) AND `permissionid` IN (SELECT `id` FROM `auth_permissions` WHERE `permissionname` = p_permission);
+#默认密码 123456
+insert into auth_users(`workid`,`password`) values ('8020507','MjJjMmViZDhhMWNiNDc5MzM2OWQ2MTQ5MmJjMjBmYzQ=');
+insert into auth_ref_user_role(`userid`,`roleid`) values(1,1);
 
-RETURN rlst;
-END$$
-delimiter ;
 
 

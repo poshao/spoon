@@ -4,7 +4,8 @@
  */
 namespace Spoon;
 
-class Response{
+class Response
+{
     /**
      * 状态码
      *
@@ -38,7 +39,8 @@ class Response{
      * @param string $url
      * @return void
      */
-    public static function allowOrigin($url='*'){
+    public static function allowOrigin($url='*')
+    {
         \header('Access-Control-Allow-Origin:'.$url);
     }
 
@@ -48,8 +50,9 @@ class Response{
      * @param int $code
      * @return void
      */
-    public static function setStatus($code){
-        if(!array_key_exists($code,self::$statuscode_list)){
+    public static function setStatus($code)
+    {
+        if (!array_key_exists($code, self::$statuscode_list)) {
             throw new \Spoon\Exception('无效状态码:'.$code);
         }
         \header(self::$_protocol.' '.$code.' '.self::$statuscode_list[$code]);
@@ -61,10 +64,11 @@ class Response{
      * @param string $contentType
      * @return void
      */
-    public static function setContentType($contentType,$charset='utf-8'){
-        if($charset!=''){
+    public static function setContentType($contentType, $charset='utf-8')
+    {
+        if ($charset!='') {
             \header('Content-Type:'.$contentType.';charset='.$charset);
-        }else{
+        } else {
             \header('Content-Type:'.$contentType);
         }
     }
@@ -79,16 +83,17 @@ class Response{
      * @param string $outType 'text'|'binary' 输出格式
      * @return void
      */
-    public static function send($data,$code=200,$contentType='application/json',$charset='utf-8',$outType='text'){
+    public static function send($data, $code=200, $contentType='application/json', $charset='utf-8', $outType='text')
+    {
         self::allowOrigin();
         self::setStatus($code);
-        self::setContentType($contentType,$charset);
-        switch($outType){
+        self::setContentType($contentType, $charset);
+        switch ($outType) {
             case 'text':
                 echo $data;
                 break;
             case 'binary':
-                file_put_contents('php://output',$data);
+                file_put_contents('php://output', $data);
                 break;
         }
     }
@@ -103,8 +108,9 @@ class Response{
      * @param string $outType 'text'|'binary' 输出格式
      * @return void
      */
-    public static function sendJSON($data,$code=200,$contentType='application/json',$charset='utf-8',$outType='text'){
-        self::send(\json_encode($data),$code,$contentType,$charset,$outType);
+    public static function sendJSON($data, $code=200, $contentType='application/json', $charset='utf-8', $outType='text')
+    {
+        self::send(\json_encode($data), $code, $contentType, $charset, $outType);
     }
 
     /**
@@ -114,8 +120,8 @@ class Response{
      * @param string $message 错误信息
      * @return void
      */
-    public static function sendError($code,$message){
-        self::send(\json_encode(array('error'=>$message)),$code);
+    public static function sendError($code, $message)
+    {
+        self::send(\json_encode(array('error'=>$message)), $code);
     }
 }
-?>

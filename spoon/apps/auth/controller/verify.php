@@ -3,10 +3,13 @@
  * 验证登录信息
  */
 namespace App\Auth\Controller;
+
 use \Spoon\Exception;
 
-class Verify extends \Spoon\Controller{
-    public function doMain(){
+class Verify extends \Spoon\Controller
+{
+    public function doMain()
+    {
         return false;
     }
 
@@ -15,8 +18,11 @@ class Verify extends \Spoon\Controller{
      *
      * @return string
      */
-    private function getWorkid(){
-        if(!isset($_POST['auth_workid'])) return false;
+    public function getWorkid()
+    {
+        if (!isset($_POST['auth_workid'])) {
+            return false;
+        }
         return $_POST['auth_workid'];
     }
 
@@ -25,8 +31,11 @@ class Verify extends \Spoon\Controller{
      *
      * @return string
      */
-    private function getToken(){
-        if(!isset($_POST['auth_token'])) return false;
+    private function getToken()
+    {
+        if (!isset($_POST['auth_token'])) {
+            return false;
+        }
         return $_POST['auth_token'];
     }
 
@@ -35,8 +44,9 @@ class Verify extends \Spoon\Controller{
      *
      * @return bool
      */
-    public function CheckIsOnline(){
-        return $this->model()->IsOnline($this->getWorkid(),$this->getToken());
+    public function CheckIsOnline()
+    {
+        return $this->model()->IsOnline($this->getWorkid(), $this->getToken());
     }
 
     /**
@@ -45,15 +55,14 @@ class Verify extends \Spoon\Controller{
      * @param string $permission
      * @return bool
      */
-    public function CheckPermission($permission){
-        if($this->CheckIsOnline()===false){
-            throw new \Spoon\Exception('please login first',401);
+    public function CheckPermission($permission)
+    {
+        if ($this->CheckIsOnline()===false) {
+            throw new \Spoon\Exception('please login first', 401);
         }
-        if($this->model()->HasPermission($this->getWorkid(),$permission)===false){
-            throw new \Spoon\Exception('need permission ['.$permission.']',403);
+        if ($this->model()->HasPermission($this->getWorkid(), $permission)===false) {
+            throw new \Spoon\Exception('need permission ['.$permission.']', 403);
         }
         return true;
     }
-
 }
-?>

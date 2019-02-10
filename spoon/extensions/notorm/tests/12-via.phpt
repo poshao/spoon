@@ -5,10 +5,10 @@ via()
 include_once dirname(__FILE__) . "/connect.inc.php";
 
 foreach ($software->author() as $author) {
-	$applications = $author->application()->via("maintainer_id");
-	foreach ($applications as $application) {
-		echo "$author[name]: $application[title]\n";
-	}
+    $applications = $author->application()->via("maintainer_id");
+    foreach ($applications as $application) {
+        echo "$author[name]: $application[title]\n";
+    }
 }
 echo "$applications\n";
 ?>

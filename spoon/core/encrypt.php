@@ -1,11 +1,13 @@
 <?php
 /**
  * 加密算法处理类
- * 
+ *
  * 常用算法 MD5,SHA1,BASE64
  */
 namespace Spoon;
-class Encrypt{
+
+class Encrypt
+{
 
     /**
      * 生成加密字符串
@@ -14,8 +16,11 @@ class Encrypt{
      * @param string $salt
      * @return string
      */
-    public static function hashPassword($password,$salt=''){
-        if(empty($salt))$salt=Config::get('security')['salt'];
+    public static function hashPassword($password, $salt='')
+    {
+        if (empty($salt)) {
+            $salt=Config::get('security')['salt'];
+        }
         $data='helloworld'.$password.$salt;
         return \base64_encode(\md5($salt.\md5($data).$salt.\sha1($data).$salt));
     }
@@ -27,11 +32,12 @@ class Encrypt{
      * @param string $salt
      * @return boolean
      */
-    public static function hashToken($salt=''){
-        if(empty($salt))$salt=Config::get('security')['salt'];
+    public static function hashToken($salt='')
+    {
+        if (empty($salt)) {
+            $salt=Config::get('security')['salt'];
+        }
         $data=\uniqid($salt.\microtime(true));
         return \base64_encode(\md5($data));
     }
 }
-
-?>

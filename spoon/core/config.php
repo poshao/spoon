@@ -3,7 +3,9 @@
  * 配置管理类
  */
 namespace Spoon;
-class Config{
+
+class Config
+{
     protected static $_configs=array();
 
     /**
@@ -11,7 +13,8 @@ class Config{
      *
      * @return void
      */
-    public static function load(){
+    public static function load()
+    {
         self::loadConfig(__DIR__.'/../conf/default.php');
         self::loadConfig(__DIR__.'/../conf/user.php');
     }
@@ -22,10 +25,11 @@ class Config{
      * @param string $file
      * @return void
      */
-    public static function loadConfig($file){
-        if(file_exists($file)){
+    public static function loadConfig($file)
+    {
+        if (file_exists($file)) {
             // self::$_configs=array_merge(self::$_configs,require($file));
-            self::array_merge(self::$_configs,require($file));
+            self::array_merge(self::$_configs, require($file));
         }
     }
 
@@ -36,11 +40,12 @@ class Config{
      * @param array $ext
      * @return void
      */
-    private static function array_merge(&$base,$ext){
-        foreach($ext as $k=>$v){
-            if(isset($base[$k]) && \is_array($v)){
-                self::array_merge($base[$k],$v);
-            }else{
+    private static function array_merge(&$base, $ext)
+    {
+        foreach ($ext as $k=>$v) {
+            if (isset($base[$k]) && \is_array($v)) {
+                self::array_merge($base[$k], $v);
+            } else {
                 $base[$k]=$v;
             }
         }
@@ -53,10 +58,11 @@ class Config{
      * @param mixed $default
      * @return mixed
      */
-    public static function get($key,$default=null){
-        if(isset(self::$_configs[$key])){
+    public static function get($key, $default=null)
+    {
+        if (isset(self::$_configs[$key])) {
             return self::$_configs[$key];
-        }else{
+        } else {
             return $default;
         }
     }
@@ -67,15 +73,16 @@ class Config{
      * @param string $appname 应用名称
      * @return array
      */
-    public static function getByApps($appname){
-        if(isset(self::get('apps')[$appname])){
+    public static function getByApps($appname)
+    {
+        if (isset(self::get('apps')[$appname])) {
             return self::get('apps')[$appname];
         }
         return null;
     }
 
-    public static function list(){
+    public static function list()
+    {
         echo json_encode(self::$_configs);
     }
 }
-?>

@@ -8,9 +8,10 @@
 */
 
 if (!interface_exists('JsonSerializable')) {
-	interface JsonSerializable {
-		function jsonSerialize();
-	}
+    interface JsonSerializable
+    {
+        public function jsonSerialize();
+    }
 }
 
 include_once dirname(__FILE__) . "/NotORM/Structure.php";
@@ -23,19 +24,27 @@ include_once dirname(__FILE__) . "/NotORM/Row.php";
 
 
 // friend visibility emulation
-abstract class NotORM_Abstract {
-	protected $connection, $driver, $structure, $cache;
-	protected $notORM, $table, $primary, $rows, $referenced = array();
-	
-	protected $debug = false;
-	protected $debugTimer;
-	protected $freeze = false;
-	protected $rowClass = 'NotORM_Row';
-	protected $jsonAsArray = false;
-	
-	protected function access($key, $delete = false) {
-	}
-	
+abstract class NotORM_Abstract
+{
+    protected $connection;
+    protected $driver;
+    protected $structure;
+    protected $cache;
+    protected $notORM;
+    protected $table;
+    protected $primary;
+    protected $rows;
+    protected $referenced = array();
+    
+    protected $debug = false;
+    protected $debugTimer;
+    protected $freeze = false;
+    protected $rowClass = 'NotORM_Row';
+    protected $jsonAsArray = false;
+    
+    protected function access($key, $delete = false)
+    {
+    }
 }
 
 
@@ -47,83 +56,94 @@ abstract class NotORM_Abstract {
 * @property-write bool $jsonAsArray = false Use array instead of object in Result JSON serialization
 * @property-write string $transaction Assign 'BEGIN', 'COMMIT' or 'ROLLBACK' to start or stop transaction
 */
-class NotORM extends NotORM_Abstract {
-	
-	/** Create database representation
-	* @param PDO
-	* @param NotORM_Structure or null for new NotORM_Structure_Convention
-	* @param NotORM_Cache or null for no cache
-	*/
-	function __construct(PDO $connection, NotORM_Structure $structure = null, NotORM_Cache $cache = null) {
-		$this->connection = $connection;
-		$this->driver = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-		if (!isset($structure)) {
-			$structure = new NotORM_Structure_Convention;
-		}
-		$this->structure = $structure;
-		$this->cache = $cache;
-	}
-	
-	/** Get table data to use as $db->table[1]
-	* @param string
-	* @return NotORM_Result
-	*/
-	function __get($table) {
-		return new NotORM_Result($this->structure->getReferencingTable($table, ''), $this, true);
-	}
-	
-	/** Set write-only properties
-	* @return null
-	*/
-	function __set($name, $value) {
-		if ($name == "debug" || $name == "debugTimer" || $name == "freeze" || $name == "rowClass" || $name == "jsonAsArray") {
-			$this->$name = $value;
-		}
-		if ($name == "transaction") {
-			switch (strtoupper($value)) {
-				case "BEGIN": return $this->connection->beginTransaction();
-				case "COMMIT": return $this->connection->commit();
-				case "ROLLBACK": return $this->connection->rollback();
-			}
-		}
-	}
-	
-	/** Get table data
-	* @param string
-	* @param array (["condition"[, array("value")]]) passed to NotORM_Result::where()
-	* @return NotORM_Result
-	*/
-	function __call($table, array $where) {
-		$return = new NotORM_Result($this->structure->getReferencingTable($table, ''), $this);
-		if ($where) {
-			call_user_func_array(array($return, 'where'), $where);
-		}
-		return $return;
-	}
+class NotORM extends NotORM_Abstract
+{
+    
+    /** Create database representation
+    * @param PDO
+    * @param NotORM_Structure or null for new NotORM_Structure_Convention
+    * @param NotORM_Cache or null for no cache
+    */
+    public function __construct(PDO $connection, NotORM_Structure $structure = null, NotORM_Cache $cache = null)
+    {
+        $this->connection = $connection;
+        $this->driver = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (!isset($structure)) {
+            $structure = new NotORM_Structure_Convention;
+        }
+        $this->structure = $structure;
+        $this->cache = $cache;
+    }
+    
+    /** Get table data to use as $db->table[1]
+    * @param string
+    * @return NotORM_Result
+    */
+    public function __get($table)
+    {
+        return new NotORM_Result($this->structure->getReferencingTable($table, ''), $this, true);
+    }
+    
+    /** Set write-only properties
+    * @return null
+    */
+    public function __set($name, $value)
+    {
+        if ($name == "debug" || $name == "debugTimer" || $name == "freeze" || $name == "rowClass" || $name == "jsonAsArray") {
+            $this->$name = $value;
+        }
+        if ($name == "transaction") {
+            switch (strtoupper($value)) {
+                case "BEGIN": return $this->connection->beginTransaction();
+                case "COMMIT": return $this->connection->commit();
+                case "ROLLBACK": return $this->connection->rollback();
+            }
+        }
+    }
+    
+    /** Get table data
+    * @param string
+    * @param array (["condition"[, array("value")]]) passed to NotORM_Result::where()
+    * @return NotORM_Result
+    */
+    public function __call($table, array $where)
+    {
+        $return = new NotORM_Result($this->structure->getReferencingTable($table, ''), $this);
+        if ($where) {
+            call_user_func_array(array($return, 'where'), $where);
+        }
+        return $return;
+    }
 
-	/**
-	 * 处理复杂逻辑查询并返回查询结果
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return PDO
-	 */
-	function queryAndFetchAll($sql,$params){
-		$result=$this->connection->prepare($sql);
-		if(!$result->execute($params)) return false;
-		return $result->fetchAll();
-	}
+    /**
+     * 处理复杂逻辑查询并返回查询结果
+     *
+     * @param string $sql
+     * @param array $params
+     * @return PDO
+     */
+    public function queryAndFetchAll($sql, $params)
+    {
+        $result=$this->connection->prepare($sql);
+        if (!$result->execute($params)) {
+            return false;
+        }
+        return $result->fetchAll();
+    }
 
-	/**
-	 * 处理复杂查询
-	 *
-	 * @param string $sql
-	 * @param array $params
-	 * @return PDOStatement
-	 */
-	function query($sql,$params){
-		$result=$this->connection->prepare($sql);
-		if(!$result->execute($params)) return false;
-		return $result;
-	}
+    /**
+     * 处理复杂查询
+     *
+     * @param string $sql
+     * @param array $params
+     * @return PDOStatement
+     */
+    public function query($sql, $params)
+    {
+        $result=$this->connection->prepare($sql);
+        if (!$result->execute($params)) {
+            return false;
+        }
+        return $result;
+    }
 }

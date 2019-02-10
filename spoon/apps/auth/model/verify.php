@@ -1,8 +1,10 @@
 <?php
 namespace App\Auth\Model;
+
 use \Spoon\Exception;
 
-class Verify extends \Spoon\Model{
+class Verify extends \Spoon\Model
+{
     protected $_db=null;
 
     /**
@@ -10,8 +12,9 @@ class Verify extends \Spoon\Model{
      *
      * @return void
      */
-    public function db(){
-        if(empty($this->_db)){
+    public function db()
+    {
+        if (empty($this->_db)) {
             $this->_db=self::getORM(\Spoon\Config::getByApps('auth')['db']);
         }
         return $this->_db;
@@ -24,10 +27,13 @@ class Verify extends \Spoon\Model{
      * @param string $token
      * @return bool
      */
-    public function IsOnline($workid,$token){
-        if($workid===false || $token===false) return false;
-        $userid=$this->db()->users()->select('id')->where('workid',$workid)->fetch()['id'];
-        return $this->db()->sessions()->where('userid=? and token=? and valid_time>now()',$userid,$token)->count()>0;
+    public function IsOnline($workid, $token)
+    {
+        if ($workid===false || $token===false) {
+            return false;
+        }
+        $userid=$this->db()->users()->select('id')->where('workid', $workid)->fetch()['id'];
+        return $this->db()->sessions()->where('userid=? and token=? and valid_time>now()', $userid, $token)->count()>0;
     }
 
     /**
@@ -37,12 +43,16 @@ class Verify extends \Spoon\Model{
      * @param string $permission
      * @return bool
      */
-    public function HasPermission($workid,$permission){
-        if($workid===false) return false;
-        $userid=$this->db()->users()->select('id')->where('workid',$workid)->fetch()['id'];
-        $rs=$this->db()->queryAndFetchAll('select checkPermission(:userid,:permission)',array(':userid'=>$userid,':permission'=>$permission));
-        if($rs===false) return false;
+    public function HasPermission($workid, $permission)
+    {
+        if ($workid===false) {
+            return false;
+        }
+        $userid=$this->db()->users()->select('id')->where('workid', $workid)->fetch()['id'];
+        $rs=$this->db()->queryAndFetchAll('select checkPermission(:userid,:permission)', array(':userid'=>$userid,':permission'=>$permission));
+        if ($rs===false) {
+            return false;
+        }
         return $rs[0][0]>0;
     }
 }
-?>

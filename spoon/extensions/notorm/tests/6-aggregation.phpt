@@ -7,8 +7,8 @@ include_once dirname(__FILE__) . "/connect.inc.php";
 $count = $software->application()->count("*");
 echo "$count applications\n";
 foreach ($software->application() as $application) {
-	$count = $application->application_tag()->count("*");
-	echo "$application[title]: $count tag(s)\n";
+    $count = $application->application_tag()->count("*");
+    echo "$application[title]: $count tag(s)\n";
 }
 ?>
 --EXPECTF--

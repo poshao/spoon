@@ -5,9 +5,9 @@ IN operator with MultiResult
 include_once dirname(__FILE__) . "/connect.inc.php";
 
 foreach ($software->author()->order("id") as $author) {
-	foreach ($software->application_tag("application_id", $author->application())->order("application_id, tag_id") as $application_tag) {
-		echo "$author: $application_tag[application_id]: $application_tag[tag_id]\n";
-	}
+    foreach ($software->application_tag("application_id", $author->application())->order("application_id, tag_id") as $application_tag) {
+        echo "$author: $application_tag[application_id]: $application_tag[tag_id]\n";
+    }
 }
 ?>
 --EXPECTF--

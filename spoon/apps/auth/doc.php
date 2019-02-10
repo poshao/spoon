@@ -36,5 +36,3 @@
        * @apiDefine app_auth_user_logout 用户注销
        * 用户注销
        */
-
-?>

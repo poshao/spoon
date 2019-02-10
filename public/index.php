@@ -8,33 +8,37 @@ error_reporting(E_ALL & ~E_NOTICE);
 // header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
 
 //常量设置
-define('SitePath',realpath(__DIR__.'/../spoon'));//网站目录
-define('CorePath',realpath(SitePath.'/core'));//核心类目录
-define('AppPath',realpath(SitePath.'/apps'));//应用目录
+define('SitePath', realpath(__DIR__.'/../spoon'));//网站目录
+define('CorePath', realpath(SitePath.'/core'));//核心类目录
+define('AppPath', realpath(SitePath.'/apps'));//应用目录
 
 //设置autoload
 require SitePath.'/autoload.php';
 //核心类
-\Spoon\Autoload::addNamespace('\\Spoon',CorePath);
+\Spoon\Autoload::addNamespace('\\Spoon', CorePath);
 //拓展类
-\Spoon\Autoload::addNamespace('\\Spoon\\Extensions',realpath(SitePath.'/extensions'));
+\Spoon\Autoload::addNamespace('\\Spoon\\Extensions', realpath(SitePath.'/extensions'));
 //应用类
-\Spoon\Autoload::addNamespace('\\App',realpath(SitePath.'/apps'));
+\Spoon\Autoload::addNamespace('\\App', realpath(SitePath.'/apps'));
 
 //加载配置
 \Spoon\Config::load();
 
 //设置时区
-\date_default_timezone_set(\Spoon\Config::get('timezone','Asia/Shanghai'));
+\date_default_timezone_set(\Spoon\Config::get('timezone', 'Asia/Shanghai'));
+
+// $_POST;
+// $_GET;
 
 //验证代码解析(Authorization)
 //spoon + base64(id=123456&token=124==)
-$auth=apache_request_headers()['Authorization'];
-if($auth!=null && \strpos($auth,'spoon ')===0){
-    $params=\explode('&',base64_decode(substr($auth,6)));
+$headers=apache_request_headers();
+$auth=isset($headers['Authorization'])?$headers['Authorization']:null;
+if ($auth!=null && \strpos($auth, 'spoon ')===0) {
+    $params=\explode('&', base64_decode(substr($auth, 6)));
     $p=array();
-    foreach($params as $k=>$v){
-        $kv=\explode('=',$v,2);
+    foreach ($params as $k=>$v) {
+        $kv=\explode('=', $v, 2);
         $p[$kv[0]]=$kv[1];
     }
     $_POST['auth_workid']=$p['id'];
@@ -42,21 +46,19 @@ if($auth!=null && \strpos($auth,'spoon ')===0){
 }
 
 //注入验证模块
-\Spoon\DI::setDI('verify',new \App\Auth\Controller\Verify());
+\Spoon\DI::setDI('verify', new \App\Auth\Controller\Verify());
 
-if(!\getenv('spoon_test_unit',true)){
+if (!\getenv('spoon_test_unit', true)) {
     //路由分配并响应结果
-    try{
+    try {
         \Spoon\Router::process();
-    }catch(\Spoon\Exception $e){
+    } catch (\Spoon\Exception $e) {
         $e->render();
     }
-}else{
+} else {
     //加载单元测试
     include __DIR__.'/../test/process.php';
 }
-
-
 
 // return;
 
@@ -85,4 +87,3 @@ if(!\getenv('spoon_test_unit',true)){
     // var_dump($method,$url,$protocol,$request_contenttype,$accept_contenttype,$payload,$query,$_REQUEST);
     // header("HTTP/1.1 401 Unauthozied");
     // header('WWW-Authenticate:Basic');
-?>

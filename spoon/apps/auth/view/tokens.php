@@ -1,7 +1,10 @@
 <?php
 namespace App\Auth\View;
-class Tokens extends \Spoon\View{
-    public function __construct(){
+
+class Tokens extends \Spoon\View
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->_rules=array(
             'workid'=>array(
@@ -21,4 +24,3 @@ class Tokens extends \Spoon\View{
         );
     }
 }
-?>

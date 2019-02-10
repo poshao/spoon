@@ -6,7 +6,7 @@ include_once dirname(__FILE__) . "/connect.inc.php";
 
 $application = $software->application[1];
 foreach ($application as $key => $val) {
-	echo "$key: $val\n";
+    echo "$key: $val\n";
 }
 ?>
 --EXPECTF--

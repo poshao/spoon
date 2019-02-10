@@ -5,7 +5,7 @@ Calling __toString()
 include_once dirname(__FILE__) . "/connect.inc.php";
 
 foreach ($software->application() as $application) {
-	echo "$application\n";
+    echo "$application\n";
 }
 ?>
 --EXPECTF--

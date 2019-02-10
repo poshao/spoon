@@ -4,16 +4,17 @@ Custom row class
 <?php
 include_once dirname(__FILE__) . "/connect.inc.php";
 
-class TestRow extends NotORM_Row {
-	
-	function offsetExists($key) {
-		return parent::offsetExists(preg_replace('~^test_~', '', $key));
-	}
-	
-	function offsetGet($key) {
-		return parent::offsetGet(preg_replace('~^test_~', '', $key));
-	}
-	
+class TestRow extends NotORM_Row
+{
+    public function offsetExists($key)
+    {
+        return parent::offsetExists(preg_replace('~^test_~', '', $key));
+    }
+    
+    public function offsetGet($key)
+    {
+        return parent::offsetGet(preg_replace('~^test_~', '', $key));
+    }
 }
 
 $software->rowClass = 'TestRow';

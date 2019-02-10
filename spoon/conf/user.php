@@ -1,7 +1,7 @@
 <?php
 /**
  * 用户配置
- * 
+ *
  * 覆盖系统默认配置
  */
 return array(
@@ -35,6 +35,19 @@ return array(
              */
             'salt'=>'hello world',
         ),
+        /**
+         * CS放单平台
+         */
+        'linkcs'=>array(
+            'db'=>array(
+                'driver'=>'mysql',
+                'dbname'=>'Spoon',
+                'host'=>'localhost',
+                'user'=>'root',
+                'password'=>'123456',
+                'charset'=>'utf8',
+                'prefix'=>'cs_'
+            ),
+        ),
     )
 );
-?>

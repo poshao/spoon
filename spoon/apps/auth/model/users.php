@@ -1,8 +1,10 @@
 <?php
 namespace App\Auth\Model;
+
 use \Spoon\Exception;
 
-class Users extends \Spoon\Model{
+class Users extends \Spoon\Model
+{
     protected $_db=null;
 
     /**
@@ -10,8 +12,9 @@ class Users extends \Spoon\Model{
      *
      * @return void
      */
-    public function db(){
-        if(empty($this->_db)){
+    public function db()
+    {
+        if (empty($this->_db)) {
             $this->_db=self::getORM(\Spoon\Config::getByApps('auth')['db']);
         }
         return $this->_db;
@@ -23,8 +26,9 @@ class Users extends \Spoon\Model{
      * @param string $workid 用户编号
      * @return int
      */
-    public function getId($workid){
-        return $this->db()->users()->select('id')->where('workid',$workid)->fetch()['id'];
+    public function getId($workid)
+    {
+        return $this->db()->users()->select('id')->where('workid', $workid)->fetch()['id'];
     }
 
     /**
@@ -34,9 +38,12 @@ class Users extends \Spoon\Model{
      * @param string $password 密码
      * @return int 用户编号 或 false
      */
-    public function create($workid,$password){
+    public function create($workid, $password)
+    {
         $id=$this->getId($workid);
-        if(!empty($id)) return false;
+        if (!empty($id)) {
+            return false;
+        }
 
         $data=array('workid'=>$workid,'password'=>$password);
         $row=$this->db()->users()->insert($data);
@@ -50,11 +57,17 @@ class Users extends \Spoon\Model{
      * @param array $info
      * @return int 用户编号 或 false
      */
-    public function update($workid,$info){
+    public function update($workid, $info)
+    {
+        if (empty($info)) {
+            return 0;
+        }
         $id=$this->getId($workid);
 
-        $effect=$this->db()->users()->where('id',$id)->update($info);
-        if($effect===false) return false;
+        $effect=$this->db()->users()->where('id', $id)->update($info);
+        if ($effect===false) {
+            return false;
+        }
 
         return $id;
     }
@@ -66,12 +79,13 @@ class Users extends \Spoon\Model{
      * @param array $fields 字段名称
      * @return array
      */
-    public function getUser($workid,$fields=null){
-        if($fields===null){
+    public function getUser($workid, $fields=null)
+    {
+        if ($fields===null) {
             $fields='id,workid,username,depart';
         }
         $id=$this->getId($workid);
-        $row=$this->db()->users()->select($fields)->where('id',$id)->fetch();
+        $row=$this->db()->users()->select($fields)->where('id', $id)->fetch();
         return $row;
     }
 
@@ -80,9 +94,29 @@ class Users extends \Spoon\Model{
      *
      * @return void
      */
-    public function listUsers(){
+    public function listUsers()
+    {
         return $this->db()->users()->select('id,workid')->fetchPairs('id');
     }
-}
 
-?>
+    /**
+     * 修改密码
+     *
+     * @param string $old
+     * @param string $new
+     * @return boolean
+     */
+    public function changePassword($workid, $old, $new)
+    {
+        $userid=$this->getId($workid);
+        //update users set password=$new where workid=$workid and password=$old
+        $effect=$this->db()->users()->where(array('password'=>$old,'id'=>$userid))->update(array('password'=>$new));
+        if ($effect===false) {
+            return false;
+        } else {
+            //强制注销
+            $token=new Tokens();
+            return $token->logout($workid);
+        }
+    }
+}

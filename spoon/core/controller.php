@@ -3,24 +3,29 @@
  * 控制器基类
  */
 namespace Spoon;
-abstract class Controller{
+
+abstract class Controller
+{
     protected $_view=null;
     protected $_model=null;
 
-    public function __construct(){
+    public function __construct()
+    {
         //初始化同时初始化视图类和模型类
         $controlClass=\get_called_class();
-        $viewClass=\str_replace('Controller','View',$controlClass);
+        $viewClass=\str_replace('Controller', 'View', $controlClass);
         $this->view=new $viewClass;
-        $modelClass=\str_replace('Controller','Model',$controlClass);
+        $modelClass=\str_replace('Controller', 'Model', $controlClass);
         $this->model=new $modelClass;
     }
 
-    public function view(){
+    public function view()
+    {
         return $this->view;
     }
 
-    public function model(){
+    public function model()
+    {
         return $this->model;
     }
 
@@ -30,7 +35,8 @@ abstract class Controller{
      * @param string $key 参数名
      * @return mixed
      */
-    public function get($key){
+    public function get($key)
+    {
         return $this->view()->get($key);
     }
 
@@ -39,6 +45,5 @@ abstract class Controller{
      *
      * @return void
      */
-    public abstract function doMain();
+    abstract public function doMain();
 }
-?>

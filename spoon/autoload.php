@@ -3,6 +3,7 @@
  * 处理自动加载
  */
 namespace Spoon;
+
 class Autoload
 {
     /**
@@ -14,7 +15,7 @@ class Autoload
 
     /**
      * 利用SPL自动加载器来注册loader
-     * 
+     *
      * @return void
      */
     public static function register()
@@ -92,7 +93,7 @@ class Autoload
             // remove the trailing namespace separator for the next iteration
             // of strrpos()
             // 删除命名空间前缀尾部的分隔符，以便用于下一次strrpos()迭代
-            $prefix = rtrim($prefix, '\\');   
+            $prefix = rtrim($prefix, '\\');
         }
 
         // never found a mapped file
@@ -103,7 +104,7 @@ class Autoload
     /**
      * Load the mapped file for a namespace prefix and relative class.
      * 根据命名空间前缀和相对类来加载映射文件
-     * 
+     *
      * @param string $prefix The namespace prefix.
      * @param string $relative_class The relative class name.
      * @return mixed Boolean false if no mapped file can be loaded, or the
@@ -124,8 +125,8 @@ class Autoload
             // replace the namespace prefix with the base directory,
             // replace namespace separators with directory separators
             // in the relative class name, append with .php
-            // 用base目录替代命名空间前缀, 
-            // 在相对类名中用目录分隔符'/'来替换命名空间分隔符'\', 
+            // 用base目录替代命名空间前缀,
+            // 在相对类名中用目录分隔符'/'来替换命名空间分隔符'\',
             // 并在后面追加.php组成$file的绝对路径
             $file = $base_dir
                   . str_replace('\\', '/', $relative_class)
@@ -145,7 +146,7 @@ class Autoload
 
     /**
      * If a file exists, require it from the file system.
-     * 
+     *
      * @param string $file The file to require.
      * @return bool True if the file exists, false if not.
      */
@@ -161,4 +162,3 @@ class Autoload
 
 //注册加载器
 Autoload::register();
-?>

@@ -4,17 +4,19 @@
  */
 namespace Spoon;
 
-class Exception extends \Exception{
+class Exception extends \Exception
+{
     
     /**
      * 渲染错误信息
      *
      * @return void
      */
-    public function render(){
+    public function render()
+    {
         $debug=\Spoon\Config::get('debug');
 
-        if($debug){
+        if ($debug) {
             $data=array(
                 'error'=>array(
                     'message'=>$this->getMessage(),
@@ -23,12 +25,11 @@ class Exception extends \Exception{
                     'line'=>$this->getLine()
                 )
             );
-        }else{
+        } else {
             $data=array('error'=>$this->getMessage());
         }
 
-        Response::send(json_encode($data),$this->getCode()>=400?$this->getCode():500);
+        Response::send(json_encode($data), $this->getCode()>=400?$this->getCode():500);
         \Spoon\Logger::error($this->__toString());
     }
 }
-?>
