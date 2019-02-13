@@ -16,6 +16,7 @@ create table `auth_users`(
     `password` varchar(64) not null comment '密码',
     `depart` varchar(30) comment '部门',
     `status` varchar(10) not null default 'unaudited' comment '用户状态',
+    `avator` varchar(200) comment '用户头像',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;
@@ -117,15 +118,14 @@ END$$
 delimiter ;
 
 ################################
-#insert Permission Data
+# 设定权限更新触发器
 ################################
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_list','列举用户列表');
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_update','更新用户信息');
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_getinfo','获取用户信息');
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_register','用户注册');
-
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_login','用户登录');
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
+delimiter $$
+create trigger update_admin_permission after insert on auth_permissions for each row
+BEGIN
+    insert into auth_ref_role_permission(`roleid`,`permissionid`) select id,new.id from auth_roles where rolename='administrator';
+END$$
+delimiter ;
 
 ################################
 #insert Role Data
@@ -133,15 +133,28 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_auth_u
 insert into auth_roles(`rolename`,`description`) values ('administrator','系统管理员');
 
 ################################
-# add permissions for admin Role
-################################
-insert into auth_ref_role_permission(`roleid`,`permissionid`) select 1,id from auth_permissions;
-
-################################
 #insert Permission Data
 ################################
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_list','列举用户列表');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_update','更新用户信息');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_getinfo','获取用户信息');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_register','用户注册');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_login','用户登录');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
+
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_create','创建角色');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_list','枚举角色');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_update','更新角色');
+
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_create','创建权限');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_list','枚举权限');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_update','更新权限');
+
+################################
+#insert User Data
+################################
 #默认密码 123456
-insert into auth_users(`workid`,`password`) values ('8020507','MjJjMmViZDhhMWNiNDc5MzM2OWQ2MTQ5MmJjMjBmYzQ=');
+insert into auth_users(`workid`,`username`,`depart`,`password`) values ('8123456','Byron Gong','Logistics','MjJjMmViZDhhMWNiNDc5MzM2OWQ2MTQ5MmJjMjBmYzQ=');
 insert into auth_ref_user_role(`userid`,`roleid`) values(1,1);
 
 

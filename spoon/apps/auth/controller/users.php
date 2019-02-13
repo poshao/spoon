@@ -6,7 +6,6 @@ use \Spoon\Exception;
 
 class Users extends \Spoon\Controller
 {
-
     /**
      * 任务分配
      *
@@ -86,8 +85,8 @@ class Users extends \Spoon\Controller
 
     /**
      * 更新用户
-     * @apiName Update
-     * @api {POST} /auth/v1/users Update
+     * @apiName UpdateInfo
+     * @api {PATCH} /auth/v1/users UpdateInfo
      * @apiDescription 更新用户信息
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -96,6 +95,7 @@ class Users extends \Spoon\Controller
      * @apiParam {object} info 用户信息
      * @apiParam {string} [info.username] 用户名字
      * @apiParam {string} [info.depart] 部门
+     * @apiParam {string} [info.avator] 头像文件名
      * @apiParam {string} [info.password] 密码
      * @apiParam {string} [info.password.oldpassword] 旧密码
      * @apiParam {string} [info.password.newpassword] 新密码

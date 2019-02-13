@@ -1,3 +1,4 @@
 *.log
 /docs/apis/
-/.vscode/
+/.vscode
+/data

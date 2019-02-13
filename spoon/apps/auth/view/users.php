@@ -22,7 +22,7 @@ class Users extends \Spoon\View
             ),
             'depart'=>array(
                 'type'=>'list',
-                'list'=>array('LOG')
+                'list'=>array('Logistics','CS')
             ),
             'infofields'=>array(
                 'type'=>'list',

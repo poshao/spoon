@@ -73,7 +73,10 @@ abstract class View
      */
     public function get($key)
     {
-        return $this->_params[$key];
+        if (isset($this->_params[$key])) {
+            return $this->_params[$key];
+        }
+        return null;
     }
 
     /**
@@ -95,7 +98,11 @@ abstract class View
      */
     public function paramsCount()
     {
-        return \count($this->_params);
+        $ignoreCount=0;
+        if(isset($this->_params['auth_workid'])) $ignoreCount++;
+        if(isset($this->_params['auth_token'])) $ignoreCount++;
+
+        return \count($this->_params)-$ignoreCount;
     }
     
     /**

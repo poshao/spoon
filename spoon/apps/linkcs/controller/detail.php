@@ -36,7 +36,7 @@ class Detail extends \Spoon\Controller
     /**
      * 新增记录
      * @apiName NewRequest
-     * @api {POST} /linkcs/v1/detail
+     * @api {POST} /linkcs/v1/detail NewRequest
      * @apiDescription CS创建订单
      * @apiGroup CS
      * @apiVersion 0.1.0
@@ -67,7 +67,7 @@ class Detail extends \Spoon\Controller
     /**
      * 获取列表
      * @apiName listRequest
-     * @api {GET} /linkcs/v1/detail
+     * @api {GET} /linkcs/v1/detail listRequest
      * @apiDescription 获取CS订单列表
      * @apiGroup CS
      * @apiVersion 0.1.0
