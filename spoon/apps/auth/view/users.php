@@ -32,6 +32,9 @@ class Users extends \Spoon\View
                 'type'=>'array',
                 'require'=>array(),
                 'optional'=>array('username','depart')
+            ),
+            'groupname'=>array(
+                'type'=>'text'
             )
         );
     }

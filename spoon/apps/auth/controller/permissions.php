@@ -17,8 +17,8 @@ class Permissions extends \Spoon\Controller
             case 'get'://查询
                 if ($this->view()->paramsCount()==0) {
                     $this->listPermissions();
-                } else {
-                    // $this->getInfo();
+                } elseif (!empty($this->get('rolename'))) {
+                    $this->listPermissionsByRole();
                 }
                 break;
             case 'post'://新建权限
@@ -78,7 +78,7 @@ class Permissions extends \Spoon\Controller
      * @apiGroup Permission
      * @apiVersion 0.1.0
      *
-     * @apiSuccess {object} Permissions 权限列表
+     * @apiSuccess {object} permissions 权限列表
      *
      * @apiSampleRequest /auth/v1/permissions
      * @apiPermission app_auth_permission_list
@@ -90,7 +90,34 @@ class Permissions extends \Spoon\Controller
             $verify->CheckPermission('app_auth_permission_list');
         }
         $rolelist=$this->model()->list();
-        $this->view()->sendJSON(array('Permissions'=>$rolelist));
+        $this->view()->sendJSON(array('permissions'=>$rolelist));
+    }
+
+    /**
+     * 根据角色枚举所有权限
+     * @apiName ListPermissionsByRole
+     * @api {GET} /auth/v1/permissions ListPermissionsByRole
+     * @apiDescription 根据角色枚举所有权限
+     * @apiGroup Permission
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} rolename 角色名称
+     *
+     * @apiSuccess {object} permissions 权限列表
+     *
+     * @apiSampleRequest /auth/v1/permissions
+     * @apiPermission app_auth_permission_list
+     */
+    private function listPermissionsByRole()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_permission_list');
+        }
+        $this->view()->checkParams(array('rolename'));
+
+        $rolelist=$this->model()->listPermissionsByRole($this->get('rolename'));
+        $this->view()->sendJSON(array('permissions'=>$rolelist));
     }
 
     /**

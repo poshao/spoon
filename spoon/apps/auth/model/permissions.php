@@ -62,6 +62,21 @@ class Permissions extends \Spoon\Model
     }
 
     /**
+     * 根据角色枚举权限
+     *
+     * @param string $rolename
+     * @return array
+     */
+    public function listPermissionsByRole($rolename)
+    {
+        $role=new Roles();
+        $roleid=$role->getRoleID($rolename);
+        return $this->db()->queryAndFetchAll('select p.id,p.permissionname,p.description,p.create_time,p.update_time '.
+            'from auth_ref_role_permission as r left join auth_permissions as p on r.permissionid=p.id '.
+            'where r.roleid=:roleid', array(':roleid'=>$roleid));
+    }
+
+    /**
      * 更新权限信息
      *
      * @param int $id 权限编号

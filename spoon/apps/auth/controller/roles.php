@@ -17,21 +17,23 @@ class Roles extends \Spoon\Controller
             case 'get'://查询部分或完整用户信息
                 if ($this->view()->paramsCount()==0) {
                     $this->listRoles();
-                } else {
-                    // $this->getInfo();
+                } elseif (!empty($this->get('workid'))) {
+                    $this->listRolesByUser();
+                } elseif (!empty($this->get('permissionname'))) {
+                    $this->listRolesByPermission();
                 }
                 break;
             case 'post'://新建角色
                 $this->createRole();
                 break;
             case 'put'://
-
+                $this->assignPermission();
                 break;
             case 'patch'://更新角色
                 $this->updateRole();
                 break;
             case 'delete':
-
+                $this->unassignPermission();
                 break;
         }
         // Response::sendJSON(array('user'=>__CLASS__));
@@ -95,6 +97,58 @@ class Roles extends \Spoon\Controller
     }
 
     /**
+     * 枚举用户所有角色
+     * @apiName ListRolesByUser
+     * @api {GET} /auth/v1/roles ListRolesByUser
+     * @apiDescription 枚举用户所有角色
+     * @apiGroup Role
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     *
+     * @apiSuccess {object} roles 角色列表
+     *
+     * @apiSampleRequest /auth/v1/roles
+     * @apiPermission app_auth_role_list
+     */
+    private function listRolesByUser()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_role_list');
+        }
+        $this->view()->checkParams(array('workid'));
+        $rolelist=$this->model()->listRolesByUser($this->get('workid'));
+        $this->view()->sendJSON(array('roles'=>$rolelist));
+    }
+
+    /**
+     * 枚举权限所有角色
+     * @apiName ListRolesByPermission
+     * @api {GET} /auth/v1/roles ListRolesByPermission
+     * @apiDescription 枚举权限所有角色
+     * @apiGroup Role
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} permissionname 权限名称
+     *
+     * @apiSuccess {object} roles 角色列表
+     *
+     * @apiSampleRequest /auth/v1/roles
+     * @apiPermission app_auth_role_list
+     */
+    private function listRolesByPermission()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_role_list');
+        }
+        $this->view()->checkParams(array('permissionname'));
+        $rolelist=$this->model()->listRolesByPermission($this->get('permissionname'));
+        $this->view()->sendJSON(array('roles'=>$rolelist));
+    }
+
+    /**
      * 更新角色描述
      * @apiName UpdateRole
      * @api {PATCH} /auth/v1/roles UpdateRole
@@ -128,5 +182,69 @@ class Roles extends \Spoon\Controller
             throw new Exception('update role info failed', 422);
         }
         $this->view()->sendJSON(array('roleid'=>$roleid));
+    }
+
+    /**
+     * 关联角色权限
+     * @apiName AssignPermission
+     * @api {PUT} /auth/v1/roles AssignPermission
+     * @apiDescription 关联角色权限
+     * @apiGroup Role
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} rolename 角色名称
+     * @apiParam {string} permissionname 权限名称
+     *
+     * @apiSuccess {object} result 操作结果
+     *
+     * @apiSampleRequest /auth/v1/roles
+     * @apiPermission app_auth_assign_permission
+     */
+    private function assignPermission()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_assign_permission');
+        }
+        $this->checkParams(array('rolename','permissionname'));
+        $rolename=$this->get('rolename');
+        $permissionname=$this->get('permissionname');
+        $rlst=$this->model()->assignPermission($rolename, $permissionname);
+        if ($rlst===false) {
+            throw new Exception('assign permission failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
+    }
+
+    /**
+     * 取消关联角色权限
+     * @apiName UnassignPermission
+     * @api {DELETE} /auth/v1/roles UnassignPermission
+     * @apiDescription 取消关联角色权限
+     * @apiGroup Role
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} rolename 角色名称
+     * @apiParam {string} permissionname 权限名称
+     *
+     * @apiSuccess {object} result 操作结果
+     *
+     * @apiSampleRequest /auth/v1/roles
+     * @apiPermission app_auth_assign_permission
+     */
+    private function unassignPermission()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_assign_permission');
+        }
+        $this->checkParams(array('rolename','permissionname'));
+        $rolename=$this->get('rolename');
+        $permissionname=$this->get('permissionname');
+        $rlst=$this->model()->unassignPermission($rolename, $permissionname);
+        if ($rlst===false) {
+            throw new Exception('unassign permission failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
     }
 }

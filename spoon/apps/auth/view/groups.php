@@ -22,7 +22,7 @@ class Groups extends \Spoon\View
             'info'=>array(
                 'type'=>'array',
                 'require'=>array(),
-                'optional'=>array('groupname','description','roleid')
+                'optional'=>array('groupname','description','rolename')
             )
         );
     }

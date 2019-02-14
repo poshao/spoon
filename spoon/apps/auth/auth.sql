@@ -141,14 +141,21 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_auth_u
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_register','用户注册');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_login','用户登录');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_group','绑定用户分组');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_role','绑定用户分组');
 
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_create','创建角色');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_list','枚举角色');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_update','更新角色');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_assign_permission','关联角色权限');
 
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_create','创建权限');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_list','枚举权限');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_permission_update','更新权限');
+
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_group_create','创建分组');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_group_list','枚举分组');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_group_update','更新分组');
 
 ################################
 #insert User Data

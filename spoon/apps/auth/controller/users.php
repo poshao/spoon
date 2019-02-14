@@ -24,14 +24,22 @@ class Users extends \Spoon\Controller
             case 'post'://create user
                 $this->createUser();
                 break;
-            case 'put'://更新用户信息
-
+            case 'put'://关联用户
+                if (!empty($this->get('rolename'))) {
+                    $this->assignRole();
+                } elseif (!empty($this->get('groupname'))) {
+                    $this->assignGroup();
+                }
                 break;
             case 'patch'://更新部分用户信息
                 $this->updateUser();
                 break;
             case 'delete'://删除用户
-
+                if (!empty($this->get('rolename'))) {
+                    $this->unassignRole();
+                } elseif (!empty($this->get('groupname'))) {
+                    $this->unassignGroup();
+                }
                 break;
         }
         // Response::sendJSON(array('user'=>__CLASS__));
@@ -39,8 +47,8 @@ class Users extends \Spoon\Controller
 
     /**
      * 创建用户
-     * @apiName Register
-     * @api {POST} /auth/v1/users Register
+     * @apiName CreateUser
+     * @api {POST} /auth/v1/users CreateUser
      * @apiDescription 创建用户
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -85,8 +93,8 @@ class Users extends \Spoon\Controller
 
     /**
      * 更新用户
-     * @apiName UpdateInfo
-     * @api {PATCH} /auth/v1/users UpdateInfo
+     * @apiName UpdateUser
+     * @api {PATCH} /auth/v1/users UpdateUser
      * @apiDescription 更新用户信息
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -145,8 +153,8 @@ class Users extends \Spoon\Controller
 
     /**
      * 获取用户信息
-     * @apiName GetInfo
-     * @api {GET} /auth/v1/users GetInfo
+     * @apiName GetUserinfo
+     * @api {GET} /auth/v1/users GetUserinfo
      * @apiDescription 获取用户信息
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -186,8 +194,8 @@ class Users extends \Spoon\Controller
 
     /**
      * 获取用户清单
-     * @apiName List
-     * @api {GET} /auth/v1/users List
+     * @apiName ListUsers
+     * @api {GET} /auth/v1/users ListUsers
      * @apiDescription 获取用户清单
      * @apiGroup User
      * @apiVersion 0.1.0
@@ -213,5 +221,153 @@ class Users extends \Spoon\Controller
         }
 
         $this->view()->sendJSON(array('users'=>$this->model()->listUsers()));
+    }
+
+    /**
+     * 设定用户分组
+     * @apiName AssignUserGroup
+     * @api {PUT} /auth/v1/users AssignUserGroup
+     * @apiDescription 设定用户分组
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {string} groupname 分组名称
+     *
+     * @apiSuccess {object} result 结果
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "result":true
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_assign_group
+     */
+    private function assignGroup()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_assign_group');
+        }
+
+        $this->checkParams(array('workid','groupname'));
+        $workid=$this->get('workid');
+        $groupname=$this->get('groupname');
+
+        $rlst=$this->model()->assignGroup($workid, $groupname);
+        if ($rlst===false) {
+            throw new Exception('assign group failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
+    }
+
+    /**
+     * 取消设定用户分组
+     * @apiName UnassignUserGroup
+     * @api {DELETE} /auth/v1/users UnassignUserGroup
+     * @apiDescription 取消设定用户分组
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {string} groupname 分组名称
+     *
+     * @apiSuccess {object} result 结果
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "result":true
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_assign_group
+     */
+    private function unassignGroup()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_assign_group');
+        }
+
+        $this->checkParams(array('workid','groupname'));
+        $workid=$this->get('workid');
+        $groupname=$this->get('groupname');
+
+        $rlst=$this->model()->unassignGroup($workid, $groupname);
+        if ($rlst===false) {
+            throw new Exception('unassign group failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
+    }
+
+    /**
+     * 设定用户角色
+     * @apiName AssignUserRole
+     * @api {PUT} /auth/v1/users AssignUserRole
+     * @apiDescription 设定用户分组
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {string} rolename 角色名称
+     *
+     * @apiSuccess {object} result 结果
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "result":true
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_assign_group
+     */
+    private function assignRole()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_assign_role');
+        }
+
+        $this->checkParams(array('workid','rolename'));
+        $workid=$this->get('workid');
+        $rolename=$this->get('rolename');
+
+        $rlst=$this->model()->assignRole($workid, $rolename);
+        if ($rlst===false) {
+            throw new Exception('assign role failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
+    }
+
+    /**
+     * 取消设定用户角色
+     * @apiName UnassignUserRole
+     * @api {DELETE} /auth/v1/users UnassignUserRole
+     * @apiDescription 取消设定用户角色
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {string} rolename 角色名称
+     *
+     * @apiSuccess {object} result 结果
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "result":true
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_assign_group
+     */
+    private function unassignRole()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_assign_role');
+        }
+
+        $this->checkParams(array('workid','rolename'));
+        $workid=$this->get('workid');
+        $rolename=$this->get('rolename');
+
+        $rlst=$this->model()->unassignRole($workid, $rolename);
+        if ($rlst===false) {
+            throw new Exception('assign role failed', 400);
+        }
+        $this->view()->sengJSON(array('result'=>true));
     }
 }

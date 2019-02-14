@@ -62,6 +62,38 @@ class Roles extends \Spoon\Model
     }
 
     /**
+     * 根据用户枚举角色列表
+     *
+     * @param string $workid
+     * @return array
+     */
+    public function listRolesByUser($workid)
+    {
+        $user=new Users();
+        $userid=$user->getId($workid);
+
+        return $this->db()->queryAndFetchAll('select o.id,o.rolename,o.description,o.create_time,o.update_time '.
+            'from auth_ref_user_role as r left join auth_roles as o on r.roleid=o.id '.
+            'where r.userid=:userid', array(':userid'=>$userid));
+    }
+
+    /**
+     * 根据权限枚举角色列表
+     *
+     * @param string $permissionname
+     * @return array
+     */
+    public function listRolesByPermission(string $permissionname)
+    {
+        $permission=new Permissions();
+        $permissionid=$permission->getPermissionID($permissionname);
+
+        return $this->db()->queryAndFetchAll('select o.id,o.rolename,o.description,o.create_time,o.update_time '.
+            'from auth_ref_role_permission as r left join auth_roles as o on r.roleid=o.id '.
+            'where r.permissionid=:permissionid', array(':permissionid'=>$permissionid));
+    }
+
+    /**
      * 更新角色信息
      *
      * @param int $id 角色编号
@@ -78,5 +110,45 @@ class Roles extends \Spoon\Model
             return false;
         }
         return $id;
+    }
+
+    /**
+     * 绑定角色权限
+     *
+     * @param string $rolename
+     * @param string $permissionname
+     * @return boolean
+     */
+    public function assignPermission($rolename, $permissionname)
+    {
+        $roleid=$this->getRoleID('rolename');
+        $permission=new Permissions();
+        $permissionid=$permission->getPermissionID($permissionname);
+        if (empty($roleid) || empty($permissionid)) {
+            return false;
+        }
+        $data=array('roleid'=>$roleid,'permissionid'=>$permissionid,'update_time'=>new \NotORM_Literal('now'));
+        $effect=$this->db()->ref_role_permission()->insert_update(array('roleid','permissionid'), $data);
+        return !empty($effect);
+    }
+
+    /**
+     * 取消关联权限
+     *
+     * @param string $rolename
+     * @param string $permissionname
+     * @return void
+     */
+    public function unassignPermission($rolename, $permissionname)
+    {
+        $roleid=$this->getRoleID('rolename');
+        $permission=new Permissions();
+        $permissionid=$permission->getPermissionID($permissionname);
+        if (empty($roleid) || empty($permissionid)) {
+            return false;
+        }
+        $data=array('roleid'=>$roleid,'permissionid'=>$permissionid);
+        $effect=$this->db()->ref_role_permission()->where($data)->delete();
+        return !empty($effect);
     }
 }

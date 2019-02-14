@@ -17,8 +17,8 @@ class Groups extends \Spoon\Controller
             case 'get'://查询
                 if ($this->view()->paramsCount()==0) {
                     $this->listGroups();
-                } else {
-                    // $this->getInfo();
+                } elseif (!empty($this->get('workid'))) {
+                    $this->listGroupsByUser();
                 }
                 break;
             case 'post'://新建分组
@@ -47,6 +47,7 @@ class Groups extends \Spoon\Controller
      *
      * @apiParam {string} group 分组名称
      * @apiParam {string} description 分组描述
+     * @apiParam {string} role 角色名称
      *
      * @apiSuccess {string} groupid 分组ID
      *
@@ -57,13 +58,14 @@ class Groups extends \Spoon\Controller
     {
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
-            $verify->CheckGroup('app_auth_group_create');
+            $verify->CheckPermission('app_auth_group_create');
         }
-        $this->view()->checkParams(array('group','description'));
+        $this->view()->checkParams(array('group','description','role'));
         
         $groupname=$this->get('group');
         $description=$this->get('description');
-        $groupid=$this->model()->create($groupname, $description);
+        $role=$this->get('role');
+        $groupid=$this->model()->create($groupname, $description, $role);
         if ($groupid===false) {
             throw new Exception('group already exists', 400);
         }
@@ -78,7 +80,7 @@ class Groups extends \Spoon\Controller
      * @apiGroup Group
      * @apiVersion 0.1.0
      *
-     * @apiSuccess {object} Groups 分组列表
+     * @apiSuccess {object} groups 分组列表
      *
      * @apiSampleRequest /auth/v1/groups
      * @apiPermission app_auth_group_list
@@ -87,10 +89,10 @@ class Groups extends \Spoon\Controller
     {
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
-            $verify->CheckGroup('app_auth_group_list');
+            $verify->CheckPermission('app_auth_group_list');
         }
         $rolelist=$this->model()->list();
-        $this->view()->sendJSON(array('Groups'=>$rolelist));
+        $this->view()->sendJSON(array('groups'=>$rolelist));
     }
 
     /**
@@ -105,6 +107,7 @@ class Groups extends \Spoon\Controller
      * @apiParam {object} info 分组信息
      * @apiParam {string} [info.groupname] 分组名称
      * @apiParam {string} [info.description] 分组描述
+     * @apiParam {string} [info.rolename] 角色名称
      *
      * @apiSuccess {object} groupid 分组ID
      *
@@ -115,7 +118,7 @@ class Groups extends \Spoon\Controller
     {
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
-            $verify->CheckGroup('app_auth_group_update');
+            $verify->CheckPermission('app_auth_group_update');
         }
 
         $this->view()->checkParams(array('groupid','info'));
@@ -127,5 +130,32 @@ class Groups extends \Spoon\Controller
             throw new Exception('update group info failed', 422);
         }
         $this->view()->sendJSON(array('groupid'=>$groupid));
+    }
+
+    /**
+     * 枚举用户拥有的所有分组
+     * @apiName ListGroupsByUser
+     * @api {GET} /auth/v1/groups ListGroupsByUser
+     * @apiDescription 枚举用户拥有的所有分组
+     * @apiGroup Group
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     *
+     * @apiSuccess {object} groups 分组列表
+     *
+     * @apiSampleRequest /auth/v1/groups
+     * @apiPermission app_auth_group_list
+     */
+    private function listGroupsByUser()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_group_list');
+        }
+
+        $this->view()->checkParams(array('workid'));
+        $list=$this->model()->listGroupsByUser($this->get('workid'));
+        $this->view()->sendJSON(array('groups'=>$list));
     }
 }

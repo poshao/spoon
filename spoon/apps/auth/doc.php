@@ -28,6 +28,16 @@
  */
 
 /**
+ * @apiDefine app_auth_user_assign_group 设定用户分组
+ * 设定用户分组
+ */
+
+/**
+ * @apiDefine app_auth_user_assign_role 设定用户角色
+ * 设定用户角色
+ */
+
+/**
 * @apiDefine app_auth_user_login 用户登录
 * 用户登录
 */
@@ -52,6 +62,10 @@
  * 更新角色
  */
 
+/**
+ * @apiDefine app_auth_assign_permission 关联角色权限
+ * 关联角色权限
+ */
 /**
  * @apiDefine app_auth_permission_create 新建权限
  * 新建权限
