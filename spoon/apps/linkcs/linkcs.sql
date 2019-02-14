@@ -13,7 +13,10 @@ create table `cs_detail`(
   `dnei` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.dnei'))) VIRTUAL,
   `level` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.level'))) VIRTUAL,
   `json_detail` JSON comment '详细数据',
-  `creator` int(11) not null comment '工号',
+  
+  `creator` int(11) not null comment '创建人工号',
+  `assign` int(11) comment '受理人工号',
+  `status` varchar(10) not null default 'unknow' comment '订单状态',
   `create_time` datetime not null default CURRENT_TIMESTAMP,
   `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;

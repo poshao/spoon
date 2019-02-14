@@ -3,7 +3,7 @@ namespace App\Linkcs\Model;
 
 use \Spoon\Exception;
 
-class Detail extends \Spoon\Model
+class Orders extends \Spoon\Model
 {
     protected $_db=null;
 
@@ -44,6 +44,6 @@ class Detail extends \Spoon\Model
      */
     public function list()
     {
-        return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level')->fetchPairs('id');
+        return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status')->fetchPairs('id');
     }
 }

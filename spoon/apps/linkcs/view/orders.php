@@ -1,7 +1,7 @@
 <?php
 namespace App\Linkcs\View;
 
-class Detail extends \Spoon\View
+class Orders extends \Spoon\View
 {
     public function __construct()
     {

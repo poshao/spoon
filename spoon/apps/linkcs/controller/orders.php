@@ -4,7 +4,7 @@ namespace App\Linkcs\Controller;
 use \Spoon\Response;
 use \Spoon\Exception;
 
-class Detail extends \Spoon\Controller
+class Orders extends \Spoon\Controller
 {
     /**
      * 任务分配
@@ -36,13 +36,13 @@ class Detail extends \Spoon\Controller
     /**
      * 新增记录
      * @apiName NewRequest
-     * @api {POST} /linkcs/v1/detail NewRequest
+     * @api {POST} /linkcs/v1/orders NewRequest
      * @apiDescription CS创建订单
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
      * @apiParam {JSON} detail
-     * @apiSampleRequest /auth/v1/tokens
+     * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_newrequest
      */
     private function newRequest()
@@ -67,13 +67,13 @@ class Detail extends \Spoon\Controller
     /**
      * 获取列表
      * @apiName listRequest
-     * @api {GET} /linkcs/v1/detail listRequest
+     * @api {GET} /linkcs/v1/orders listRequest
      * @apiDescription 获取CS订单列表
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
      * @apiParam {JSON} detail
-     * @apiSampleRequest /auth/v1/tokens
+     * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_list_request
      */
     private function list()
