@@ -127,8 +127,12 @@ class Roles extends \Spoon\Model
         if (empty($roleid) || empty($permissionid)) {
             return false;
         }
-        $data=array('roleid'=>$roleid,'permissionid'=>$permissionid,'update_time'=>new \NotORM_Literal('now'));
-        $effect=$this->db()->ref_role_permission()->insert_update(array('roleid','permissionid'), $data);
+        $data=array(
+            // 'roleid'=>$roleid,
+            // 'permissionid'=>$permissionid,
+            'update_time'=>new \NotORM_Literal('now')
+        );
+        $effect=$this->db()->ref_role_permission()->insert_update(array('roleid'=>$roleid,'permissionid'=>$permissionid), $data);
         return !empty($effect);
     }
 

@@ -135,8 +135,12 @@ class Users extends \Spoon\Model
         if (empty($groupid) || empty($userid)) {
             return false;
         }
-        $data=array('userid'=>$userid,'groupid'=>$groupid,'update_time'=>new \NotORM_Literal('now'));
-        $effect=$this->db()->ref_user_group()->insert_update(array('userid','groupid'), $data);
+        $data=array(
+            'userid'=>$userid,
+            'groupid'=>$groupid,
+            'update_time'=>new \NotORM_Literal('now')
+        );
+        $effect=$this->db()->ref_user_group()->insert_update(array('userid'=>$userid,'groupid'=>$groupid,), $data);
         return !empty($effect);
     }
 
@@ -176,8 +180,8 @@ class Users extends \Spoon\Model
             return false;
         }
 
-        $data=array('userid'=>$userid,'roleid'=>$roleid,'update_time'=>new \NotORM_Literal('now'));
-        $effect=$this->db()->ref_user_role()->insert_update(array('userid','roleid'), $data);
+        $data=array('update_time'=>new \NotORM_Literal('now'));
+        $effect=$this->db()->ref_user_role()->insert_update(array('userid'=>$userid,'roleid'=>$roleid), $data);
         return !empty($effect);
     }
 
