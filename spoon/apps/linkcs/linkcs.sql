@@ -5,6 +5,11 @@ use `Spoon`;
 
 #添加权限
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_newrequest','CS资料');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status','更新订单状态');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_add','添加附件');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_list','枚举已上传的文件列表');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_delete','删除文件');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_get','获取文件');
 
 #CS放单资料表
 drop table if exists `cs_detail`;
@@ -17,6 +22,7 @@ create table `cs_detail`(
   `creator` int(11) not null comment '创建人工号',
   `assign` int(11) comment '受理人工号',
   `status` varchar(10) not null default 'unknow' comment '订单状态',
+  `reject_reason` varchar(100) comment 'reject 原因',
   `create_time` datetime not null default CURRENT_TIMESTAMP,
   `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;

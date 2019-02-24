@@ -24,14 +24,22 @@ class Users extends \Spoon\View
                 'type'=>'list',
                 'list'=>array('Logistics','CS')
             ),
+            'email'=>array(
+                'type'=>'regex',
+                'pattern'=>'/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/'
+            ),
+            'phone'=>array(
+                'type'=>'text',
+                'max-length'=>20
+            ),
             'infofields'=>array(
                 'type'=>'list',
-                'list'=>array('username','depart')
+                'list'=>array('username','depart','email','phone')
             ),
             'info'=>array(
                 'type'=>'array',
                 'require'=>array(),
-                'optional'=>array('username','depart')
+                'optional'=>array('username','depart','email','phone')
             ),
             'groupname'=>array(
                 'type'=>'text'

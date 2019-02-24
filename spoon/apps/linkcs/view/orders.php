@@ -10,6 +10,16 @@ class Orders extends \Spoon\View
             'detail'=>array(
                 'type'=>'text'
             ),
+            'orderid'=>array(
+                'type'=>'number'
+            ),
+            'status'=>array(
+                'type'=>'list',
+                'list'=>array('accept','reject')
+            ),
+            'reason'=>array(
+                'type'=>'text'
+            )
         );
     }
 }

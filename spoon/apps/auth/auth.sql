@@ -15,6 +15,8 @@ create table `auth_users`(
     `username` varchar(30) comment '用户名',
     `password` varchar(64) not null comment '密码',
     `depart` varchar(30) comment '部门',
+    `email` varchar(100) comment '邮箱',
+    `phone` varchar(20) comment '电话',
     `status` varchar(10) not null default 'unaudited' comment '用户状态',
     `avator` varchar(200) comment '用户头像',
     `create_time` datetime not null default CURRENT_TIMESTAMP,

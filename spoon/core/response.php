@@ -74,9 +74,20 @@ class Response
     }
 
     /**
+     * 设置文件下载的默认文件名
+     *
+     * @param string $filename
+     * @return void
+     */
+    public static function setSaveFilename(string $filename)
+    {
+        \header("Content-Disposition: attachment; filename=" . $filename);
+    }
+
+    /**
      * 发送数据
      *
-     * @param mixed $data 数据
+     * @param mixed $data 数据或文件名
      * @param int $code 状态码
      * @param string $contentType 数据格式
      * @param string $charset 编码格式 ''表示不发送编码参数
@@ -93,7 +104,8 @@ class Response
                 echo $data;
                 break;
             case 'binary':
-                file_put_contents('php://output', $data);
+                readfile($data);
+                // file_put_contents('php://output', $data);
                 break;
         }
     }
@@ -123,5 +135,23 @@ class Response
     public static function sendError($code, $message)
     {
         self::send(\json_encode(array('error'=>$message)), $code);
+    }
+
+
+    /**
+     * 发送文件
+     *
+     * @param array $fileInfo
+     *      name: 文件短名称和后缀
+     *      path: 文件路径
+     * @param string $contentType
+     * @return void
+     */
+    public static function sendFile($fileInfo, $contentType='application/octet-stream')
+    {
+        \Header("Accept-Ranges: bytes");
+        \Header("Accept-Length: ".filesize($fileInfo['path']));
+        self::setSaveFilename($fileInfo['name']);
+        self::send($fileInfo['path'], 200, $contentType, '', 'binary');
     }
 }

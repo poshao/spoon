@@ -66,6 +66,8 @@ return array(
                 'charset'=>'utf8',
                 'prefix'=>'cs_'
             ),
+            //附件文件夹
+            'data_dir'=>realpath(__DIR__.'/../../data/linkcs') ,
         ),
     )
 );

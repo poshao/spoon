@@ -99,8 +99,12 @@ abstract class View
     public function paramsCount()
     {
         $ignoreCount=0;
-        if(isset($this->_params['auth_workid'])) $ignoreCount++;
-        if(isset($this->_params['auth_token'])) $ignoreCount++;
+        if (isset($this->_params['auth_workid'])) {
+            $ignoreCount++;
+        }
+        if (isset($this->_params['auth_token'])) {
+            $ignoreCount++;
+        }
 
         return \count($this->_params)-$ignoreCount;
     }
@@ -232,8 +236,21 @@ abstract class View
      * @param array $data 响应数据
      * @return void
      */
-    public function sendJSON($data)
+    public function sendJSON($data, $code=200)
     {
-        \Spoon\Response::sendJSON($data);
+        \Spoon\Response::sendJSON($data, $code);
+    }
+
+    /**
+     * 发送文件
+     *
+     * @param array $fileInfo
+     *      name: 文件短名称和后缀
+     *      path: 文件路径
+     * @return void
+     */
+    public function sendFile($fileInfo)
+    {
+        \Spoon\Response::sendFile($fileInfo);
     }
 }

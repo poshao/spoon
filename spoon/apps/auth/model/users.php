@@ -82,7 +82,7 @@ class Users extends \Spoon\Model
     public function getUser($workid, $fields=null)
     {
         if ($fields===null) {
-            $fields='id,workid,username,depart,avator';
+            $fields='id,workid,username,depart,avator,email,phone';
         }
         $id=$this->getId($workid);
         $row=$this->db()->users()->select($fields)->where('id', $id)->fetch();

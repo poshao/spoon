@@ -44,6 +44,25 @@ class Orders extends \Spoon\Model
      */
     public function list()
     {
-        return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status')->fetchPairs('id');
+        return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason')->fetchPairs('id');
+    }
+
+    /**
+     * 更新订单状态
+     *
+     * @param string $orderid
+     * @param string $assign
+     * @param string $status
+     * @param string $reason
+     * @return void
+     */
+    public function updateStatus($orderid, $assign, $status, $reason)
+    {
+        $data=array('update_time'=>new \NotORM_Literal('now()'),'assign'=>$assign,'status'=>$status,'reject_reason'=>$reason);
+        $effect=$this->db()->detail()->where('id', $orderid)->update($data);
+        if ($effect===0) {
+            return false;
+        }
+        return $orderid;
     }
 }

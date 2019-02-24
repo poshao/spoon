@@ -33,12 +33,16 @@ class Verify extends \Spoon\Model
             return false;
         }
         $userid=$this->db()->users()->select('id')->where('workid', $workid)->fetch()['id'];
-        // return $this->db()->sessions()->where('userid=? and token=? and valid_time>now()', $userid, $token)->count()>0;
+        $online=$this->db()->sessions()->where('userid=? and token=? and valid_time>now()', $userid, $token)->count()>0;
+        
+        if (!$online) {
+            return false;
+        }
         
         $timeout=\Spoon\Config::getByApps('auth')['token_timeout'];
         $data=array('valid_time'=>new \NotORM_Literal('now()+interval '.$timeout.' second'),'update_time'=>new \NotORM_Literal('now()'));
-        $effect=$this->db()->sessions()->where('userid=? and token=? and valid_time>now()', $userid, $token)->update($data);
-        return $effect>0;
+        $effect=$this->db()->sessions()->where('userid=?', $userid)->update($data);
+        return true;
     }
 
     /**
