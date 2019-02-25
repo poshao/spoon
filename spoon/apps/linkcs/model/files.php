@@ -21,13 +21,21 @@ class Files extends \Spoon\Model
     }
 
     /**
-     * 获取资料目录
+     * 获取临时目录
      *
      * @return void
      */
-    public function getDir($workid)
+    public function getTempDir($workid)
     {
-        return \Spoon\Config::getByApps('linkcs')['data_dir'].'/'.$workid.'/';
+        return \Spoon\Config::getByApps('linkcs')['temp_dir'].'/'.$workid.'/';
+    }
+
+    /**
+     * 获取存档目录
+     */
+    public function getStoreDir()
+    {
+        return \Spoon\Config::getByApps('linkcs')['data_dir'].'/';
     }
 
     /**
@@ -39,7 +47,7 @@ class Files extends \Spoon\Model
      */
     public function addFile($workid, $file)
     {
-        $dir=$this->getDir($workid);
+        $dir=$this->getTempDir($workid);
         $path=$dir.$file['name'];
         $path=iconv('utf-8', 'gbk', $path);
 
@@ -61,14 +69,14 @@ class Files extends \Spoon\Model
      */
     public function getFileList($workid)
     {
-        $dir=$this->getDir($workid);
+        $dir=$this->getTempDir($workid);
         $list=array();
         if (is_dir($dir)===false) {
             return $list;
         }
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
-                if($file!=='.' && $file!=='..'){
+                if ($file!=='.' && $file!=='..') {
                     array_push($list, array('name'=>iconv('gbk', 'utf-8', $file)));
                     // echo "filename: $file : filetype: " . filetype($dir . $file) . "\n";
                 }
@@ -87,7 +95,7 @@ class Files extends \Spoon\Model
      */
     public function getFile($workid, $name)
     {
-        $dir=$this->getDir($workid);
+        $dir=$this->getTempDir($workid);
         $path=$dir.'/'.iconv('utf-8', 'gbk', $name);
         if (is_file($path)===false) {
             return false;
@@ -104,12 +112,12 @@ class Files extends \Spoon\Model
      */
     public function removeFile($workid, $name)
     {
-        $dir=$this->getDir($workid);
+        $dir=$this->getTempDir($workid);
         if (is_dir($dir)===false) {
             return true;
         }
-        $path=$dir.'/'.iconv('utf-8', 'gbk', $name);
-        if (is_file($path)) {
+        $path=$dir.iconv('utf-8', 'gbk', $name);
+        if (!is_file($path)) {
             return true;
         }
         return @\unlink($path);

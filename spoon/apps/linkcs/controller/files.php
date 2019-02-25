@@ -67,8 +67,8 @@ class Files extends \Spoon\Controller
 
     /**
      * 获取已上传的文件列表
-     * @apiName GetFileList
-     * @api {GET} /linkcs/v1/files GetFileList
+     * @apiName ListUploadedFiles
+     * @api {GET} /linkcs/v1/files ListUploadedFiles
      * @apiDescription 获取已上传的文件列表
      * @apiGroup CS
      * @apiVersion 0.1.0

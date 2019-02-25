@@ -66,8 +66,10 @@ return array(
                 'charset'=>'utf8',
                 'prefix'=>'cs_'
             ),
-            //附件文件夹
-            'data_dir'=>realpath(__DIR__.'/../../data/linkcs') ,
+            //用户存档的附件文件夹
+            'data_dir'=>__DIR__.'/../../data/linkcs/store' ,
+            //用户临时存放附件的文件夹
+            'temp_dir'=>__DIR__.'/../../data/linkcs/temp',
         ),
     )
 );

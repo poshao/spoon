@@ -66,8 +66,8 @@ class Orders extends \Spoon\Controller
 
     /**
      * 获取列表
-     * @apiName listRequest
-     * @api {GET} /linkcs/v1/orders listRequest
+     * @apiName ListRequest
+     * @api {GET} /linkcs/v1/orders ListRequest
      * @apiDescription 获取CS订单列表
      * @apiGroup CS
      * @apiVersion 0.1.0

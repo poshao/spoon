@@ -29,6 +29,20 @@ class Orders extends \Spoon\Model
      */
     public function newRequest($workid, $detail)
     {
+        //处理附件
+        $files=new Files();
+        $storeDir=$files->getStoreDir();
+        $tempDir=$files->getTempDir($workid);
+        $detail['files']= array();
+        $list=$files->getFileList($workid);
+        foreach ($list as $k=>$v) {
+            $path=$tempDir.iconv('utf-8', 'gb2312', $v['name']);
+            $hashname=\uniqid('file');
+            if (rename($path, $storeDir.$hashname)) {
+                array_push($detail['files'], array('name'=>$v['name'],'hashname'=>$hashname));
+            }
+        }
+
         if (is_string($detail)===false) {
             $detail=\json_encode($detail);
         }
