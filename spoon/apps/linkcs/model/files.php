@@ -89,11 +89,26 @@ class Files extends \Spoon\Model
     /**
      * 获取文件
      *
+     * @param string $hashname
+     * @return void
+     */
+    public function getFile($filename, $hashname)
+    {
+        $realPath=$this->getStoreDir().'/'.iconv('utf-8', 'gbk', $hashname);
+        if (!file_exists($realPath)) {
+            return false;
+        }
+        return array('path'=>$realPath,'name'=>$filename);
+    }
+
+    /**
+     * 获取文件(用户临时文件)
+     *
      * @param string $workid
      * @param string $name
      * @return array
      */
-    public function getFile($workid, $name)
+    public function getUploadedFile($workid, $name)
     {
         $dir=$this->getTempDir($workid);
         $path=$dir.'/'.iconv('utf-8', 'gbk', $name);

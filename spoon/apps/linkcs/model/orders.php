@@ -52,13 +52,81 @@ class Orders extends \Spoon\Model
     }
 
     /**
+     * 转化虚拟字段名
+     *
+     * @param string $name
+     * @return string
+     */
+    private function ConvertFieldName($name)
+    {
+        $name=strtolower(trim($name));
+        $fieldList=array(
+            'id','creator','assign','status','reject_reason','create_time','update_time'
+        );
+        if (\in_array($name, $fieldList)) {
+            return $name;
+        } else {
+            return 'json_unquote(json_extract(`json_detail`,\'$.'.$name.'\'))';
+        }
+    }
+    /**
      * 获取订单列表
      *
+     * @param array $option 筛选条件
      * @return array
      */
-    public function list()
+    public function list($option)
     {
-        return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason')->fetchPairs('id');
+        $rs=$this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason');
+        //字段选择
+
+        //提取筛选条件
+        if (isset($option['filters'])) {
+            foreach ($option['filters'] as $k=>$v) {
+                //处理key
+                $key=$this->ConvertFieldName($v['key']);
+                //处理value
+                $value=$v['value'];
+                //处理operator
+                $operator=$v['operator'];
+                switch ($operator) {
+                    case '=':
+                    case '>':
+                    case '<':
+                    case '>=':
+                    case '<=':
+                    case '!=':
+                        $rs->where($key.' ' .$operator.' ?', $value);
+                    break;
+                    case 'like':
+                        $value='%'.trim($value, '%').'%';
+                        $rs->where($key.' ' .$operator.' ?', $value);
+                    break;
+                    case 'in':
+                        $rs->where($key, $value);
+                    break;
+                    case '!in':
+                        $rs->where($key.' not in ?', $value);
+                    break;
+                }
+            }
+        }
+        //提取排序规则
+        if (isset($option['sorts'])) {
+            foreach ($option['sorts'] as $k=>$v) {
+                $rs->order($this->ConvertFieldName($v['key']).' '.$v['order']);
+            }
+        }
+        //分页处理
+        if (isset($option['page'])) {
+            $pageIndex=$option['page']['index'];
+            $pageCount=$option['page']['count'];
+            $rs->limit($pageCount, $pageIndex*$pageCount);
+        }
+
+        //返回结果
+        return $rs->fetchPairs('id');
+        // return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason')->fetchPairs('id');
     }
 
     /**

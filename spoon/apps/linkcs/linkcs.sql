@@ -5,11 +5,15 @@ use `Spoon`;
 
 #添加权限
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_newrequest','CS资料');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_list_request','查看订单列表');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status','更新订单状态');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_add','添加附件');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_list','枚举已上传的文件列表');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_delete','删除文件');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_get','获取文件');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_create_struct','新增表格定义');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_update_struct','更新表格定义');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_delete_struct','删除表格定义');
 
 #CS放单资料表
 drop table if exists `cs_detail`;

@@ -9,11 +9,10 @@ class Files extends \Spoon\View
         $this->_rules=array(
             'filename'=>array(
                 'type'=>'text'
+            ),
+            'hashname'=>array(
+                'type'=>'text'
             )
-            //'detail'=>array(
-            //    'type'=>'text'
-            //),
-            
         );
     }
 }

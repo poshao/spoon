@@ -16,7 +16,11 @@ class Files extends \Spoon\Controller
         switch (\strtolower($_SERVER['REQUEST_METHOD'])) {
             case 'get':
                 if (!empty($this->get('filename'))) {
-                    $this->getFile();
+                    if (!empty($this->get('hashname'))) {
+                        $this->getFile();
+                    } else {
+                        $this->getUploadedFile();
+                    }
                 } else {
                     $this->getFilelist();
                 }
@@ -119,7 +123,34 @@ class Files extends \Spoon\Controller
     }
 
     /**
-     * 获取文件
+     * 获取文件(公共)
+     * @apiName GetFile
+     * @api {GET} /linkcs/v1/files GetFile
+     * @apiDescription 获取文件
+     * @apiGroup CS
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} filename 文件名
+     * @apiParam {string} hashname 文件ID
+     *
+     * @apiSampleRequest /auth/v1/files
+     */
+    public function getFile()
+    {
+        $this->view()->checkParams(array('filename','hashname'));
+
+        $filename=$this->get('filename');
+        $hashname=$this->get('hashname');
+
+        $info=$this->model()->getFile($filename, $hashname);
+        if ($info===false) {
+            throw new Exception('file not found', 404);
+        }
+        $this->view()->sendFile($info);
+    }
+
+    /**
+     * 获取文件(用户临时文件)
      * @apiName GetFile
      * @api {GET} /linkcs/v1/files GetFile
      * @apiDescription 获取文件
@@ -131,7 +162,7 @@ class Files extends \Spoon\Controller
      * @apiSampleRequest /auth/v1/files
      * @apiPermission app_linkcs_file_get
      */
-    private function getFile()
+    private function getUploadedFile()
     {
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
@@ -141,7 +172,7 @@ class Files extends \Spoon\Controller
 
         $workid=$verify->getWorkid();
         $name=$this->get('filename');
-        $info=$this->model()->getFile($workid, $name);
+        $info=$this->model()->getUploadedFile($workid, $name);
         if ($info===false) {
             throw new Exception('file not found', 404);
         }

@@ -41,3 +41,18 @@
  * @apiDefine app_linkcs_file_get 获取文件
  * 获取文件
  */
+
+/**
+ * @apiDefine app_linkcs_report_create_struct 新增表格定义
+ * 新增表格定义
+ */
+
+/**
+ * @apiDefine app_linkcs_report_update_struct 更新表格定义
+ * 更新表格定义
+ */
+
+/**
+ * @apiDefine app_linkcs_report_delete_struct 删除表格定义
+ * 删除表格定义
+ */

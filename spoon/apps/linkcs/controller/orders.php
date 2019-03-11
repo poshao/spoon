@@ -72,7 +72,38 @@ class Orders extends \Spoon\Controller
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
-     * @apiParam {JSON} detail
+     * @apiParam {JSON} option 查询设置(base64转码)
+     *
+     * filters:筛选条件
+     * filter.operator:操作符号  =,!=,>,<,>=,<=,in,!in,like
+     * filter.key: 主键
+     * filter.value: 计算值
+     *
+     * sorts:排序条件
+     * sort.key:主键名称
+     * sort.order:排序顺序 'asc','desc'
+     *
+     * page:分页
+     * page.index 页号 从0开始
+     * page.count 每页行数
+     *
+     * @apiParamExample {json} Request-Example:
+     * {
+     *  option:{
+     *      filters:[
+     *          {operator:'=',key:'status',value:'s'},
+     *          {operator:'in',key:'status',value:['a','b']}
+     *      ],
+     *      sorts:[
+     *          {key:'id',order:'asc'},
+     *          {key:'status',order:'desc'}
+     *      ],
+     *      page:{
+     *          index:0,
+     *          count:100
+     *      }
+     *  }
+     * }
      * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_list_request
      */
@@ -81,10 +112,15 @@ class Orders extends \Spoon\Controller
         //检查登录状态及权限
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
-            $verify->CheckPermission('app_linkcs_newrequest');
+            $verify->CheckPermission('app_linkcs_list_request');
         }
 
-        $list=$this->model()->list();
+        $option=$this->get('option');
+        if (!empty($option)) {
+            $option=\json_decode(base64_decode($option), true);
+        }
+
+        $list=$this->model()->list($option);
         // var_dump($list);
         $this->view()->sendJSON(array('list'=>$list));
     }
