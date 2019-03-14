@@ -25,22 +25,29 @@ function deldir($dir)
     }
 }
 
-if (!isset($_FILES['upgrade'])) {
+if (isset($_FILES['upgrade'])) {
+    //备份配置文件
+    define('RootDir', __DIR__.'/../spoon');
+    define('ConfigDir', RootDir.'/conf');
+    
+    mkdir(__DIR__.'/conf/');
+    copy(ConfigDir.'/default.php',__DIR__.'/conf/default.php');
+    copy(ConfigDir.'/user.php',__DIR__.'/conf/user.php');
+
+    deldir(RootDir);
+    // mkdir(RootDir);
+    $zip=new ZipArchive();
+    $zip->open($_FILES['upgrade']['tmp_name']);
+    $zip->extractTo(RootDir);
+    $zip->close();
+    
+    rename(__DIR__.'/conf/default.php',ConfigDir.'/default.php');
+    rename(__DIR__.'/conf/user.php',ConfigDir.'/user.php');
+    rmdir(__DIR__.'/conf');
+    //rename(__DIR__.'/conf', ConfigDir);
+    echo '升级完成';
     return;
 }
-
-//备份配置文件
-define('RootDir', __DIR__.'/../spoon');
-define('ConfigDir', RootDir.'/conf');
-
-rename(ConfigDir, __DIR__.'/conf');
-deldir(RootDir);
-$zip=new ZipArchive();
-$zip->open($_FILES['upgrade']['tmp_name']);
-$zip->extractTo(RootDir);
-$zip->close();
-rename(__DIR__.'/conf', ConfigDir);
-echo '升级完成';
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +60,7 @@ echo '升级完成';
 </head>
 <body>
     <h1>系统升级</h1>
-    <form action="#">
+    <form action="#" method="post" enctype="multipart/form-data">
     <input type="file" name="upgrade"/>
     <button type="submit">上传</button>
     </form>

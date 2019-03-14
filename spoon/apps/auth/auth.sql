@@ -144,7 +144,7 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_auth_u
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_login','用户登录');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_group','绑定用户分组');
-insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_role','绑定用户分组');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_role','绑定用户角色');
 
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_create','创建角色');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_list','枚举角色');

@@ -10,6 +10,12 @@ class Reports extends \Spoon\View
             //'detail'=>array(
             //    'type'=>'text'
             //),
+            'reportname'=>array(
+                'type'=>'text'
+            ),
+            'struct'=>array(
+                'type'=>'text'
+            )
         );
     }
 }

@@ -14,6 +14,7 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_create_struct','新增表格定义');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_update_struct','更新表格定义');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_delete_struct','删除表格定义');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_delete_struct','获取表结构');
 
 #CS放单资料表
 drop table if exists `cs_detail`;
@@ -27,6 +28,17 @@ create table `cs_detail`(
   `assign` int(11) comment '受理人工号',
   `status` varchar(10) not null default 'unknow' comment '订单状态',
   `reject_reason` varchar(100) comment 'reject 原因',
+  `create_time` datetime not null default CURRENT_TIMESTAMP,
+  `update_time` datetime not null default CURRENT_TIMESTAMP
+)engine=innodb;
+
+#表结构定义
+drop table if exists `cs_detail_report`;
+create table `cs_detail_report`(
+  `id` int(11) primary key auto_increment not null,
+  `name` varchar(20) not null comment '报表名称',
+  `struct` JSON not null comment '表结构描述',
+  `creator` int(11) not null comment '创建人',
   `create_time` datetime not null default CURRENT_TIMESTAMP,
   `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;

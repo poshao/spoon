@@ -56,3 +56,8 @@
  * @apiDefine app_linkcs_report_delete_struct 删除表格定义
  * 删除表格定义
  */
+
+/**
+ * @apiDefine app_linkcs_report_get_struct 导出表结构
+ * 导出表结构
+ */

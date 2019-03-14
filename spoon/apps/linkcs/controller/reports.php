@@ -40,28 +40,27 @@ class Reports extends \Spoon\Controller
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
-     * @apiParam {JSON} detail
+     * @apiParam {string} reportname 表格名称
+     * @apiParam {JSON} struct 结构描述
+     *
      * @apiSampleRequest /auth/v1/reports
      * @apiPermission app_linkcs_report_create_struct
      */
     private function createReportStruct()
     {
-    }
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_linkcs_report_create_struct');
+        }
 
-    /**
-     * 更新表格定义
-     * @apiName UpdateReportStruct
-     * @api {PATCH} /linkcs/v1/reports UpdateReportStruct
-     * @apiDescription 更新表格定义
-     * @apiGroup CS
-     * @apiVersion 0.1.0
-     *
-     * @apiParam {JSON} detail
-     * @apiSampleRequest /auth/v1/reports
-     * @apiPermission app_linkcs_report_update_struct
-     */
-    private function updateReportStruct()
-    {
+        $this->view()->checkParams(array('reportname','struct'));
+
+        $workid=$verify->getWorkid();
+        $name=$this->get('reportname');
+        $struct=$this->get('struct');
+        if ($this->model()->createReport($workid, $name, $struct)===true) {
+            $this->view()->sendJSON(array('result'=>'ok'));
+        }
     }
 
     /**
@@ -72,27 +71,63 @@ class Reports extends \Spoon\Controller
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
-     * @apiParam {JSON} detail
+     * @apiParam {string} reportname 报表名称
+     *
      * @apiSampleRequest /auth/v1/reports
      * @apiPermission app_linkcs_report_delete_struct
      */
     private function deleteReportStruct()
     {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_linkcs_report_delete_struct');
+        }
+
+        $this->view()->checkParams(array('reportname'));
+        $reportName=$this->get('reportname');
+        $result=$this->model()->deleteReport($reportName);
+        $this->view()->sendJSON(array('result'=>$result));
     }
 
     /**
-     * 导出报表
-     * @apiName ExportReoort
-     * @api {GET} /linkcs/v1/reports ExportReoort
-     * @apiDescription 导出报表
+     * 列出所有表格结构
+     * @apiName ListReports
+     * @api {GET} /linkcs/v1/reports ListReports
+     * @apiDescription 列出所有表格结构
      * @apiGroup CS
      * @apiVersion 0.1.0
      *
-     * @apiParam {reportid} 报表序号
-     *
      * @apiSampleRequest /auth/v1/reports
      */
-    private function exportReport()
+    private function listReports()
     {
+        $result=$this->model()->listReports();
+        $this->view()->sendJSON(array('result'=>$result));
+    }
+
+    /**
+     * 导出表结构
+     * @apiName GetReportStruct
+     * @api {GET} /linkcs/v1/reports GetReportStruct
+     * @apiDescription 导出表结构
+     * @apiGroup CS
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} reportname 报表名称
+     *
+     * @apiSampleRequest /auth/v1/reports
+     * @apiPermission app_linkcs_report_get_struct
+     */
+    private function getReportStruct()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_linkcs_report_get_struct');
+        }
+        $this->view()->checkParams(array('reportname'));
+        $reportname=$this->get('reportname');
+
+        $result=$this->model()->getReportStruct($reportName);
+        $this->view()->sendJSON(array('result'=>$result));
     }
 }
