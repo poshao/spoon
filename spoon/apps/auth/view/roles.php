@@ -19,6 +19,15 @@ class Roles extends \Spoon\View
                 'type'=>'array',
                 'require'=>array(),
                 'optional'=>array('rolename','description')
+            ),
+            'permissionname'=>array(
+                'type'=>'text'
+            ),
+            'rolename'=>array(
+                'type'=>'text'
+            ),
+            'description'=>array(
+                'type'=>'text'
             )
         );
     }

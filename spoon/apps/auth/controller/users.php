@@ -17,6 +17,8 @@ class Users extends \Spoon\Controller
             case 'get'://查询部分或完整用户信息
                 if ($this->view()->paramsCount()==0) {
                     $this->listUsers();
+                } elseif (!empty($this->get('rolename'))) {
+                    $this->listUsersByRole();
                 } else {
                     $this->getInfo();
                 }
@@ -224,6 +226,41 @@ class Users extends \Spoon\Controller
     }
 
     /**
+     * 获取角色下的用户清单
+     * @apiName ListUsersByRole
+     * @api {GET} /auth/v1/users ListUsersByRole
+     * @apiDescription 获取用户清单
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} rolename 角色名
+     *
+     * @apiSuccess {object} users 用户清单
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "users":{
+     *          "1":{
+     *              "id":"1",
+     *              "workid":"8020507"
+     *          }
+     *      }
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_list
+     */
+    private function listUsersByRole()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_list');
+        }
+
+        $this->view()->checkParams(array('rolename'));
+
+        $rolename=$this->get('rolename');
+        $this->view()->sendJSON(array('users'=>$this->model()->listUsersByRole($rolename)));
+    }
+    /**
      * 设定用户分组
      * @apiName AssignUserGroup
      * @api {PUT} /auth/v1/users AssignUserGroup
@@ -249,7 +286,7 @@ class Users extends \Spoon\Controller
             $verify->CheckPermission('app_auth_user_assign_group');
         }
 
-        $this->checkParams(array('workid','groupname'));
+        $this->view()->checkParams(array('workid','groupname'));
         $workid=$this->get('workid');
         $groupname=$this->get('groupname');
 
@@ -257,7 +294,7 @@ class Users extends \Spoon\Controller
         if ($rlst===false) {
             throw new Exception('assign group failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 
     /**
@@ -286,7 +323,7 @@ class Users extends \Spoon\Controller
             $verify->CheckPermission('app_auth_user_assign_group');
         }
 
-        $this->checkParams(array('workid','groupname'));
+        $this->view()->checkParams(array('workid','groupname'));
         $workid=$this->get('workid');
         $groupname=$this->get('groupname');
 
@@ -294,7 +331,7 @@ class Users extends \Spoon\Controller
         if ($rlst===false) {
             throw new Exception('unassign group failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 
     /**
@@ -323,7 +360,7 @@ class Users extends \Spoon\Controller
             $verify->CheckPermission('app_auth_user_assign_role');
         }
 
-        $this->checkParams(array('workid','rolename'));
+        $this->view()->checkParams(array('workid','rolename'));
         $workid=$this->get('workid');
         $rolename=$this->get('rolename');
 
@@ -331,7 +368,7 @@ class Users extends \Spoon\Controller
         if ($rlst===false) {
             throw new Exception('assign role failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 
     /**
@@ -360,7 +397,7 @@ class Users extends \Spoon\Controller
             $verify->CheckPermission('app_auth_user_assign_role');
         }
 
-        $this->checkParams(array('workid','rolename'));
+        $this->view()->checkParams(array('workid','rolename'));
         $workid=$this->get('workid');
         $rolename=$this->get('rolename');
 
@@ -368,6 +405,6 @@ class Users extends \Spoon\Controller
         if ($rlst===false) {
             throw new Exception('assign role failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 }

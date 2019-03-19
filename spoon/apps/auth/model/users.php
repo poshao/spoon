@@ -180,7 +180,7 @@ class Users extends \Spoon\Model
             return false;
         }
 
-        $data=array('update_time'=>new \NotORM_Literal('now'));
+        $data=array('update_time'=>new \NotORM_Literal('now()'));
         $effect=$this->db()->ref_user_role()->insert_update(array('userid'=>$userid,'roleid'=>$roleid), $data);
         return !empty($effect);
     }
@@ -204,5 +204,19 @@ class Users extends \Spoon\Model
         $data=array('userid'=>$userid,'roleid'=>$roleid);
         $effect=$this->db()->ref_user_role()->where($data)->delete();
         return !empty($effect);
+    }
+
+    /**
+     * 根据角色名枚举所有用户
+     *
+     * @param string $rolename
+     * @return void
+     */
+    public function listUsersByRole($rolename)
+    {
+        $role=new Roles();
+        $roleid=$role->getRoleID($rolename);
+        $users=$this->db()->ref_user_role()->select('userid')->where('roleid', $roleid);
+        return $this->db()->users()->select('id,workid,username,depart,create_time,update_time')->where('id', $users)->fetchPairs('id');
     }
 }

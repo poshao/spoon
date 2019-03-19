@@ -43,6 +43,9 @@ class Users extends \Spoon\View
             ),
             'groupname'=>array(
                 'type'=>'text'
+            ),
+            'rolename'=>array(
+                'type'=>'text'
             )
         );
     }

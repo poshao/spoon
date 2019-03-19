@@ -77,6 +77,7 @@ class Files extends \Spoon\Model
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
                 if ($file!=='.' && $file!=='..') {
+                    // array_push($list, array('name'=> $file));
                     array_push($list, array('name'=>iconv('gbk', 'utf-8', $file)));
                     // echo "filename: $file : filetype: " . filetype($dir . $file) . "\n";
                 }

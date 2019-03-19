@@ -23,6 +23,9 @@ class Permissions extends \Spoon\View
                 'type'=>'array',
                 'require'=>array(),
                 'optional'=>array('permissionname','description')
+            ),
+            'rolename'=>array(
+                'type'=>'text'
             )
         );
     }

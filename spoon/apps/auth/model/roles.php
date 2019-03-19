@@ -121,7 +121,7 @@ class Roles extends \Spoon\Model
      */
     public function assignPermission($rolename, $permissionname)
     {
-        $roleid=$this->getRoleID('rolename');
+        $roleid=$this->getRoleID($rolename);
         $permission=new Permissions();
         $permissionid=$permission->getPermissionID($permissionname);
         if (empty($roleid) || empty($permissionid)) {
@@ -130,7 +130,7 @@ class Roles extends \Spoon\Model
         $data=array(
             // 'roleid'=>$roleid,
             // 'permissionid'=>$permissionid,
-            'update_time'=>new \NotORM_Literal('now')
+            'update_time'=>new \NotORM_Literal('now()')
         );
         $effect=$this->db()->ref_role_permission()->insert_update(array('roleid'=>$roleid,'permissionid'=>$permissionid), $data);
         return !empty($effect);
@@ -145,7 +145,7 @@ class Roles extends \Spoon\Model
      */
     public function unassignPermission($rolename, $permissionname)
     {
-        $roleid=$this->getRoleID('rolename');
+        $roleid=$this->getRoleID($rolename);
         $permission=new Permissions();
         $permissionid=$permission->getPermissionID($permissionname);
         if (empty($roleid) || empty($permissionid)) {

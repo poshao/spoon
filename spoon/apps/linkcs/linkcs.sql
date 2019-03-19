@@ -14,13 +14,13 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_create_struct','新增表格定义');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_update_struct','更新表格定义');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_delete_struct','删除表格定义');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_delete_struct','获取表结构');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_get_struct','获取表结构');
 
 #CS放单资料表
 drop table if exists `cs_detail`;
 create table `cs_detail`(
   `id` int(11) primary key auto_increment not null,
-  `dnei` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.dnei'))) VIRTUAL,
+  `dnei` varchar(60) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.dnei'))) VIRTUAL,
   `level` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.level'))) VIRTUAL,
   `json_detail` JSON comment '详细数据',
   
@@ -42,3 +42,4 @@ create table `cs_detail_report`(
   `create_time` datetime not null default CURRENT_TIMESTAMP,
   `update_time` datetime not null default CURRENT_TIMESTAMP
 )engine=innodb;
+ALTER TABLE `cs_detail_report` ADD UNIQUE INDEX `name_unique` (`name` ASC);

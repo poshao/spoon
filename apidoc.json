@@ -1,13 +1,13 @@
 {
-    "name":"Spoon",
-    "version":"0.1.0",
-    "description":"用户认证接口文档",
-    "title":"用户认证接口文档",
-    "url":"http://localhost",
-    "sampleUrl":"http://localhost",
-    "template":{
-        "forceLanguage":"zh_cn",
+    "name": "物流信息管理",
+    "version": "0.1.0",
+    "description": "用户认证接口文档",
+    "title": "用户认证接口文档",
+    "url": "http://localhost",
+    "sampleUrl": "http://localhost",
+    "template": {
+        "forceLanguage": "zh_cn",
         "withCompare": true,
-  	    "withGenerator": false
+        "withGenerator": false
     }
 }

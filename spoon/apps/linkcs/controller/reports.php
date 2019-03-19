@@ -15,10 +15,14 @@ class Reports extends \Spoon\Controller
     {
         switch (\strtolower($_SERVER['REQUEST_METHOD'])) {
             case 'get':
-
+                if ($this->view()->paramsCount()==0) {
+                    $this->listReports();
+                } else {
+                    $this->getReportStruct();
+                }
                 break;
             case 'post':
-
+                $this->createReportStruct();
                 break;
             case 'put':
 
@@ -27,7 +31,7 @@ class Reports extends \Spoon\Controller
                 
                 break;
             case 'delete':
-
+                $this->deleteReportStruct();
                 break;
         }
     }

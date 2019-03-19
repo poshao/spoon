@@ -30,6 +30,9 @@ class Reports extends \Spoon\Model
      */
     public function createReport($workid, $name, $struct)
     {
+        if (!is_string($struct)) {
+            $struct=json_encode($struct);
+        }
         $data=array('name'=>$name,'struct'=>$struct,'creator'=>$workid);
         $effect=$this->db()->detail_report()->insert_update(array('name'=>$name), $data);
         return $effect>0;
@@ -43,7 +46,7 @@ class Reports extends \Spoon\Model
      */
     public function deleteReport($name)
     {
-        $this->db()->detail_report()->where('name', $name)->delete();
+        return $this->db()->detail_report()->where('name', $name)->delete();
     }
 
     /**

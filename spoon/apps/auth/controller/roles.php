@@ -47,7 +47,7 @@ class Roles extends \Spoon\Controller
      * @apiGroup Role
      * @apiVersion 0.1.0
      *
-     * @apiParam {string} role 角色名称
+     * @apiParam {string} rolename 角色名称
      * @apiParam {string} description 角色描述
      *
      * @apiSuccess {string} roleid 角色ID
@@ -61,9 +61,9 @@ class Roles extends \Spoon\Controller
         if (!empty($verify)) {
             $verify->CheckPermission('app_auth_role_create');
         }
-        $this->view()->checkParams(array('role','description'));
+        $this->view()->checkParams(array('rolename','description'));
         
-        $rolename=$this->get('role');
+        $rolename=$this->get('rolename');
         $description=$this->get('description');
         $roleid=$this->model()->create($rolename, $description);
         if ($roleid===false) {
@@ -206,14 +206,14 @@ class Roles extends \Spoon\Controller
         if (!empty($verify)) {
             $verify->CheckPermission('app_auth_assign_permission');
         }
-        $this->checkParams(array('rolename','permissionname'));
+        $this->view()->checkParams(array('rolename','permissionname'));
         $rolename=$this->get('rolename');
         $permissionname=$this->get('permissionname');
         $rlst=$this->model()->assignPermission($rolename, $permissionname);
         if ($rlst===false) {
             throw new Exception('assign permission failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 
     /**
@@ -238,13 +238,13 @@ class Roles extends \Spoon\Controller
         if (!empty($verify)) {
             $verify->CheckPermission('app_auth_assign_permission');
         }
-        $this->checkParams(array('rolename','permissionname'));
+        $this->view()->checkParams(array('rolename','permissionname'));
         $rolename=$this->get('rolename');
         $permissionname=$this->get('permissionname');
         $rlst=$this->model()->unassignPermission($rolename, $permissionname);
         if ($rlst===false) {
             throw new Exception('unassign permission failed', 400);
         }
-        $this->view()->sengJSON(array('result'=>true));
+        $this->view()->sendJSON(array('result'=>true));
     }
 }

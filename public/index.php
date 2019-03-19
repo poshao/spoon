@@ -32,8 +32,14 @@ require SitePath.'/autoload.php';
 
 //验证代码解析(Authorization)
 //spoon + base64(id=123456&token=124==)
-$headers=apache_request_headers();
-$auth=isset($headers['Authorization'])?$headers['Authorization']:null;
+if (function_exists('apache_request_headers')) {
+    //apache Server
+    $headers=apache_request_headers();
+    $auth=isset($headers['Authorization'])?$headers['Authorization']:null;
+} else {
+    //针对IIS的处理办法
+    $auth=isset($_SERVER['HTTP_AUTHORIZATION'])?$_SERVER['HTTP_AUTHORIZATION']:null;
+}
 if ($auth!=null && \strpos($auth, 'spoon ')===0) {
     $params=\explode('&', base64_decode(substr($auth, 6)));
     $p=array();
