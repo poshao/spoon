@@ -49,7 +49,6 @@ class Files extends \Spoon\Model
     {
         $dir=$this->getTempDir($workid);
         $path=$dir.$file['name'];
-        $path=iconv('utf-8', 'gbk', $path);
 
         if (!\is_dir($dir)) {
             @\mkdir($dir, 0777, true);
@@ -78,7 +77,7 @@ class Files extends \Spoon\Model
             while (($file = readdir($dh)) !== false) {
                 if ($file!=='.' && $file!=='..') {
                     // array_push($list, array('name'=> $file));
-                    array_push($list, array('name'=>iconv('gbk', 'utf-8', $file)));
+                    array_push($list, array('name'=>$file));
                     // echo "filename: $file : filetype: " . filetype($dir . $file) . "\n";
                 }
             }
@@ -95,7 +94,7 @@ class Files extends \Spoon\Model
      */
     public function getFile($filename, $hashname)
     {
-        $realPath=$this->getStoreDir().'/'.iconv('utf-8', 'gbk', $hashname);
+        $realPath=$this->getStoreDir().'/'.$hashname;
         if (!file_exists($realPath)) {
             return false;
         }
@@ -112,7 +111,7 @@ class Files extends \Spoon\Model
     public function getUploadedFile($workid, $name)
     {
         $dir=$this->getTempDir($workid);
-        $path=$dir.'/'.iconv('utf-8', 'gbk', $name);
+        $path=$dir.'/'.$name;
         if (is_file($path)===false) {
             return false;
         }
@@ -132,7 +131,7 @@ class Files extends \Spoon\Model
         if (is_dir($dir)===false) {
             return true;
         }
-        $path=$dir.iconv('utf-8', 'gbk', $name);
+        $path=$dir.$name;
         if (!is_file($path)) {
             return true;
         }

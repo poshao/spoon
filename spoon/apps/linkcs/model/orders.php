@@ -36,7 +36,7 @@ class Orders extends \Spoon\Model
         $detail['files']= array();
         $list=$files->getFileList($workid);
         foreach ($list as $k=>$v) {
-            $path=$tempDir.iconv('utf-8', 'gb2312', $v['name']);
+            $path=$tempDir.$v['name'];
             $hashname=\uniqid('file');
             if (rename($path, $storeDir.$hashname)) {
                 array_push($detail['files'], array('name'=>$v['name'],'hashname'=>$hashname));
