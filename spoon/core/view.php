@@ -213,6 +213,9 @@ abstract class View
             case 'array'://数组
                 return $this->checkParams($rule['require'], $rule['optional'], $param);
                 break;
+            case 'file'://文件
+                return (isset($_FILES[$param]) && $_FILES[$param]['error']===0);
+                break;
             default:
                 throw new Exception('type not support');
                 // Logger::debug('invalid rule ==> ['.\json_encode($rule).']');
