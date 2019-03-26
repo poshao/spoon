@@ -77,4 +77,24 @@ class Tokens extends \Spoon\Model
         $cnt=$this->db()->sessions()->where('userid=? and ip=?', $userid, $ip)->update($data);
         return $cnt>0;
     }
+
+    /**
+     * 强制注销(注销用户的所有登录)
+     *
+     * @param string $workid
+     * @return void
+     */
+    public function forceLogout($workid)
+    {
+        $user=new Users();
+        $userid=$user->getId($workid);
+
+        $data=array(
+            'token'=>'',
+            'valid_time'=>new \NotORM_Literal('now()-interval 10 second'),
+            'update_time'=>new \NotORM_Literal('now()')
+        );
+        $cnt=$this->db()->sessions()->where('userid=?', $userid)->update($data);
+        return $cnt>0;
+    }
 }

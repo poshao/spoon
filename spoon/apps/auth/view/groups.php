@@ -15,7 +15,7 @@ class Groups extends \Spoon\View
                 'type'=>'number',
                 'min'=>1
             ),
-            'group'=>array(
+            'groupname'=>array(
               'type'=>'text',
               'max-length'=>50
             ),
@@ -23,6 +23,12 @@ class Groups extends \Spoon\View
                 'type'=>'array',
                 'require'=>array(),
                 'optional'=>array('groupname','description','rolename')
+            ),
+            'rolename'=>array(
+                'type'=>'text'
+            ),
+            'description'=>array(
+                'type'=>'text'
             )
         );
     }

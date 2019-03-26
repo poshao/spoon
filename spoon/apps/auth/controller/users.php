@@ -19,6 +19,8 @@ class Users extends \Spoon\Controller
                     $this->listUsers();
                 } elseif (!empty($this->get('rolename'))) {
                     $this->listUsersByRole();
+                } elseif (!empty($this->get('groupname'))) {
+                    $this->listUsersByGroup();
                 } else {
                     $this->getInfo();
                 }
@@ -34,7 +36,11 @@ class Users extends \Spoon\Controller
                 }
                 break;
             case 'patch'://更新部分用户信息
-                $this->updateUser();
+                if (!empty($this->get('password'))) {
+                    $this->resetPassword();
+                } else {
+                    $this->updateUser();
+                }
                 break;
             case 'delete'://删除用户
                 if (!empty($this->get('rolename'))) {
@@ -406,5 +412,74 @@ class Users extends \Spoon\Controller
             throw new Exception('assign role failed', 400);
         }
         $this->view()->sendJSON(array('result'=>true));
+    }
+
+    /**
+     * 获取分组下的用户清单
+     * @apiName ListUsersByGroup
+     * @api {GET} /auth/v1/users ListUsersByGroup
+     * @apiDescription 获取用户清单
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} groupname 分组名
+     *
+     * @apiSuccess {object} users 用户清单
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "users":{
+     *          "1":{
+     *              "id":"1",
+     *              "workid":"8020507"
+     *          }
+     *      }
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_list
+     */
+    private function listUsersByGroup()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_list');
+        }
+
+        $this->view()->checkParams(array('groupname'));
+
+        $groupname=$this->get('groupname');
+
+        $this->view()->sendJSON(array('users'=>$this->model()->listUsersByGroup($groupname)));
+    }
+
+    /**
+     * 重置密码(管理员)
+     * @apiName ResetPassword
+     * @api {PATCH} /auth/v1/users ResetPassword
+     * @apiDescription 重置密码
+     * @apiGroup User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {string} password 密码
+     *
+     * @apiSuccess {object} users 用户清单
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_reset_password
+     */
+    private function resetPassword()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_reset_password');
+        }
+        $this->view()->checkParams(array('workid','password'));
+        $workid=$this->get('workid');
+        $password=\Spoon\Encrypt::hashPassword($this->get('password'), \Spoon\Config::getByApps('auth')['salt']);
+        $effect=$this->model()->resetPassword($workid, $password);
+        if ($effect===false) {
+            throw new Exception('reset password failed', 500);
+        } else {
+            $this->view()->sendJson(array('result'=>'ok'));
+        }
     }
 }

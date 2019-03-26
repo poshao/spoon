@@ -1,9 +1,9 @@
 set names utf8;
 
-drop database if exists `Spoon`;
-create database `Spoon` default charset utf8 collate utf8_general_ci;
+drop database if exists `avery_logistics`;
+create database `avery_logistics` default charset utf8 collate utf8_general_ci;
 
-use `Spoon`;
+use `avery_logistics`;
 
 #用户认证数据库
 
@@ -64,7 +64,7 @@ create table `auth_sessions`(
     `id` int(11) primary key auto_increment not null,
     `userid` int(11) not null comment '用户ID',
     `token` varchar(64) not null comment '用户密钥',
-    `ip` varchar(20) comment 'ip地址',
+    `ip` varchar(50) comment 'ip地址',
     `valid_time` datetime not null comment '有效时间',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
@@ -145,6 +145,7 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_auth_u
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_logout','用户注销');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_group','绑定用户分组');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_assign_role','绑定用户角色');
+insert into auth_permissions(`permissionname`,`description`) values ('app_auth_user_reset_password','重置用户密码');
 
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_create','创建角色');
 insert into auth_permissions(`permissionname`,`description`) values ('app_auth_role_list','枚举角色');

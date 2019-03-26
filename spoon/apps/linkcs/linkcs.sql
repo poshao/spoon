@@ -1,7 +1,7 @@
 #CS放单平台数据库
 set names utf8;
 
-use `Spoon`;
+use `avery_logistics`;
 
 #添加权限
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_newrequest','CS资料');

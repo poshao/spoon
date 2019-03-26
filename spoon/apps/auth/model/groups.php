@@ -65,17 +65,25 @@ class Groups extends \Spoon\Model
      */
     public function list()
     {
-        return $this->db()->groups()->select('id,groupname,description,create_time,update_time')->fetchPairs('id');
+        $roleids=$this->db()->groups()->select('roleid');
+        $roles=$this->db()->roles()->select('id,rolename')->where('id', $roleids)->fetchPairs('id');
+        $groups=$this->db()->groups()->select('id,groupname,description,roleid,create_time,update_time')->fetchPairs('id');
+        // var_dump($roles);
+        foreach ($groups as $k=>$v) {
+            $v['rolename']=$roles[$v['roleid']]['rolename'];
+        }
+        return $groups;
+        // return $this->db()->groups()->select('id,groupname,description,roleid,create_time,update_time')->fetchPairs('id');
     }
 
     /**
      * 更新分组信息
      *
-     * @param int $id 分组编号
+     * @param int $name 分组名称
      * @param array $info 分组信息
      * @return int 分组编号 或 false
      */
-    public function update($id, $info)
+    public function update($name, $info)
     {
         if (empty($info)) {
             return 0;
@@ -89,11 +97,12 @@ class Groups extends \Spoon\Model
             unset($info['rolename']);
             $info['roleid']=$roleid;
         }
-        $effect=$this->db()->groups()->where('id', $id)->update($info);
+        $oldGroupid=$this->getGroupID($name);
+        $effect=$this->db()->groups()->where('id', $oldGroupid)->update($info);
         if ($effect===false) {
             return false;
         }
-        return $id;
+        return $oldGroupid;
     }
 
     /**

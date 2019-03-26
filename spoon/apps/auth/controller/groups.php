@@ -45,9 +45,9 @@ class Groups extends \Spoon\Controller
      * @apiGroup Group
      * @apiVersion 0.1.0
      *
-     * @apiParam {string} group 分组名称
+     * @apiParam {string} groupname 分组名称
      * @apiParam {string} description 分组描述
-     * @apiParam {string} role 角色名称
+     * @apiParam {string} rolename 角色名称
      *
      * @apiSuccess {string} groupid 分组ID
      *
@@ -60,11 +60,11 @@ class Groups extends \Spoon\Controller
         if (!empty($verify)) {
             $verify->CheckPermission('app_auth_group_create');
         }
-        $this->view()->checkParams(array('group','description','role'));
+        $this->view()->checkParams(array('groupname','description','rolename'));
         
-        $groupname=$this->get('group');
+        $groupname=$this->get('groupname');
         $description=$this->get('description');
-        $role=$this->get('role');
+        $role=$this->get('rolename');
         $groupid=$this->model()->create($groupname, $description, $role);
         if ($groupid===false) {
             throw new Exception('group already exists', 400);
@@ -103,9 +103,9 @@ class Groups extends \Spoon\Controller
      * @apiGroup Group
      * @apiVersion 0.1.0
      *
-     * @apiParam {integer} groupid 分组ID
+     * @apiParam {string} groupname 分组名称
      * @apiParam {object} info 分组信息
-     * @apiParam {string} [info.groupname] 分组名称
+     * @apiParam {string} [info.groupname] 新分组名称
      * @apiParam {string} [info.description] 分组描述
      * @apiParam {string} [info.rolename] 角色名称
      *
@@ -121,11 +121,11 @@ class Groups extends \Spoon\Controller
             $verify->CheckPermission('app_auth_group_update');
         }
 
-        $this->view()->checkParams(array('groupid','info'));
-        $id=$this->get('groupid');
+        $this->view()->checkParams(array('groupname','info'));
+        $groupname=$this->get('groupname');
         $info=$this->get('info');
 
-        $groupid=$this->model()->update($id, $info);
+        $groupid=$this->model()->update($groupname, $info);
         if ($groupid===false) {
             throw new Exception('update group info failed', 422);
         }

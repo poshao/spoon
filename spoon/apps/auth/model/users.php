@@ -116,10 +116,33 @@ class Users extends \Spoon\Model
         } else {
             //强制注销
             $token=new Tokens();
-            return $token->logout($workid);
+            return $token->forceLogout($workid);
         }
     }
 
+    /**
+     * 重置密码
+     *
+     * @param string $workid
+     * @param string $password
+     * @return void
+     */
+    public function resetPassword($workid, $password)
+    {
+        $userid=$this->getId($workid);
+        //update users set password=$new where workid=$workid and password=$old
+        $now=new \NotORM_Literal('now()');
+        $effect=$this->db()->users()->where(array('id'=>$userid))->update(array('password'=>$password,'update_time'=>$now));
+        if ($effect===false) {
+            return false;
+        } else {
+            //强制注销
+            $token=new Tokens();
+            $token->forceLogout($workid);
+            return true;
+        }
+    }
+    
     /**
      * 关联用户分组
      *
@@ -138,7 +161,7 @@ class Users extends \Spoon\Model
         $data=array(
             'userid'=>$userid,
             'groupid'=>$groupid,
-            'update_time'=>new \NotORM_Literal('now')
+            'update_time'=>new \NotORM_Literal('now()')
         );
         $effect=$this->db()->ref_user_group()->insert_update(array('userid'=>$userid,'groupid'=>$groupid,), $data);
         return !empty($effect);
@@ -217,6 +240,20 @@ class Users extends \Spoon\Model
         $role=new Roles();
         $roleid=$role->getRoleID($rolename);
         $users=$this->db()->ref_user_role()->select('userid')->where('roleid', $roleid);
+        return $this->db()->users()->select('id,workid,username,depart,create_time,update_time')->where('id', $users)->fetchPairs('id');
+    }
+
+    /**
+     * 根据分组名枚举所有用户
+     *
+     * @param string $groupname
+     * @return void
+     */
+    public function listUsersByGroup($groupname)
+    {
+        $group=new Groups();
+        $groupid=$group->getGroupID($groupname);
+        $users=$this->db()->ref_user_group()->select('userid')->where('groupid', $groupid);
         return $this->db()->users()->select('id,workid,username,depart,create_time,update_time')->where('id', $users)->fetchPairs('id');
     }
 }

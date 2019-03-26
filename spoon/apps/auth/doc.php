@@ -95,3 +95,8 @@
  * @apiDefine app_auth_group_update 更新分组信息
  * 更新分组信息
  */
+
+/**
+ * @apiDefine app_auth_user_reset_password 重置密码(管理员)
+ * 重置密码
+ */

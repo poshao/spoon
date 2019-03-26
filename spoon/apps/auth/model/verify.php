@@ -32,8 +32,9 @@ class Verify extends \Spoon\Model
         if ($workid===false || $token===false) {
             return false;
         }
+        $ip=\Spoon\Util::getIP();
         $userid=$this->db()->users()->select('id')->where('workid', $workid)->fetch()['id'];
-        $online=$this->db()->sessions()->where('userid=? and token=? and valid_time>now()', $userid, $token)->count()>0;
+        $online=$this->db()->sessions()->where('userid=? and token=? and ip=? and valid_time>now()', $userid, $token, $ip)->count()>0;
         
         if (!$online) {
             return false;
@@ -41,7 +42,7 @@ class Verify extends \Spoon\Model
         
         $timeout=\Spoon\Config::getByApps('auth')['token_timeout'];
         $data=array('valid_time'=>new \NotORM_Literal('now()+interval '.$timeout.' second'),'update_time'=>new \NotORM_Literal('now()'));
-        $effect=$this->db()->sessions()->where('userid=?', $userid)->update($data);
+        $effect=$this->db()->sessions()->where('userid=? and ip=?', $userid, $ip)->update($data);
         return true;
     }
 

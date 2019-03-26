@@ -71,5 +71,17 @@ return array(
             //用户临时存放附件的文件夹
             'temp_dir'=>__DIR__.'/../../data/linkcs/temp',
         ),
+        // VBA加载管理
+        'vba'=>array(
+            'db'=>array(
+                'driver'=>'mysql',
+                'dbname'=>'avery_logistics',
+                'host'=>'localhost',
+                'user'=>'root',
+                'password'=>'123456',
+                'charset'=>'utf8',
+                'prefix'=>'vba_'
+            )
+        ),
     )
 );
