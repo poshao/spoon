@@ -42,7 +42,7 @@ class Permissions extends \Spoon\Controller
      * @apiName CreatePermission
      * @api {POST} /auth/v1/permissions CreatePermission
      * @apiDescription 新建权限
-     * @apiGroup Permission
+     * @apiGroup Auth.Permission
      * @apiVersion 0.1.0
      *
      * @apiParam {string} permission 权限名称
@@ -75,7 +75,7 @@ class Permissions extends \Spoon\Controller
      * @apiName ListPermissions
      * @api {GET} /auth/v1/permissions ListPermissions
      * @apiDescription 枚举所有权限
-     * @apiGroup Permission
+     * @apiGroup Auth.Permission
      * @apiVersion 0.1.0
      *
      * @apiSuccess {object} permissions 权限列表
@@ -98,7 +98,7 @@ class Permissions extends \Spoon\Controller
      * @apiName ListPermissionsByRole
      * @api {GET} /auth/v1/permissions ListPermissionsByRole
      * @apiDescription 根据角色枚举所有权限
-     * @apiGroup Permission
+     * @apiGroup Auth.Permission
      * @apiVersion 0.1.0
      *
      * @apiParam {string} rolename 角色名称
@@ -125,7 +125,7 @@ class Permissions extends \Spoon\Controller
      * @apiName UpdatePermission
      * @api {PATCH} /auth/v1/permissions UpdatePermission
      * @apiDescription 更新权限描述
-     * @apiGroup Permission
+     * @apiGroup Auth.Permission
      * @apiVersion 0.1.0
      *
      * @apiParam {integer} permissionid 权限ID

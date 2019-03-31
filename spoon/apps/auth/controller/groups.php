@@ -42,7 +42,7 @@ class Groups extends \Spoon\Controller
      * @apiName CreateGroup
      * @api {POST} /auth/v1/groups CreateGroup
      * @apiDescription 新建分组
-     * @apiGroup Group
+     * @apiGroup Auth.Group
      * @apiVersion 0.1.0
      *
      * @apiParam {string} groupname 分组名称
@@ -77,7 +77,7 @@ class Groups extends \Spoon\Controller
      * @apiName ListGroups
      * @api {GET} /auth/v1/groups ListGroups
      * @apiDescription 枚举所有分组
-     * @apiGroup Group
+     * @apiGroup Auth.Group
      * @apiVersion 0.1.0
      *
      * @apiSuccess {object} groups 分组列表
@@ -100,7 +100,7 @@ class Groups extends \Spoon\Controller
      * @apiName UpdateGroup
      * @api {PATCH} /auth/v1/groups UpdateGroup
      * @apiDescription 更新分组描述
-     * @apiGroup Group
+     * @apiGroup Auth.Group
      * @apiVersion 0.1.0
      *
      * @apiParam {string} groupname 分组名称
@@ -137,7 +137,7 @@ class Groups extends \Spoon\Controller
      * @apiName ListGroupsByUser
      * @api {GET} /auth/v1/groups ListGroupsByUser
      * @apiDescription 枚举用户拥有的所有分组
-     * @apiGroup Group
+     * @apiGroup Auth.Group
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号

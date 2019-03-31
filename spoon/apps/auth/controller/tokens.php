@@ -38,7 +38,7 @@ class Tokens extends \Spoon\Controller
      * @apiName Login
      * @api {POST} /auth/v1/tokens Login
      * @apiDescription 用户登录
-     * @apiGroup Tokens
+     * @apiGroup Auth.Token
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -76,7 +76,7 @@ class Tokens extends \Spoon\Controller
      * @apiName Logout
      * @api {DELETE} /auth/v1/tokens Logout
      * @apiDescription 用户注销
-     * @apiGroup Tokens
+     * @apiGroup Auth.Token
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号(通过认证获取)

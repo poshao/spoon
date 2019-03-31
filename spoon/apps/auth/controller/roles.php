@@ -44,7 +44,7 @@ class Roles extends \Spoon\Controller
      * @apiName CreateRole
      * @api {POST} /auth/v1/roles CreateRole
      * @apiDescription 新建角色
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {string} rolename 角色名称
@@ -78,7 +78,7 @@ class Roles extends \Spoon\Controller
      * @apiName ListRoles
      * @api {GET} /auth/v1/roles ListRoles
      * @apiDescription 枚举所有角色
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiSuccess {object} roles 角色列表
@@ -101,7 +101,7 @@ class Roles extends \Spoon\Controller
      * @apiName ListRolesByUser
      * @api {GET} /auth/v1/roles ListRolesByUser
      * @apiDescription 枚举用户所有角色
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -127,7 +127,7 @@ class Roles extends \Spoon\Controller
      * @apiName ListRolesByPermission
      * @api {GET} /auth/v1/roles ListRolesByPermission
      * @apiDescription 枚举权限所有角色
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {string} permissionname 权限名称
@@ -153,7 +153,7 @@ class Roles extends \Spoon\Controller
      * @apiName UpdateRole
      * @api {PATCH} /auth/v1/roles UpdateRole
      * @apiDescription 更新角色描述
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {integer} roleid 角色ID
@@ -189,7 +189,7 @@ class Roles extends \Spoon\Controller
      * @apiName AssignPermission
      * @api {PUT} /auth/v1/roles AssignPermission
      * @apiDescription 关联角色权限
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {string} rolename 角色名称
@@ -221,7 +221,7 @@ class Roles extends \Spoon\Controller
      * @apiName UnassignPermission
      * @api {DELETE} /auth/v1/roles UnassignPermission
      * @apiDescription 取消关联角色权限
-     * @apiGroup Role
+     * @apiGroup Auth.Role
      * @apiVersion 0.1.0
      *
      * @apiParam {string} rolename 角色名称

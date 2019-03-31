@@ -147,14 +147,14 @@ abstract class View
             $params=$this->_params;
         }
         foreach ($req_params as $k=>$v) {
-            if (!isset($params[$v]) || !$this->check($params[$v], $this->_rules[$v])) {
+            if (!isset($params[$v]) || !$this->check($params[$v], $this->_rules[$v], $v)) {
                 throw new Exception('参数检查错误 '.$v.':'.json_encode($this->_rules[$v]));
             }
         }
 
         if (!empty($opt_params)) {
             foreach ($opt_params as $k=>$v) {
-                if (isset($params[$v]) && !$this->check($params[$v], $this->_rules[$v])) {
+                if (isset($params[$v]) && !$this->check($params[$v], $this->_rules[$v], $v)) {
                     throw new Exception('可选参数检查错误 '.$v.':'.json_encode($this->_rules[$v]));
                 }
             }
@@ -167,10 +167,11 @@ abstract class View
      *
      * @param mixed $param 参数
      * @param array $rule 规则数组
+     * @param string $field 参数名
      * @return bool
      * @throws Exception
      */
-    public function check($param, $rule)
+    public function check($param, $rule, $field)
     {
         //sample
         // array('type'=>'number','max'=>100,'min'=>10,'require'=>true);
@@ -179,6 +180,7 @@ abstract class View
         // array('type'=>'text','length'=>10);
         // array('type'=>'regex','pattern'=>'/^hello$/');
         // array('type'=>'array','require'=>array('rule1','rule1'),'optional'=>array('rule3','rule4'))
+        // array('type'=>'file')
 
         if (!\is_array($rule)) {
             // Logger::debug('invalid rule: $rule is not array');
@@ -214,7 +216,7 @@ abstract class View
                 return $this->checkParams($rule['require'], $rule['optional'], $param);
                 break;
             case 'file'://文件
-                return (isset($_FILES[$param]) && $_FILES[$param]['error']===0);
+                return (isset($_FILES[$field]) && $_FILES[$field]['error']===0);
                 break;
             default:
                 throw new Exception('type not support');

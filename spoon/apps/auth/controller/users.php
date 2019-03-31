@@ -15,7 +15,7 @@ class Users extends \Spoon\Controller
     {
         switch (\strtolower($_SERVER['REQUEST_METHOD'])) {
             case 'get'://查询部分或完整用户信息
-                if ($this->view()->paramsCount()==0) {
+                if ($this->view()->paramsCount()===0) {
                     $this->listUsers();
                 } elseif (!empty($this->get('rolename'))) {
                     $this->listUsersByRole();
@@ -58,7 +58,7 @@ class Users extends \Spoon\Controller
      * @apiName CreateUser
      * @api {POST} /auth/v1/users CreateUser
      * @apiDescription 创建用户
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -104,7 +104,7 @@ class Users extends \Spoon\Controller
      * @apiName UpdateUser
      * @api {PATCH} /auth/v1/users UpdateUser
      * @apiDescription 更新用户信息
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号（通过认证信息获取）
@@ -164,7 +164,7 @@ class Users extends \Spoon\Controller
      * @apiName GetUserinfo
      * @api {GET} /auth/v1/users GetUserinfo
      * @apiDescription 获取用户信息
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -205,7 +205,7 @@ class Users extends \Spoon\Controller
      * @apiName ListUsers
      * @api {GET} /auth/v1/users ListUsers
      * @apiDescription 获取用户清单
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiSuccess {object} users 用户清单
@@ -236,7 +236,7 @@ class Users extends \Spoon\Controller
      * @apiName ListUsersByRole
      * @api {GET} /auth/v1/users ListUsersByRole
      * @apiDescription 获取用户清单
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} rolename 角色名
@@ -271,7 +271,7 @@ class Users extends \Spoon\Controller
      * @apiName AssignUserGroup
      * @api {PUT} /auth/v1/users AssignUserGroup
      * @apiDescription 设定用户分组
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -308,7 +308,7 @@ class Users extends \Spoon\Controller
      * @apiName UnassignUserGroup
      * @api {DELETE} /auth/v1/users UnassignUserGroup
      * @apiDescription 取消设定用户分组
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -345,7 +345,7 @@ class Users extends \Spoon\Controller
      * @apiName AssignUserRole
      * @api {PUT} /auth/v1/users AssignUserRole
      * @apiDescription 设定用户分组
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -382,7 +382,7 @@ class Users extends \Spoon\Controller
      * @apiName UnassignUserRole
      * @api {DELETE} /auth/v1/users UnassignUserRole
      * @apiDescription 取消设定用户角色
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号
@@ -419,7 +419,7 @@ class Users extends \Spoon\Controller
      * @apiName ListUsersByGroup
      * @api {GET} /auth/v1/users ListUsersByGroup
      * @apiDescription 获取用户清单
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} groupname 分组名
@@ -456,7 +456,7 @@ class Users extends \Spoon\Controller
      * @apiName ResetPassword
      * @api {PATCH} /auth/v1/users ResetPassword
      * @apiDescription 重置密码
-     * @apiGroup User
+     * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号

@@ -41,7 +41,7 @@ class Reports extends \Spoon\Controller
      * @apiName CreateReportStruct
      * @api {POST} /linkcs/v1/reports CreateReportStruct
      * @apiDescription 新增表格定义
-     * @apiGroup CS
+     * @apiGroup LinkCS.Report
      * @apiVersion 0.1.0
      *
      * @apiParam {string} reportname 表格名称
@@ -72,7 +72,7 @@ class Reports extends \Spoon\Controller
      * @apiName DeleteReportStruct
      * @api {DELETE} /linkcs/v1/reports DeleteReportStruct
      * @apiDescription 删除表格定义
-     * @apiGroup CS
+     * @apiGroup LinkCS.Report
      * @apiVersion 0.1.0
      *
      * @apiParam {string} reportname 报表名称
@@ -98,7 +98,7 @@ class Reports extends \Spoon\Controller
      * @apiName ListReports
      * @api {GET} /linkcs/v1/reports ListReports
      * @apiDescription 列出所有表格结构
-     * @apiGroup CS
+     * @apiGroup LinkCS.Report
      * @apiVersion 0.1.0
      *
      * @apiSampleRequest /auth/v1/reports
@@ -114,7 +114,7 @@ class Reports extends \Spoon\Controller
      * @apiName GetReportStruct
      * @api {GET} /linkcs/v1/reports GetReportStruct
      * @apiDescription 导出表结构
-     * @apiGroup CS
+     * @apiGroup LinkCS.Report
      * @apiVersion 0.1.0
      *
      * @apiParam {string} reportname 报表名称

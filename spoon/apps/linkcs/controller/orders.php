@@ -38,7 +38,7 @@ class Orders extends \Spoon\Controller
      * @apiName NewRequest
      * @api {POST} /linkcs/v1/orders NewRequest
      * @apiDescription CS创建订单
-     * @apiGroup CS
+     * @apiGroup LinkCS.Order
      * @apiVersion 0.1.0
      *
      * @apiParam {JSON} detail
@@ -69,7 +69,7 @@ class Orders extends \Spoon\Controller
      * @apiName ListRequest
      * @api {GET} /linkcs/v1/orders ListRequest
      * @apiDescription 获取CS订单列表
-     * @apiGroup CS
+     * @apiGroup LinkCS.Order
      * @apiVersion 0.1.0
      *
      * @apiParam {JSON} option 查询设置(base64转码)
@@ -130,7 +130,7 @@ class Orders extends \Spoon\Controller
      * @apiName UpdateStatus
      * @api {PUT} /linkcs/v1/orders UpdateStatus
      * @apiDescription 更新订单状态
-     * @apiGroup CS
+     * @apiGroup LinkCS.Order
      * @apiVersion 0.1.0
      *
      * @apiParam {string} orderid 订单号

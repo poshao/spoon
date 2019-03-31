@@ -18,7 +18,7 @@ return array(
         'auth'=>array(
             'db'=>array(
                 'driver'=>'mysql',
-                'dbname'=>'Spoon',
+                'dbname'=>'avery_logistics',
                 'host'=>'localhost',
                 'user'=>'root',
                 'password'=>'123456',
@@ -59,7 +59,7 @@ return array(
         'linkcs'=>array(
             'db'=>array(
                 'driver'=>'mysql',
-                'dbname'=>'Spoon',
+                'dbname'=>'avery_logistics',
                 'host'=>'localhost',
                 'user'=>'root',
                 'password'=>'123456',
@@ -73,6 +73,7 @@ return array(
         ),
         // VBA加载管理
         'vba'=>array(
+            //数据库链接
             'db'=>array(
                 'driver'=>'mysql',
                 'dbname'=>'avery_logistics',
@@ -81,7 +82,9 @@ return array(
                 'password'=>'123456',
                 'charset'=>'utf8',
                 'prefix'=>'vba_'
-            )
+            ),
+            //加载项存档文件夹
+            'store_dir'=>__DIR__.'/../../data/addins',
         ),
     )
 );

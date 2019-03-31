@@ -45,7 +45,7 @@ class Files extends \Spoon\Controller
      * @apiName AddFile
      * @api {POST} /linkcs/v1/files AddFile
      * @apiDescription 添加附件
-     * @apiGroup CS
+     * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
      * @apiParam {binary} file
@@ -74,7 +74,7 @@ class Files extends \Spoon\Controller
      * @apiName ListUploadedFiles
      * @api {GET} /linkcs/v1/files ListUploadedFiles
      * @apiDescription 获取已上传的文件列表
-     * @apiGroup CS
+     * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
      * @apiSampleRequest /auth/v1/files
@@ -97,7 +97,7 @@ class Files extends \Spoon\Controller
      * @apiName RemoveFile
      * @api {DELETE} /linkcs/v1/files RemoveFile
      * @apiDescription 删除文件
-     * @apiGroup CS
+     * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
      * @apiParam {string} filename 文件名称
@@ -127,7 +127,7 @@ class Files extends \Spoon\Controller
      * @apiName GetFile
      * @api {GET} /linkcs/v1/files GetFile
      * @apiDescription 获取文件
-     * @apiGroup CS
+     * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
      * @apiParam {string} filename 文件名
@@ -154,7 +154,7 @@ class Files extends \Spoon\Controller
      * @apiName GetFile
      * @api {GET} /linkcs/v1/files GetFile
      * @apiDescription 获取文件
-     * @apiGroup CS
+     * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
      * @apiParam {string} filename 文件名称

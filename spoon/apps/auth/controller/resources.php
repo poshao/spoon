@@ -37,7 +37,7 @@ class Resources extends \Spoon\Controller
      * @apiName UploadAvator
      * @api {POST} /auth/v1/resource UploadAvator
      * @apiDescription 上传头像文件
-     * @apiGroup Resource
+     * @apiGroup Auth.Resource
      * @apiVersion 0.1.0
      *
      * @apiParam {binary} file 图像文件
@@ -70,7 +70,7 @@ class Resources extends \Spoon\Controller
      * @apiName GetAvator
      * @api {GET} /auth/v1/resource GetAvator
      * @apiDescription 获取用户头像
-     * @apiGroup Resource
+     * @apiGroup Auth.Resource
      * @apiVersion 0.1.0
      *
      * @apiParam {string} workid 工号

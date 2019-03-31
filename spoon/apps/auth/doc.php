@@ -100,3 +100,13 @@
  * @apiDefine app_auth_user_reset_password 重置密码(管理员)
  * 重置密码
  */
+
+/**
+ * @apiDefine app_vba_user_assign_addin 授权用户加载项
+ * 授权用户加载项
+ */
+
+/**
+ * @apiDefine app_vba_user_assign_fun 授权用户子功能项
+ * 授权用户子功能项
+ */
