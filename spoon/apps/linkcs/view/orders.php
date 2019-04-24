@@ -15,7 +15,7 @@ class Orders extends \Spoon\View
             ),
             'status'=>array(
                 'type'=>'list',
-                'list'=>array('accept','reject')
+                'list'=>array('pre_send','sended','pass','reject','resend','cancel','finish')
             ),
             'reason'=>array(
                 'type'=>'text'

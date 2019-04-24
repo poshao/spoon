@@ -21,6 +21,28 @@ class Orders extends \Spoon\Model
     }
 
     /**
+     * 获取父ID
+     *
+     * @param string $id
+     * @return void
+     */
+    private function getParentId($id)
+    {
+        return $this->db()->orders()->select('parentid')->where('id', $id)->fetch()['parentid'];
+    }
+
+    /**
+     * 获取订单状态
+     *
+     * @param string $orderid
+     * @return void
+     */
+    public function getStatus($orderid)
+    {
+        return $this->db()->orders()->select('status')->where('id', $orderid)->fetch()['status'];
+    }
+
+    /**
      * 增加新纪录
      *
      * @param [string] $workid
@@ -43,11 +65,51 @@ class Orders extends \Spoon\Model
             }
         }
 
+        //提取固定字段信息
+        $order=$detail['dnei'];
+        unset($detail['dnei']);
+        $system=$detail['system'];
+        unset($detail['system']);
+        $level=$detail['level'];
+        unset($detail['level']);
+        $status='sended';
+        $originId='';
+        $parentid='';
+        if (isset($detail['parentid'])) {
+            $parentid=$detail['parentid'];
+            $originId= $this->getParentId($detail['parentid']);
+            if (empty($parentid)) {
+                throw new Exception('invalid parent id', 400);
+            }
+            unset($detail['parentid']);
+        }
+
         if (is_string($detail)===false) {
             $detail=\json_encode($detail);
         }
-        $data=array('creator'=>$workid,'json_detail'=>$detail);
-        $row=$this->db()->detail()->insert($data);
+
+        $data=array(
+            'dnei'=>$order,
+            'system'=>$system,
+            'level'=>$level,
+            'status'=>$status,
+            'detail'=>$detail,
+            'creator'=>$workid,
+            'create_time'=>new \NotORM_Literal('now()'),
+            'last_user'=>$workid,
+            'last_time'=>new \NotORM_Literal('now()')
+        );
+        //$data=array('creator'=>$workid,'json_detail'=>$detail);
+        $row=$this->db()->orders()->insert($data);
+        if (empty($parentid)) {
+            $row['parentid']=$row['id'];
+            $row->update();
+        } else {
+            $this->updateStatus($workid, $parentid, 'resend', '');
+            $row['parentid']=$originId;
+            $row->update();
+        }
+        
         return $row['id'];
     }
 
@@ -61,12 +123,12 @@ class Orders extends \Spoon\Model
     {
         $name=strtolower(trim($name));
         $fieldList=array(
-            'id','creator','assign','status','reject_reason','create_time','update_time'
+            'id','dnei','system','level','detail','creator','create_time','assign','assign_time','status','reject_reason','parentid','last_user','last_time'
         );
         if (\in_array($name, $fieldList)) {
             return $name;
         } else {
-            return 'json_unquote(json_extract(`json_detail`,\'$.'.$name.'\'))';
+            return 'json_unquote(json_extract(`detail`,\'$.'.$name.'\'))';
         }
     }
     /**
@@ -77,7 +139,7 @@ class Orders extends \Spoon\Model
      */
     public function list($option)
     {
-        $rs=$this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason');
+        $rs=$this->db()->orders()->select('id,dnei,system,detail as json_detail,creator,create_time,level,status,assign,reject_reason,assign_time');
         //字段选择
 
         //提取筛选条件
@@ -117,6 +179,8 @@ class Orders extends \Spoon\Model
                 $rs->order($this->ConvertFieldName($v['key']).' '.$v['order']);
             }
         }
+        //总行数
+        $listCount=$rs->count();
         //分页处理
         if (isset($option['page'])) {
             $pageIndex=$option['page']['index'];
@@ -125,7 +189,10 @@ class Orders extends \Spoon\Model
         }
 
         //返回结果
-        return $rs->fetchPairs('id');
+        return array(
+            'total'=>$listCount,
+            'list'=>$rs->fetchPairs('id')
+        );
         // return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason')->fetchPairs('id');
     }
 
@@ -138,10 +205,22 @@ class Orders extends \Spoon\Model
      * @param string $reason
      * @return void
      */
-    public function updateStatus($orderid, $assign, $status, $reason)
+    public function updateStatus($workid, $orderid, $status, $reason)
     {
-        $data=array('update_time'=>new \NotORM_Literal('now()'),'assign'=>$assign,'status'=>$status,'reject_reason'=>$reason);
-        $effect=$this->db()->detail()->where('id', $orderid)->update($data);
+        $data=array(
+            'status'=>$status,
+            'last_user'=>$workid,
+            'last_time'=>new \NotORM_Literal('now()')
+        );
+        if ($status==='finish' || $status==='reject') {
+            $data['assign']=$workid;
+            $data['assign_time']=new \NotORM_Literal('now()');
+        }
+        if ($status==='reject') {
+            $data['reject_reason']=$reason;
+        }
+
+        $effect=$this->db()->orders()->where('id', $orderid)->update($data);
         if ($effect===0) {
             return false;
         }
