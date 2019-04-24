@@ -29,6 +29,7 @@ create table `vba_addins`(
   `id` int(11) primary key auto_increment not null,
   `addin_name` varchar(30) not null comment '名称',
   `version` varchar(10) not null comment '版本号',
+  `description` varchar(100) comment '备注',
   `hashname` varchar(32) not null comment '存储文件名',
   `create_time` datetime not null default CURRENT_TIMESTAMP,
   `update_time` datetime not null default CURRENT_TIMESTAMP
@@ -68,5 +69,25 @@ create table `vba_ref_user_fun`(
 )engine=innodb;
 ALTER TABLE `vba_ref_user_fun` ADD UNIQUE INDEX `assign_fun_unique` (`userid` ASC,`funid` ASC);
 
+# 组件包列表
+drop table if exists `vba_packages`;
+create table `vba_packages`(
+  `id` int(11) primary key auto_increment not null,
+  `name` varchar(20) not null comment '包名称',
+  `version` varchar(10) not null comment '版本号',
+  `author` varchar(20) not null comment '作者',
+  `description` varchar(100) comment '概述',
+  `hashname` varchar(32) not null comment '存储文件名',
+  `create_time` datetime not null default CURRENT_TIMESTAMP
+)engine=innodb;
+ALTER TABLE `vba_packages` ADD UNIQUE INDEX `package_unique` (`name` ASC,`version` ASC);
+
 #插入测试数据
-insert into vba_users(`loginname`,`username`) values('0115289','Byron Gong');
+#insert into vba_users(`loginname`,`username`) values('0115289','Byron Gong');
+
+#同步原数据(注意version过长)
+#insert into vba_users(`id`,`loginname`,`username`,`create_time`) select `id`,`loginname`,`username`,`create_time` from autoload_users;
+#insert into vba_addins(`id`,`addin_name`,`version`,`description`,`hashname`,`create_time`) select `id`,`name`,`version`,`message`,`hashname`,`create_time` from autoload_addins;
+#insert into vba_funs(`id`,`fun_name`,`addin_name`,`description`,`create_time`) select `id`,`name`,`addin_name`,'',`create_time` from autoload_funs;
+#insert into vba_ref_user_addin(`id`,`addinid`,`userid`,`create_time`) select `id`,`addin_id`,`user_id`,`create_time` from autoload_ref_user_addin;
+#insert into vba_ref_user_fun(`id`,`userid`,`funid`,`create_time`) select `id`,`user_id`,`fun_id`,`create_time` from autoload_ref_user_fun;

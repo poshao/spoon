@@ -130,7 +130,7 @@ class Files extends \Spoon\Controller
      * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
-     * @apiParam {string} filename 文件名
+     * @apiParam {string} filename 文件名(base64编码)
      * @apiParam {string} hashname 文件ID
      *
      * @apiSampleRequest /auth/v1/files
@@ -139,7 +139,8 @@ class Files extends \Spoon\Controller
     {
         $this->view()->checkParams(array('filename','hashname'));
 
-        $filename=$this->get('filename');
+        
+        $filename=\base64_decode($this->get('filename'));
         $hashname=$this->get('hashname');
 
         $info=$this->model()->getFile($filename, $hashname);
@@ -151,13 +152,13 @@ class Files extends \Spoon\Controller
 
     /**
      * 获取文件(用户临时文件)
-     * @apiName GetFile
-     * @api {GET} /linkcs/v1/files GetFile
+     * @apiName GetUploadedFile
+     * @api {GET} /linkcs/v1/files GetUploadedFile
      * @apiDescription 获取文件
      * @apiGroup LinkCS.File
      * @apiVersion 0.1.0
      *
-     * @apiParam {string} filename 文件名称
+     * @apiParam {string} filename 文件名称(base64编码)
      *
      * @apiSampleRequest /auth/v1/files
      * @apiPermission app_linkcs_file_get
@@ -171,7 +172,7 @@ class Files extends \Spoon\Controller
         $this->view()->checkParams(array('filename'));
 
         $workid=$verify->getWorkid();
-        $name=$this->get('filename');
+        $name= \base64_decode($this->get('filename'));
         $info=$this->model()->getUploadedFile($workid, $name);
         if ($info===false) {
             throw new Exception('file not found', 404);

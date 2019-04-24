@@ -1,0 +1,14 @@
+{
+    "name": "spoon/dotdog",
+    "description": "RESTful framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [{
+        "name": "Byron Gong",
+        "email": "1032066879@qq.com"
+    }],
+    "require": {
+        "cboden/ratchet": "^0.4.1",
+        "doctrine/orm": "^2.6"
+    }
+}

@@ -64,7 +64,7 @@ function uploadFile($url, $filePath)
 }
 
 //远程更新地址
-$remoteUrl='http://147.121.214.25/webapp/api.old/public/upgrade.php';
+$remoteUrl='http://appdnan15/apis/upgrade.php';
 //源码目录
 $sourceDir=realpath(__DIR__.'/../spoon');
 //打包文件目录
@@ -76,4 +76,4 @@ if (package($sourceDir, $packageFile)===false) {
     throw new Exception('源码打包失败');
 }
 //推送服务端
-echo "结果: " .uploadFile($remoteUrl, $packageFile);
+// echo "结果: " .uploadFile($remoteUrl, $packageFile);

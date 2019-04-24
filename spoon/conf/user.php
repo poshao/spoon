@@ -85,6 +85,7 @@ return array(
             ),
             //加载项存档文件夹
             'store_dir'=>__DIR__.'/../../data/addins',
+            'package_dir'=>__DIR__.'/../../data/packages',
         ),
     )
 );

@@ -151,7 +151,7 @@ class Response
     {
         \Header("Accept-Ranges: bytes");
         \Header("Accept-Length: ".filesize($fileInfo['path']));
-        self::setSaveFilename(\urlencode($fileInfo['name']));
+        self::setSaveFilename(\base64_encode($fileInfo['name']));
         self::send($fileInfo['path'], 200, $contentType, '', 'binary');
     }
 }

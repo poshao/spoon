@@ -23,6 +23,11 @@
  */
 
 /**
+ * @apiDefine app_auth_user_update_info_limit 更新用户信息(受控)
+ *   更新用户信息(受控)
+ */
+
+/**
  * @apiDefine app_auth_user_list List 用户清单
  *   显示用户清单
  */

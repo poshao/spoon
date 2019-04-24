@@ -73,6 +73,27 @@ class Users extends \Spoon\Model
     }
 
     /**
+     * 更新受限制的用户信息
+     *
+     * @param string $workid
+     * @param array $info
+     * @return void
+     */
+    public function updateUserLimitInfo($workid,$info){
+        if (empty($info)) {
+            return 0;
+        }
+        $id=$this->getId($workid);
+
+        $effect=$this->db()->users()->where('id', $id)->update($info);
+        if ($effect===false) {
+            return false;
+        }
+
+        return $id;
+    }
+    
+    /**
      * 获取用户信息
      *
      * @param string $workid

@@ -38,7 +38,9 @@ class Users extends \Spoon\Controller
             case 'patch'://更新部分用户信息
                 if (!empty($this->get('password'))) {
                     $this->resetPassword();
-                } else {
+                } elseif(!empty($this->get('workid'))) {
+                    $this->updateUserLimitInfo();
+                }else{
                     $this->updateUser();
                 }
                 break;
@@ -153,6 +155,50 @@ class Users extends \Spoon\Controller
         }
         unset($info['password']);
         $userid=$this->model()->update($workid, $info);
+        if ($userid===false) {
+            throw new Exception('update user info failed', 422);
+        }
+        $this->view()->sendJSON(array('userid'=>$userid));
+    }
+
+    /**
+     * 更新受控的用户信息
+     * @apiName UpdateUserLimitInfo
+     * @api {PATCH} /auth/v1/users UpdateUserLimitInfo
+     * @apiDescription 更新受控的用户信息
+     * @apiGroup Auth.User
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     * @apiParam {object} info 用户信息
+     * @apiParam {string} [info.depart] 部门
+     * @apiParamExample  {json} 请求示例:
+     * {
+     *      "workid":"8020507",
+     *      "info":{
+     *          "depart":"LOG",
+     *      }
+     * }
+     *
+     * @apiSuccess {int} userid 用户编码
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *      "userid":1
+     * }
+     * @apiSampleRequest /auth/v1/users
+     * @apiPermission app_auth_user_update_info_limit
+     */
+    private function updateUserLimitInfo()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_update_info_limit');
+        }
+
+        $this->view()->checkParams(array('workid','info'));
+        $workid=$this->get('workid');
+        $info=$this->get('info');
+        $userid=$this->model()->updateUserLimitInfo($workid,$info);
         if ($userid===false) {
             throw new Exception('update user info failed', 422);
         }
