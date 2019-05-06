@@ -87,5 +87,30 @@ return array(
             'store_dir'=>__DIR__.'/../../data/addins',
             'package_dir'=>__DIR__.'/../../data/packages',
         ),
+        // 项目管理
+        'develop'=>array(
+            'db'=>array(
+                'driver'=>'mysql',
+                'dbname'=>'avery_logistics',
+                'host'=>'localhost',
+                'user'=>'root',
+                'password'=>'123456',
+                'charset'=>'utf8',
+                'prefix'=>'dev_'
+            ),
+        ),
+        // 通用模块
+        'common'=>array(
+            'db'=>array(
+                'driver'=>'mysql',
+                'dbname'=>'avery_logistics',
+                'host'=>'localhost',
+                'user'=>'root',
+                'password'=>'123456',
+                'charset'=>'utf8',
+                'prefix'=>'sys_'
+            ),
+            'store_path'=>__DIR__.'/../../data/common'
+        )
     )
 );

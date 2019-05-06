@@ -6,13 +6,13 @@ use `avery_logistics`;
 #添加权限
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_newrequest','CS资料');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_list_request','查看订单列表');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_presend','更新订单状态(草稿)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_sended','更新订单状态(已发送)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_pass','更新订单状态(通过)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_reject','更新订单状态(异常)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_finish','更新订单状态(完成)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_cancel','更新订单状态(取消)');
-insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_update_status_resend','更新订单状态(已重发)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_presend','更新订单状态(草稿)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_sended','更新订单状态(已发送)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_pass','更新订单状态(通过)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_reject','更新订单状态(异常)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_finish','更新订单状态(完成)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_cancel','更新订单状态(取消)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_resend','更新订单状态(已重发)');
 
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_add','添加附件');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_file_list','枚举已上传的文件列表');

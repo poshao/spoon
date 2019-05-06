@@ -18,42 +18,42 @@
  */
 
 /**
- * @apiDefine app_linkcs_update_status 更新订单状态(作废)
+ * @apiDefine app_linkcs_orders_update_status 更新订单状态(作废)
  *  更新订单状态(作废)
  */
 
 /**
- * @apiDefine app_linkcs_update_status_presend 更新订单状态为草稿
+ * @apiDefine app_linkcs_orders_update_status_presend 更新订单状态为草稿
  *  更新订单状态为草稿
  */
 
 /**
- * @apiDefine app_linkcs_update_status_sended 更新订单状态为已发送
+ * @apiDefine app_linkcs_orders_update_status_sended 更新订单状态为已发送
  *  更新订单状态为已发送
  */
 
 /**
- * @apiDefine app_linkcs_update_status_pass 更新订单状态为通过
+ * @apiDefine app_linkcs_orders_update_status_pass 更新订单状态为通过
  *  更新订单状态为通过
  */
 
 /**
- * @apiDefine app_linkcs_update_status_reject 更新订单状态为拒绝
+ * @apiDefine app_linkcs_orders_update_status_reject 更新订单状态为拒绝
  *  更新订单状态为拒绝
  */
 
 /**
- * @apiDefine app_linkcs_update_status_finish 更新订单状态为完成
+ * @apiDefine app_linkcs_orders_update_status_finish 更新订单状态为完成
  *  更新订单状态为完成
  */
 
 /**
- * @apiDefine app_linkcs_update_status_cancel 更新订单状态为取消
+ * @apiDefine app_linkcs_orders_update_status_cancel 更新订单状态为取消
  *  更新订单状态为取消
  */
 
 /**
- * @apiDefine app_linkcs_update_status_resend 更新订单状态为重发
+ * @apiDefine app_linkcs_orders_update_status_resend 更新订单状态为重发
  *  更新订单状态为重发
  */
 

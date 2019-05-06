@@ -212,7 +212,7 @@ class Orders extends \Spoon\Model
             'last_user'=>$workid,
             'last_time'=>new \NotORM_Literal('now()')
         );
-        if ($status==='finish' || $status==='reject') {
+        if ($status==='pass' || $status==='reject') {
             $data['assign']=$workid;
             $data['assign_time']=new \NotORM_Literal('now()');
         }

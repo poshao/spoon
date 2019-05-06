@@ -46,7 +46,7 @@ class Orders extends \Spoon\Controller
      *
      * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_newrequest
-     * @apiPermission app_linkcs_update_status_resend
+     * @apiPermission app_linkcs_orders_update_status_resend
      */
     private function newRequest()
     {
@@ -65,7 +65,7 @@ class Orders extends \Spoon\Controller
         
         //检查重发情况
         if ($detail['parentid']) {
-            $verify->CheckPermission('app_linkcs_update_status_resend');
+            $verify->CheckPermission('app_linkcs_orders_update_status_resend');
         }
 
         $requestid=$this->model()->newRequest($workid, $detail);
@@ -152,20 +152,17 @@ class Orders extends \Spoon\Controller
      * @apiSuccess {integer} orderid 订单号
      *
      * @apiSampleRequest /auth/v1/orders
-     * @apiPermission app_linkcs_update_status_presend
-     * @apiPermission app_linkcs_update_status_sended
-     * @apiPermission app_linkcs_update_status_pass
-     * @apiPermission app_linkcs_update_status_reject
-     * @apiPermission app_linkcs_update_status_finish
-     * @apiPermission app_linkcs_update_status_cancel
-     * @apiPermission app_linkcs_update_status_resend
+     * @apiPermission app_linkcs_orders_update_status_presend
+     * @apiPermission app_linkcs_orders_update_status_sended
+     * @apiPermission app_linkcs_orders_update_status_pass
+     * @apiPermission app_linkcs_orders_update_status_reject
+     * @apiPermission app_linkcs_orders_update_status_finish
+     * @apiPermission app_linkcs_orders_update_status_cancel
+     * @apiPermission app_linkcs_orders_update_status_resend
      */
     private function updateStatus()
     {
         $verify=\Spoon\DI::getDI('verify');
-        // if (!empty($verify)) {
-        //     $verify->CheckPermission('app_linkcs_update_status');
-        // }
 
         $this->view()->checkParams(array('orderid','status'), array('reason'));
 
@@ -184,57 +181,71 @@ class Orders extends \Spoon\Controller
          *                 |--> reject --> resend
          *                         |--> cancel
          *
-         * pre_send <--> sended --> finish
-         *                 |--> reject --> resend
-         *                         |--> cancel
          */
+        $permissionlist=array(
+            'pre_send>sended'=>'app_linkcs_orders_update_status_sended',
+            'sended>pre_send'=>'app_linkcs_orders_update_status_presend',
+            'sended>pass'=>'app_linkcs_orders_update_status_pass',
+            'pass>finish'=>'app_linkcs_orders_update_status_finish',
+            'sended>reject'=>'app_linkcs_orders_update_status_reject',
+            'reject>resend'=>'app_linkcs_orders_update_status_resend',
+            'reject>cancel'=>'app_linkcs_orders_update_status_cancel'
+        );
 
         $curStatus=$this->model()->getStatus($orderid);
+        $statusRoute=$curStatus.'>'.$status;
 
-        $availableStatus=array();
-        switch ($curStatus) {
-            case 'pre_send':
-                \array_push($availableStatus, 'sended');
-            break;
-            case 'sended':
-                \array_push($availableStatus, 'pre_send', 'finish', 'reject');
-            break;
-            // case 'pass':
-            //     \array_push($availableStatus, 'finish');
-            // break;
-            case 'reject':
-                \array_push($availableStatus, 'resend', 'cancel');
-            break;
-        }
-
-        //检查权限
-        switch ($status) {
-            case 'pre_send':
-                $verify->CheckPermission('app_linkcs_update_status_presend');
-            break;
-            case 'sended':
-                $verify->CheckPermission('app_linkcs_update_status_sended');
-            break;
-            case 'pass':
-                $verify->CheckPermission('app_linkcs_update_status_pass');
-            break;
-            case 'reject':
-                $verify->CheckPermission('app_linkcs_update_status_reject');
-            break;
-            case 'cancel':
-                $verify->CheckPermission('app_linkcs_update_status_cancel');
-            break;
-            case 'finish':
-                $verify->CheckPermission('app_linkcs_update_status_finish');
-            break;
-            case 'resend':
-                $verify->CheckPermission('app_linkcs_update_status_resend');
-            break;
-        }
-
-        if (!\in_array($status, $availableStatus)) {
+        if (!\in_array($statusRoute, $permissionlist)) {
             throw new Exception('status unavaliable', 400);
         }
+
+        //权限检查
+        $verify->CheckPermission($permissionlist[$statusRoute]);
+
+        // $availableStatus=array();
+        // switch ($curStatus) {
+        //     case 'pre_send':
+        //         \array_push($availableStatus, 'sended');
+        //     break;
+        //     case 'sended':
+        //         \array_push($availableStatus, 'pre_send', 'pass', 'reject');
+        //     break;
+        //     case 'pass':
+        //         \array_push($availableStatus, 'finish');
+        //     break;
+        //     case 'reject':
+        //         \array_push($availableStatus, 'resend', 'cancel');
+        //     break;
+        // }
+
+        // //检查权限
+        // switch ($status) {
+        //     case 'pre_send':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_presend');
+        //     break;
+        //     case 'sended':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_sended');
+        //     break;
+        //     case 'pass':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_pass');
+        //     break;
+        //     case 'reject':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_reject');
+        //     break;
+        //     case 'cancel':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_cancel');
+        //     break;
+        //     case 'finish':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_finish');
+        //     break;
+        //     case 'resend':
+        //         $verify->CheckPermission('app_linkcs_orders_update_status_resend');
+        //     break;
+        // }
+
+        // if (!\in_array($status, $availableStatus)) {
+        //     throw new Exception('status unavaliable', 400);
+        // }
 
         $orderid=$this->model()->updateStatus($workid, $orderid, $status, $reason);
 
