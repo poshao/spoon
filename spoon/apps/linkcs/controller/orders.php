@@ -177,9 +177,9 @@ class Orders extends \Spoon\Controller
 
         //状态检查
         /**
-         * pre_send <--> sended --> pass --> finish
-         *                 |--> reject --> resend
-         *                         |--> cancel
+         * pre_send <--> sended --> lock --> pass --> finish
+         *                           |--> reject --> resend
+         *                                  |--> cancel
          *
          */
         $permissionlist=array(
@@ -195,7 +195,7 @@ class Orders extends \Spoon\Controller
         $curStatus=$this->model()->getStatus($orderid);
         $statusRoute=$curStatus.'>'.$status;
 
-        if (!\in_array($statusRoute, $permissionlist)) {
+        if (!isset($permissionlist[$statusRoute])) {
             throw new Exception('status unavaliable', 400);
         }
 

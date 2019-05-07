@@ -117,7 +117,7 @@ class Projects extends \Spoon\Controller
         );
 
         $route=$currentStatus.'>'.$status;
-        if (!\in_array($route, $permissionlist)) {
+        if (!isset($permissionlist[$route])) {
             throw new Exception('status unavaliable', 400);
         }
 

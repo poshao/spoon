@@ -26,8 +26,9 @@ class stores extends \Spoon\Model
      * @param string $category
      * @return void
      */
-    public function getCategoryId($category){
-        return $this->db()->file_categories()->select('id')->where('name',$category)->fetch()['id'];
+    public function getCategoryId($category)
+    {
+        return $this->db()->file_categories()->select('id')->where('name', $category)->fetch()['id'];
     }
 
     /**
@@ -35,7 +36,8 @@ class stores extends \Spoon\Model
      *
      * @return void
      */
-    public function getStoreDir(){
+    public function getStoreDir()
+    {
         return \realpath(\Spoon\Config::getByApps('common')['store_path']);
     }
 
@@ -48,23 +50,24 @@ class stores extends \Spoon\Model
      * @param string $category
      * @return string hashname
      */
-    public function addFile($filepath,$filename,$workid,$category='unknown'){
+    public function addFile($filepath, $filename, $workid, $category='unknown')
+    {
         // 确定分类
         $categoryid=$this->getCategoryId($category);
-        if(empty($categoryid)){
+        if (empty($categoryid)) {
             return false;
         }
 
-        $hashname=\str_replace('.','',\uniqid("",true));
+        $hashname=\str_replace('.', '', \uniqid("", true));
         $folder=\date('Ym');//相对目录
         $folderPath=$this->getStoreDir().'/'.$folder.'/';
         $dest_filepath=$folderPath.$hashname;
 
-        if(!\file_exists($folderPath)){
+        if (!\file_exists($folderPath)) {
             \mkdir($folderPath);
         }
         
-        if(!@\copy($filepath,$dest_filepath)){
+        if (!@\copy($filepath, $dest_filepath)) {
             return false;
         }
 
@@ -79,7 +82,7 @@ class stores extends \Spoon\Model
         );
 
         $row=$this->db()->files()->insert($data);
-        if($row===false){
+        if ($row===false) {
             \unlink($dest_filepath);
             return false;
         }
@@ -92,9 +95,10 @@ class stores extends \Spoon\Model
      * @param string $hashname
      * @return void
      */
-    public function getFile($hashname){
-        $row=$this->db()->files()->select('folder,origin_name')->where('hashname',$hashname)->fetch();
-        if($row===false){
+    public function getFile($hashname)
+    {
+        $row=$this->db()->files()->select('folder,origin_name')->where('hashname', $hashname)->fetch();
+        if ($row===false) {
             return false;
         }
 
@@ -109,14 +113,15 @@ class stores extends \Spoon\Model
      * @param string $hashname
      * @return void
      */
-    public function delFile($hashname){
-        $row=$this->db()->files()->select('folder,origin_name')->where('hashname',$hashname)->fetch();
-        if($row===false){
+    public function delFile($hashname)
+    {
+        $row=$this->db()->files()->select('folder,origin_name')->where('hashname', $hashname)->fetch();
+        if ($row===false) {
             return false;
         }
 
         $path=$this->getStoreDir().'/'.$row['folder'].'/'.$hashname;
-        if(!\unlink($path)){
+        if (!\unlink($path)) {
             return false;
         }
         return $row->delete()>0;

@@ -9,7 +9,7 @@ class Groups extends \Spoon\View
         $this->_rules=array(
             'workid'=>array(
                 'type'=>'regex',
-                'pattern'=>'/^\d{7}$/'
+                'pattern'=>'/^\d{5,7}$/'
             ),
             'groupid'=>array(
                 'type'=>'number',

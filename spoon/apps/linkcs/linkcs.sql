@@ -55,7 +55,7 @@ create table `cs_orders`(
   `assign` int(11) comment '受理人(工号)',
   `assign_time` datetime comment '受理时间',
 
-  `status` ENUM('pre_send','sended','pass','reject','cancel','resend','finish') not null comment '状态',
+  `status` ENUM('pre_send','sended','pass','reject','cancel','resend','finish','lock') not null comment '状态',
   `reject_reason` varchar(100) comment 'reject 原因',
   `parentid` int(11) comment '订单组id',
 
