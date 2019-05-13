@@ -32,9 +32,9 @@ class Projects extends \Spoon\Controller
     /**
      * 新建项目
      * @apiName NewProject
-     * @api {POST} /develop/v1/projects NewProject
+     * @api {POST} /project/v1/projects NewProject
      * @apiDescription 新建项目
-     * @apiGroup Develop.Projects
+     * @apiGroup Project.Projects
      * @apiVersion 0.1.0
      *
      * @apiParam {string} subject 项目主题
@@ -42,14 +42,14 @@ class Projects extends \Spoon\Controller
      * @apiParam {object} [files] 附件
      *
      * @apiSuccess {string} projectid 项目ID
-     * @apiSampleRequest /develop/v1/projects
-     * @apiPermission app_develop_project_create
+     * @apiSampleRequest /project/v1/projects
+     * @apiPermission app_project_projects_create
      */
     private function newProject()
     {
         $verify=\Spoon\DI::getDI('verify');
         if (!empty($verify)) {
-            $verify->CheckPermission('app_develop_project_create');
+            $verify->CheckPermission('app_project_projects_create');
         }
 
         $this->view()->CheckParams(array('subject','description'));
@@ -65,9 +65,9 @@ class Projects extends \Spoon\Controller
     /**
      * 更新项目资料
      * @apiName UpdateProject
-     * @api {POST} /develop/v1/projects UpdateProject
+     * @api {POST} /project/v1/projects UpdateProject
      * @apiDescription 更新项目资料
-     * @apiGroup Develop.Projects
+     * @apiGroup Project.Projects
      * @apiVersion 0.1.0
      *
      * @apiParam {string} subject 项目主题
@@ -75,16 +75,16 @@ class Projects extends \Spoon\Controller
      * @apiParam {object} [files] 附件
      *
      * @apiSuccess {string} projectid 项目ID
-     * @apiSampleRequest /develop/v1/projects
-     * @apiPermission app_develop_project_update_status_request2pass
-     * @apiPermission app_develop_project_update_status_request2cancel
-     * @apiPermission app_develop_project_update_status_pass2check
-     * @apiPermission app_develop_project_update_status_check2process
-     * @apiPermission app_develop_project_update_status_check2pending
-     * @apiPermission app_develop_project_update_status_process2pending
-     * @apiPermission app_develop_project_update_status_pending2check
-     * @apiPermission app_develop_project_update_status_pending2cancel
-     * @apiPermission app_develop_project_update_status_process2finish
+     * @apiSampleRequest /project/v1/projects
+     * @apiPermission app_project_projects_update_status_request2pass
+     * @apiPermission app_project_projects_update_status_request2cancel
+     * @apiPermission app_project_projects_update_status_pass2check
+     * @apiPermission app_project_projects_update_status_check2process
+     * @apiPermission app_project_projects_update_status_check2pending
+     * @apiPermission app_project_projects_update_status_process2pending
+     * @apiPermission app_project_projects_update_status_pending2check
+     * @apiPermission app_project_projects_update_status_pending2cancel
+     * @apiPermission app_project_projects_update_status_process2finish
      */
     private function updateProject()
     {
@@ -105,15 +105,15 @@ class Projects extends \Spoon\Controller
         }
 
         $permissionlist=array(
-            'request>pass'=>'app_develop_project_update_status_request2pass',
-            'request>cancel'=>'app_develop_project_update_status_request2cancel',
-            'pass>check'=>'app_develop_project_update_status_pass2check',
-            'check>process'=>'app_develop_project_update_status_check2process',
-            'check>pending'=>'app_develop_project_update_status_check2pending',
-            'process>pending'=>'app_develop_project_update_status_process2pending',
-            'pending>check'=>'app_develop_project_update_status_pending2check',
-            'pending>cancel'=>'app_develop_project_update_status_pending2cancel',
-            'process>finish'=>'app_develop_project_update_status_process2finish'
+            'request>pass'=>'app_project_projects_update_status_request2pass',
+            'request>cancel'=>'app_project_projects_update_status_request2cancel',
+            'pass>check'=>'app_project_projects_update_status_pass2check',
+            'check>process'=>'app_project_projects_update_status_check2process',
+            'check>pending'=>'app_project_projects_update_status_check2pending',
+            'process>pending'=>'app_project_projects_update_status_process2pending',
+            'pending>check'=>'app_project_projects_update_status_pending2check',
+            'pending>cancel'=>'app_project_projects_update_status_pending2cancel',
+            'process>finish'=>'app_project_projects_update_status_process2finish'
         );
 
         $route=$currentStatus.'>'.$status;
@@ -134,14 +134,14 @@ class Projects extends \Spoon\Controller
     /**
      * 列举项目清单
      * @apiName ListProjects
-     * @api {GET} /develop/v1/projects ListProjects
+     * @api {GET} /project/v1/projects ListProjects
      * @apiDescription 列举项目清单
-     * @apiGroup Develop.Projects
+     * @apiGroup Project.Projects
      * @apiVersion 0.1.0
      *
      *
      * @apiSuccess {json} projects 项目清单
-     * @apiSampleRequest /develop/v1/projects
+     * @apiSampleRequest /project/v1/projects
      * @apiPermission ???
      */
     private function listProjects()

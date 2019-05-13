@@ -88,7 +88,7 @@ return array(
             'package_dir'=>__DIR__.'/../../data/packages',
         ),
         // 项目管理
-        'develop'=>array(
+        'project'=>array(
             'db'=>array(
                 'driver'=>'mysql',
                 'dbname'=>'avery_logistics',
@@ -96,7 +96,7 @@ return array(
                 'user'=>'root',
                 'password'=>'123456',
                 'charset'=>'utf8',
-                'prefix'=>'dev_'
+                'prefix'=>'project_'
             ),
         ),
         // 通用模块

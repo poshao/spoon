@@ -15,7 +15,7 @@ class Projects extends \Spoon\Model
     public function db()
     {
         if (empty($this->_db)) {
-            $this->_db=self::getORM(\Spoon\Config::getByApps('develop')['db']);
+            $this->_db=self::getORM(\Spoon\Config::getByApps('project')['db']);
         }
         return $this->_db;
     }
