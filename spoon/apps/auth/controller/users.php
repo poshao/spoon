@@ -16,6 +16,8 @@ class Users extends \Spoon\Controller
         switch (\strtolower($_SERVER['REQUEST_METHOD'])) {
             case 'get'://查询部分或完整用户信息
                 if ($this->view()->paramsCount()===0) {
+                    
+                } elseif (!empty($this->get('option'))){
                     $this->listUsers();
                 } elseif (!empty($this->get('rolename'))) {
                     $this->listUsersByRole();
@@ -38,9 +40,9 @@ class Users extends \Spoon\Controller
             case 'patch'://更新部分用户信息
                 if (!empty($this->get('password'))) {
                     $this->resetPassword();
-                } elseif(!empty($this->get('workid'))) {
+                } elseif (!empty($this->get('workid'))) {
                     $this->updateUserLimitInfo();
-                }else{
+                } else {
                     $this->updateUser();
                 }
                 break;
@@ -198,7 +200,7 @@ class Users extends \Spoon\Controller
         $this->view()->checkParams(array('workid','info'));
         $workid=$this->get('workid');
         $info=$this->get('info');
-        $userid=$this->model()->updateUserLimitInfo($workid,$info);
+        $userid=$this->model()->updateUserLimitInfo($workid, $info);
         if ($userid===false) {
             throw new Exception('update user info failed', 422);
         }
@@ -254,6 +256,21 @@ class Users extends \Spoon\Controller
      * @apiGroup Auth.User
      * @apiVersion 0.1.0
      *
+     * @apiParam {string} option 查询设置(base64转码)
+     *
+     * filters:筛选条件
+     * filter.operator:操作符号  =,!=,>,<,>=,<=,in,!in,like
+     * filter.key: 主键
+     * filter.value: 计算值
+     *
+     * sorts:排序条件
+     * sort.key:主键名称
+     * sort.order:排序顺序 'asc','desc'
+     *
+     * page:分页
+     * page.index 页号 从0开始
+     * page.count 每页行数
+     *
      * @apiSuccess {object} users 用户清单
      * @apiSuccessExample {json} 成功响应:
      * {
@@ -274,7 +291,13 @@ class Users extends \Spoon\Controller
             $verify->CheckPermission('app_auth_user_list');
         }
 
-        $this->view()->sendJSON(array('users'=>$this->model()->listUsers()));
+        $option=$this->get('option');
+        if (!empty($option)) {
+            $option=\json_decode(base64_decode($option), true);
+        }
+
+        $result=$this->model()->listUsers($option);
+        $this->view()->sendJSON(array('users'=>$result));
     }
 
     /**

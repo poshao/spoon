@@ -79,7 +79,8 @@ class Users extends \Spoon\Model
      * @param array $info
      * @return void
      */
-    public function updateUserLimitInfo($workid,$info){
+    public function updateUserLimitInfo($workid, $info)
+    {
         if (empty($info)) {
             return 0;
         }
@@ -115,9 +116,60 @@ class Users extends \Spoon\Model
      *
      * @return void
      */
-    public function listUsers()
+    public function listUsers($option)
     {
-        return $this->db()->users()->select('id,workid,username,depart,create_time,update_time')->fetchPairs('id');
+        $rs=$this->db()->users()->select('id,workid,username,depart,create_time,update_time');
+
+        //提取筛选条件
+        if (isset($option['filters'])) {
+            foreach ($option['filters'] as $k=>$v) {
+                //处理key
+                $key=$v['key'];
+                //处理value
+                $value=$v['value'];
+                //处理operator
+                $operator=$v['operator'];
+                switch ($operator) {
+                    case '=':
+                    case '>':
+                    case '<':
+                    case '>=':
+                    case '<=':
+                    case '!=':
+                        $rs->where($key.' ' .$operator.' ?', $value);
+                    break;
+                    case 'like':
+                        $value='%'.trim($value, '%').'%';
+                        $rs->where($key.' ' .$operator.' ?', $value);
+                    break;
+                    case 'in':
+                        $rs->where($key, $value);
+                    break;
+                    case '!in':
+                        $rs->where($key.' not in ?', $value);
+                    break;
+                }
+            }
+        }
+        //提取排序规则
+        if (isset($option['sorts'])) {
+            foreach ($option['sorts'] as $k=>$v) {
+                $rs->order($v['key'].' '.$v['order']);
+            }
+        }
+        //总行数
+        $listCount=$rs->count();
+        //分页处理
+        if (isset($option['page'])) {
+            $pageIndex=$option['page']['index'];
+            $pageCount=$option['page']['count'];
+            $rs->limit($pageCount, $pageIndex*$pageCount);
+        }
+
+        return array(
+            'total'=>$listCount,
+            'list'=>$rs->fetchPairs('id')
+        );
     }
 
     /**

@@ -11,7 +11,7 @@ use `avery_logistics`;
 drop table if exists `auth_users`;
 create table `auth_users`(
     `id` int(11) primary key auto_increment not null,
-    `workid` int(11) not null comment '工号',
+    `workid` int(7) unsigned zerofill not null comment '工号',
     `username` varchar(30) comment '用户名',
     `password` varchar(64) not null comment '密码',
     `depart` varchar(30) comment '部门',
