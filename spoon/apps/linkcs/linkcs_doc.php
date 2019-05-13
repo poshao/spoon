@@ -33,6 +33,11 @@
  */
 
 /**
+ * @apiDefine app_linkcs_orders_update_status_lock 更新订单状态为锁定
+ * 更新订单状态为锁定
+ */
+
+/**
  * @apiDefine app_linkcs_orders_update_status_pass 更新订单状态为通过
  *  更新订单状态为通过
  */

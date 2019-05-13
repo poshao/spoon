@@ -32,6 +32,17 @@ class Orders extends \Spoon\Model
     }
 
     /**
+     * 获取受理人
+     *
+     * @param string $id
+     * @return void
+     */
+    public function getAssign($id)
+    {
+        return $this->db()->orders()->select('assign')->where('id', $id)->fetch()['assign'];
+    }
+
+    /**
      * 获取订单状态
      *
      * @param string $orderid
@@ -64,6 +75,7 @@ class Orders extends \Spoon\Model
                 array_push($detail['files'], array('name'=>$v['name'],'hashname'=>$hashname));
             }
         }
+        $has_attachment=empty($detail['files'])?'n':'y';
 
         //提取固定字段信息
         $order=$detail['dnei'];
@@ -94,6 +106,7 @@ class Orders extends \Spoon\Model
             'level'=>$level,
             'status'=>$status,
             'detail'=>$detail,
+            'has_attachment'=>$has_attachment,
             'creator'=>$workid,
             'create_time'=>new \NotORM_Literal('now()'),
             'last_user'=>$workid,
@@ -139,7 +152,7 @@ class Orders extends \Spoon\Model
      */
     public function list($option)
     {
-        $rs=$this->db()->orders()->select('id,dnei,system,detail as json_detail,creator,create_time,level,status,assign,reject_reason,assign_time');
+        $rs=$this->db()->orders()->select('id,dnei,system,detail as json_detail,has_attachment,creator,create_time,level,status,assign,reject_reason,assign_time');
         //字段选择
 
         //提取筛选条件
@@ -212,10 +225,14 @@ class Orders extends \Spoon\Model
             'last_user'=>$workid,
             'last_time'=>new \NotORM_Literal('now()')
         );
-        if ($status==='pass' || $status==='reject') {
+        if ($status==='lock') {
             $data['assign']=$workid;
             $data['assign_time']=new \NotORM_Literal('now()');
         }
+        // if ($status==='pass' || $status==='reject') {
+        //     $data['assign']=$workid;
+        //     $data['assign_time']=new \NotORM_Literal('now()');
+        // }
         if ($status==='reject') {
             $data['reject_reason']=$reason;
         }

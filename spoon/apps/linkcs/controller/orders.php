@@ -64,7 +64,7 @@ class Orders extends \Spoon\Controller
         $detail=$this->get('detail');
         
         //检查重发情况
-        if ($detail['parentid']) {
+        if (isset($detail['parentid'])) {
             $verify->CheckPermission('app_linkcs_orders_update_status_resend');
         }
 
@@ -81,16 +81,16 @@ class Orders extends \Spoon\Controller
      * @apiGroup LinkCS.Order
      * @apiVersion 0.1.0
      *
-     * @apiParam {JSON} option 查询设置(base64转码)
+     * @apiParam {string} option 查询设置(base64转码)
      *
      * filters:筛选条件
-     * filter.operator:操作符号  =,!=,>,<,>=,<=,in,!in,like
-     * filter.key: 主键
-     * filter.value: 计算值
+     * filters.operator:操作符号  =,!=,>,<,>=,<=,in,!in,like
+     * filters.key: 主键
+     * filters.value: 计算值
      *
      * sorts:排序条件
-     * sort.key:主键名称
-     * sort.order:排序顺序 'asc','desc'
+     * sorts.key:主键名称
+     * sorts.order:排序顺序 'asc','desc'
      *
      * page:分页
      * page.index 页号 从0开始
@@ -154,6 +154,7 @@ class Orders extends \Spoon\Controller
      * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_orders_update_status_presend
      * @apiPermission app_linkcs_orders_update_status_sended
+     * @apiPermission app_linkcs_orders_update_status_lock
      * @apiPermission app_linkcs_orders_update_status_pass
      * @apiPermission app_linkcs_orders_update_status_reject
      * @apiPermission app_linkcs_orders_update_status_finish
@@ -184,10 +185,11 @@ class Orders extends \Spoon\Controller
          */
         $permissionlist=array(
             'pre_send>sended'=>'app_linkcs_orders_update_status_sended',
+            'sended>lock'=>'app_linkcs_orders_update_status_lock',
             'sended>pre_send'=>'app_linkcs_orders_update_status_presend',
-            'sended>pass'=>'app_linkcs_orders_update_status_pass',
+            'lock>pass'=>'app_linkcs_orders_update_status_pass',
             'pass>finish'=>'app_linkcs_orders_update_status_finish',
-            'sended>reject'=>'app_linkcs_orders_update_status_reject',
+            'lock>reject'=>'app_linkcs_orders_update_status_reject',
             'reject>resend'=>'app_linkcs_orders_update_status_resend',
             'reject>cancel'=>'app_linkcs_orders_update_status_cancel'
         );
@@ -201,51 +203,14 @@ class Orders extends \Spoon\Controller
 
         //权限检查
         $verify->CheckPermission($permissionlist[$statusRoute]);
-
-        // $availableStatus=array();
-        // switch ($curStatus) {
-        //     case 'pre_send':
-        //         \array_push($availableStatus, 'sended');
-        //     break;
-        //     case 'sended':
-        //         \array_push($availableStatus, 'pre_send', 'pass', 'reject');
-        //     break;
-        //     case 'pass':
-        //         \array_push($availableStatus, 'finish');
-        //     break;
-        //     case 'reject':
-        //         \array_push($availableStatus, 'resend', 'cancel');
-        //     break;
-        // }
-
-        // //检查权限
-        // switch ($status) {
-        //     case 'pre_send':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_presend');
-        //     break;
-        //     case 'sended':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_sended');
-        //     break;
-        //     case 'pass':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_pass');
-        //     break;
-        //     case 'reject':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_reject');
-        //     break;
-        //     case 'cancel':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_cancel');
-        //     break;
-        //     case 'finish':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_finish');
-        //     break;
-        //     case 'resend':
-        //         $verify->CheckPermission('app_linkcs_orders_update_status_resend');
-        //     break;
-        // }
-
-        // if (!\in_array($status, $availableStatus)) {
-        //     throw new Exception('status unavaliable', 400);
-        // }
+        
+        //针对锁定状态必须由操作用户解除
+        if ($status==='pass' || $status==='reject') {
+            $originAssign=$this->model()->getAssign($orderid);
+            if ($originAssign!==$workid) {
+                throw new Exception('only '.$originAssign.' can do it', 400);
+            }
+        }
 
         $orderid=$this->model()->updateStatus($workid, $orderid, $status, $reason);
 

@@ -8,6 +8,7 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_list_request','查看订单列表');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_presend','更新订单状态(草稿)');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_sended','更新订单状态(已发送)');
+insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_lock','更新订单状态(锁定)');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_pass','更新订单状态(通过)');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_reject','更新订单状态(异常)');
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_orders_update_status_finish','更新订单状态(完成)');
@@ -49,17 +50,19 @@ create table `cs_orders`(
 
   `detail` JSON comment '详细数据',
 
-  `creator` int(11) not null comment '创建人(工号)',
+  `has_attachment` enum('y','n') NOT NULL DEFAULT 'n' COMMENT '是否包含附件',
+
+  `creator` int(11) unsigned zerofill not null comment '创建人(工号)',
   `create_time` datetime not null default CURRENT_TIMESTAMP,
 
-  `assign` int(11) comment '受理人(工号)',
+  `assign` int(7) unsigned zerofill comment '受理人(工号)',
   `assign_time` datetime comment '受理时间',
 
   `status` ENUM('pre_send','sended','pass','reject','cancel','resend','finish','lock') not null comment '状态',
   `reject_reason` varchar(100) comment 'reject 原因',
   `parentid` int(11) comment '订单组id',
 
-  `last_user` int(11) not null comment '最后的操作账号(工号)',
+  `last_user` int(11) unsigned zerofill not null comment '最后的操作账号(工号)',
   `last_time` datetime not null default CURRENT_TIMESTAMP comment '最后操作时间'
 )engine=innodb;
 
