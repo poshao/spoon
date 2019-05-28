@@ -68,7 +68,7 @@ $remoteUrl='http://appdnan15/apis/upgrade.php';
 //源码目录
 $sourceDir=realpath(__DIR__.'/../spoon');
 //打包文件目录
-$packageFile=__DIR__.'/../build/upgrade.zip';
+$packageFile=__DIR__.'/../build/upgrade'.date('YmdHis').'.zip';
 
 
 //打包
