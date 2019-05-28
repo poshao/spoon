@@ -22,10 +22,10 @@ class Orders extends \Spoon\Controller
                 $this->newRequest();
                 break;
             case 'put'://
-                $this->updateStatus();
+                $this->updateOrder();
                 break;
             case 'patch'://
-                
+                $this->updateStatus();
                 break;
             case 'delete'://
                 // $this->logout();
@@ -43,6 +43,8 @@ class Orders extends \Spoon\Controller
      *
      * @apiParam {JSON} detail
      * @apiParam {string} [detail.parentid] 重发的原始记录ID
+     *
+     * @apiSuccess {string} orderid 订单编号
      *
      * @apiSampleRequest /auth/v1/orders
      * @apiPermission app_linkcs_newrequest
@@ -70,7 +72,7 @@ class Orders extends \Spoon\Controller
 
         $requestid=$this->model()->newRequest($workid, $detail);
 
-        $this->view()->sendJSON(array('id'=>$requestid));
+        $this->view()->sendJSON(array('orderid'=>$requestid));
     }
 
     /**
@@ -140,7 +142,7 @@ class Orders extends \Spoon\Controller
     /**
      * 更新订单状态
      * @apiName UpdateStatus
-     * @api {PUT} /linkcs/v1/orders UpdateStatus
+     * @api {PATCH} /linkcs/v1/orders UpdateStatus
      * @apiDescription 更新订单状态
      * @apiGroup LinkCS.Order
      * @apiVersion 0.1.0
@@ -185,8 +187,10 @@ class Orders extends \Spoon\Controller
          */
         $permissionlist=array(
             'pre_send>sended'=>'app_linkcs_orders_update_status_sended',
+            'pre_send>cancel'=>'app_linkcs_orders_update_status_cancel',
             'sended>lock'=>'app_linkcs_orders_update_status_lock',
             'sended>pre_send'=>'app_linkcs_orders_update_status_presend',
+            'sended>cancel'=>'app_linkcs_orders_update_status_cancel',
             'lock>pass'=>'app_linkcs_orders_update_status_pass',
             'pass>finish'=>'app_linkcs_orders_update_status_finish',
             'lock>reject'=>'app_linkcs_orders_update_status_reject',
@@ -212,10 +216,57 @@ class Orders extends \Spoon\Controller
             }
         }
 
+        //撤销功能需要匹配下单用户
+        
+
         $orderid=$this->model()->updateStatus($workid, $orderid, $status, $reason);
 
         if ($orderid===false) {
             throw new Exception('update status failed', 400);
+        }
+        $this->view()->sendJSON(array('orderid'=>$orderid));
+    }
+
+    /**
+     * 更新订单
+     * @apiName UpdateOrder
+     * @api {PUT} /linkcs/v1/orders UpdateOrder
+     * @apiDescription 更新订单
+     * @apiGroup LinkCS.Order
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} orderid 订单号
+     * @apiParam {JSON} detail
+     *
+     * @apiSuccess {integer} orderid 订单号
+     *
+     * @apiSampleRequest /auth/v1/orders
+     * @apiPermission app_linkcs_orders_update_status_sended
+     */
+    private function updateOrder()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_linkcs_orders_update_status_sended');
+        }
+
+        $this->view()->CheckParams(array('orderid','detail'));
+
+        
+        $workid=$verify->getWorkid();
+        $orderid=$this->get('orderid');
+        $detail=$this->get('detail');
+
+        // 检查状态
+        $currentStatus=$this->model()->getStatus($orderid);
+        if ($currentStatus!=='pre_send') {
+            throw new Exception('status unavaliable', 400);
+        }
+
+        // 更新数据
+        $orderid=$this->model()->newRequest($workid, $detail, $orderid);
+        if (empty($orderid)) {
+            throw new Exception('update order failed', 400);
         }
         $this->view()->sendJSON(array('orderid'=>$orderid));
     }

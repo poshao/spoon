@@ -56,11 +56,12 @@ class Orders extends \Spoon\Model
     /**
      * 增加新纪录
      *
-     * @param [string] $workid
-     * @param [JSON] $detail
+     * @param string $workid
+     * @param JSON $detail
+     * @param string $orderid
      * @return void
      */
-    public function newRequest($workid, $detail)
+    public function newRequest($workid, $detail,$orderid=null)
     {
         //处理附件
         $files=new Files();
@@ -113,7 +114,11 @@ class Orders extends \Spoon\Model
             'last_time'=>new \NotORM_Literal('now()')
         );
         //$data=array('creator'=>$workid,'json_detail'=>$detail);
-        $row=$this->db()->orders()->insert($data);
+        if (empty($orderid)) {
+            $row=$this->db()->orders()->insert($data);
+        }else{
+            $row=$this->db()->order()->where('id',$order)->update($data);
+        }
         if (empty($parentid)) {
             $row['parentid']=$row['id'];
             $row->update();
@@ -242,5 +247,17 @@ class Orders extends \Spoon\Model
             return false;
         }
         return $orderid;
+    }
+
+    /**
+     * 更新订单信息
+     *
+     * @param string $workid
+     * @param string $orderid
+     * @param array $detail
+     * @return void
+     */
+    public function updateOrder($workid,$orderid,$detail){
+
     }
 }
