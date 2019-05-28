@@ -65,6 +65,7 @@ create table `auth_sessions`(
     `userid` int(11) not null comment '用户ID',
     `token` varchar(64) not null comment '用户密钥',
     `ip` varchar(50) comment 'ip地址',
+    `socketid` varchar(64) comment 'websocket通知ID',
     `valid_time` datetime not null comment '有效时间',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP

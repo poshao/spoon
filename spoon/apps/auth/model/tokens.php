@@ -71,6 +71,7 @@ class Tokens extends \Spoon\Model
         $ip=\Spoon\Util::getIP();
         $data=array(
             'token'=>'',
+            'socketid'=>'',
             'valid_time'=>new \NotORM_Literal('now()-interval 10 second'),
             'update_time'=>new \NotORM_Literal('now()')
         );
@@ -91,10 +92,52 @@ class Tokens extends \Spoon\Model
 
         $data=array(
             'token'=>'',
+            'socketid'=>'',
             'valid_time'=>new \NotORM_Literal('now()-interval 10 second'),
             'update_time'=>new \NotORM_Literal('now()')
         );
         $cnt=$this->db()->sessions()->where('userid=?', $userid)->update($data);
         return $cnt>0;
+    }
+
+    /**
+     * 更新SocketId
+     *
+     * @param string $workid
+     * @param string $socketid
+     * @return void
+     */
+    public function updateSocketId($workid,$socketid){
+        $user=new Users();
+        $userid=$user->getId($workid);
+
+        $ip=\Spoon\Util::getIP();
+
+        $data=array(
+            'socketid'=>$socketid,
+            'update_time'=>new \NotORM_Literal('now()')
+        );
+        $cnt=$this->db()->sessions()->where('userid=? and ip=?', $userid,$ip)->update($data);
+        return $cnt>0;
+    }
+
+    /**
+     * 获取用户的WebsocketID
+     *
+     * @param string $workid
+     * @return void
+     */
+    public function getSocketId($workid){
+        $user=new Users();
+        $userid=$user->getId($workid);
+        $socketids=$this->db()->sessions()->select('id,socketid')->where('userid',$userid)->fetchPairs('id');
+        if($socketids===false){
+            return false;
+        }
+        $result=array();
+        foreach ($socketids as $k => $v) {
+            \array_push($result,$v['socketid']);
+        }
+        return $result;
     }
 }

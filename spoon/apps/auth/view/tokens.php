@@ -21,6 +21,10 @@ class Tokens extends \Spoon\View
                 'length-max'=>50,
                 'length-min'=>40
             ),
+            'socketid'=>array(
+                'type'=>'text',
+                'length'=>32
+            ),
         );
     }
 }

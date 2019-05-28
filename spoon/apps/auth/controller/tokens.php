@@ -15,7 +15,7 @@ class Tokens extends \Spoon\Controller
     {
         switch (\strtolower($_SERVER['REQUEST_METHOD'])) {
             case 'get'://
-                
+                $this->getSocketId();
                 break;
             case 'post'://login
                 $this->login();
@@ -24,7 +24,7 @@ class Tokens extends \Spoon\Controller
 
                 break;
             case 'patch'://
-                
+                $this->updateSocketId();
                 break;
             case 'delete'://
                 $this->logout();
@@ -100,5 +100,81 @@ class Tokens extends \Spoon\Controller
             throw new Exception('are you logined?', 404);
         }
         $this->view()->sendJSON(array());
+    }
+
+    /**
+     * 更新SocketId
+     * @apiName UpdateSocketID
+     * @api {PATCH} /auth/v1/tokens UpdateSocketID
+     * @apiDescription 更新SocketId
+     * @apiGroup Auth.Token
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号(通过认证获取)
+     * @apiParam {string} socketid
+     *
+     * @apiSuccess {string} socketid
+     *
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *  "socketid":"***socket***"
+     * }
+     * @apiSampleRequest /auth/v1/tokens
+     * @apiPermission app_auth_user_login
+     */
+    private function updateSocketId()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            $verify->CheckPermission('app_auth_user_login');
+        }
+        $this->view()->CheckParams(array('socketid'));
+
+        $workid=$verify->getWorkid();
+        $socketid=$this->get('socketid');
+
+        $result=$this->model()->updateSocketId($workid, $socketid);
+
+        if (!$result) {
+            throw new Exception('update socketid failed', 500);
+        }
+
+        $this->view()->sendJSON(array('socketid'=>$socketid));
+    }
+
+    /**
+     * 获取SocketId
+     * @apiName GetSocketId
+     * @api {GET} /auth/v1/tokens GetSocketId
+     * @apiDescription 获取SocketId
+     * @apiGroup Auth.Token
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} workid 工号
+     *
+     * @apiSuccess {string} list
+     *
+     * @apiSuccessExample {json} 成功响应:
+     * {
+     *  "socketid":"***socket***"
+     * }
+     * @apiSampleRequest /auth/v1/tokens
+     * @apiPermission app_auth_user_login
+     */
+    private function getSocketId()
+    {
+        // $verify=\Spoon\DI::getDI('verify');
+        // if (!empty($verify)) {
+        //     $verify->CheckPermission('app_auth_user_login');
+        // }
+
+        $this->view()->CheckParams(array('workid'));
+
+        $workid=$this->get('workid');
+        $socktetIdlist=$this->model()->getSocketId($workid);
+        if($socktetIdlist===false){
+            throw new Exception('user\'s socketid not found',404);
+        }
+        $this->view()->sendJSON(array('list'=>$socktetIdlist));
     }
 }
