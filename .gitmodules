@@ -1,0 +1,6 @@
+[submodule "spoon/extensions/notorm"]
+	path = spoon/extensions/notorm
+	url = https://github.com/poshao/notorm.git
+[submodule "spoon/extensions/.\\phpmailer"]
+	path = spoon/extensions/.\\phpmailer
+	url = https://github.com/poshao/PHPMailer.git
