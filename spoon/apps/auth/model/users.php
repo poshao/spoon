@@ -168,7 +168,7 @@ class Users extends \Spoon\Model
 
         return array(
             'total'=>$listCount,
-            'list'=>$rs->fetchPairs('id')
+            'list'=>$rs->fetchArray()
         );
     }
 

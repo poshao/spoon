@@ -2,6 +2,7 @@
 /docs/apis/
 /.vscode
 /data
-upgrade.zip
 /public/docs/
+/build
 /vendor/
+extensions/

@@ -58,7 +58,7 @@ class Permissions extends \Spoon\Model
      */
     public function list()
     {
-        return $this->db()->permissions()->select('id,permissionname,description,create_time,update_time')->fetchPairs('id');
+        return $this->db()->permissions()->select('id,permissionname,description,create_time,update_time')->fetchArray();
     }
 
     /**

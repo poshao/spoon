@@ -25,26 +25,26 @@ insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs
 insert into auth_permissions(`permissionname`,`description`) values ('app_linkcs_report_get_struct','获取表结构');
 
 #CS放单资料表
-drop table if exists `cs_detail`;
-create table `cs_detail`(
-  `id` int(11) primary key auto_increment not null,
-  `dnei` varchar(60) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.dnei'))) VIRTUAL,
-  `level` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.level'))) VIRTUAL,
-  `json_detail` JSON comment '详细数据',
-  
-  `creator` int(11) not null comment '创建人工号',
-  `assign` int(11) comment '受理人工号',
-  `status` varchar(10) not null default 'unknow' comment '订单状态',
-  `reject_reason` varchar(100) comment 'reject 原因',
-  `create_time` datetime not null default CURRENT_TIMESTAMP,
-  `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+#drop table if exists `cs_detail`;
+#create table `cs_detail`(
+#  `id` int(11) primary key auto_increment not null,
+#  `dnei` varchar(60) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.dnei'))) VIRTUAL,
+#  `level` varchar(15) GENERATED ALWAYS AS (json_unquote(json_extract(`json_detail`,'$.level'))) VIRTUAL,
+#  `json_detail` JSON comment '详细数据',
+#  
+#  `creator` int(11) not null comment '创建人工号',
+#  `assign` int(11) comment '受理人工号',
+#  `status` varchar(10) not null default 'unknow' comment '订单状态',
+#  `reject_reason` varchar(100) comment 'reject 原因',
+#  `create_time` datetime not null default CURRENT_TIMESTAMP,
+#  `update_time` datetime not null default CURRENT_TIMESTAMP
+#)engine=innodb;
 
 #CS放单资料表(new)
 drop table if exists `cs_orders`;
 create table `cs_orders`(
   `id` int(11) primary key auto_increment not null,
-  `dnei` varchar(60) not null comment '单号最多填写5个',
+#  `dnei` varchar(60) not null comment '单号最多填写5个',
   `level` varchar(15) not null comment '紧急程度',
   `system` varchar(15) not null comment '系统',
 
@@ -65,6 +65,18 @@ create table `cs_orders`(
   `last_user` int(11) unsigned zerofill not null comment '最后的操作账号(工号)',
   `last_time` datetime not null default CURRENT_TIMESTAMP comment '最后操作时间'
 )engine=innodb;
+
+#单号列表
+drop table if exists `cs_orderlist`;
+create table `cs_orderlist`(
+  `id` int(11) primary key auto_increment not null,
+  `dnei` varchar(20) not null comment '出货单号',
+  `orderid` int(11) not null comment '订单号',
+  `create_time` datetime not null default CURRENT_TIMESTAMP comment '创建时间',
+  `last_user` int(7) unsigned zerofill not null comment '最后的操作账号(工号)',
+  `last_time` datetime not null default CURRENT_TIMESTAMP comment '最后操作时间'
+)engine=innodb;
+ALTER TABLE `cs_orderlist` ADD UNIQUE INDEX `mixid_unique` (`dnei` ASC,`orderid` ASC);
 
 #表结构定义
 drop table if exists `cs_detail_report`;

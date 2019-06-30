@@ -3,11 +3,15 @@ session_start();
 error_reporting(E_ALL & ~E_NOTICE);
 
 //处理跨域访问
-// header('Access-Control-Allow-Origin:*');
-// header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-// header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
+header('Access-Control-Allow-Origin:*');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept , X-Token,authorization");
+// header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE, OPTION');
+// if(strtoupper($_SERVER['REQUEST_METHOD'])== 'OPTIONS'){ 
+//     exit;
+// }
 
 //常量设置
+define('DS', DIRECTORY_SEPARATOR);//目录分隔符号
 define('SitePath', realpath(__DIR__.'/../spoon'));//网站目录
 define('CorePath', realpath(SitePath.'/core'));//核心类目录
 define('AppPath', realpath(SitePath.'/apps'));//应用目录

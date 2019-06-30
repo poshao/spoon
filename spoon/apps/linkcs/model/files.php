@@ -61,6 +61,59 @@ class Files extends \Spoon\Model
     }
 
     /**
+     * 清空用户文件夹
+     *
+     * @param string $workid
+     * @return void
+     */
+    public function clearUserFolder($workid)
+    {
+        $userFolder=$this->getTempDir($workid);
+        $this->rrmdir($userFolder);
+        \mkdir($userFolder, 0777, true);
+    }
+
+    /**
+     * 删除目录
+     *
+     * @param string $dir
+     * @return void
+     */
+    private function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (filetype($dir."/".$object) == "dir") {
+                        rrmdir($dir."/".$object);
+                    } else {
+                        unlink($dir."/".$object);
+                    }
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
+    }
+
+    /**
+     * 撤回用户文件夹
+     *
+     * @param string $workid
+     * @param string $hashname
+     * @param string $filename
+     * @return bool
+     */
+    public function revokeFileToUserFolder($workid, $hashname, $filename)
+    {
+        $srcPath=$this->getStoreDir().$hashname;
+        $destPath=$this->getTempDir($workid).$filename;
+        \Spoon\Logger::error($srcPath);
+        return \copy($srcPath, $destPath);
+    }
+
+    /**
      * 获取用户文件列表
      *
      * @param string $workid
@@ -89,6 +142,7 @@ class Files extends \Spoon\Model
     /**
      * 获取文件
      *
+     * @param string $filename
      * @param string $hashname
      * @return void
      */

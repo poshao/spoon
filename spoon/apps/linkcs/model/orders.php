@@ -32,6 +32,17 @@ class Orders extends \Spoon\Model
     }
 
     /**
+     * 获取创建人
+     *
+     * @param string $id
+     * @return void
+     */
+    public function getCreator($id)
+    {
+        return $this->db()->orders()->select('creator')->where('id', $id)->fetch()['creator'];
+    }
+
+    /**
      * 获取受理人
      *
      * @param string $id
@@ -54,6 +65,21 @@ class Orders extends \Spoon\Model
     }
 
     /**
+     * 获取附件记录
+     *
+     * @param string $orderid
+     * @return void
+     */
+    public function getFiles($orderid)
+    {
+        $detail = $this->db()->orders()->select('detail')->where('id', $orderid)->fetch()['detail'];
+        if (empty($detail)) {
+            return false;
+        }
+        return \json_decode($detail, true)['files'];
+    }
+
+    /**
      * 增加新纪录
      *
      * @param string $workid
@@ -61,7 +87,7 @@ class Orders extends \Spoon\Model
      * @param string $orderid
      * @return void
      */
-    public function newRequest($workid, $detail,$orderid=null)
+    public function newRequest($workid, $detail, $orderid=null)
     {
         //处理附件
         $files=new Files();
@@ -81,6 +107,7 @@ class Orders extends \Spoon\Model
         //提取固定字段信息
         $order=$detail['dnei'];
         unset($detail['dnei']);
+
         $system=$detail['system'];
         unset($detail['system']);
         $level=$detail['level'];
@@ -102,7 +129,7 @@ class Orders extends \Spoon\Model
         }
 
         $data=array(
-            'dnei'=>$order,
+            // 'dnei'=>$order,
             'system'=>$system,
             'level'=>$level,
             'status'=>$status,
@@ -116,8 +143,8 @@ class Orders extends \Spoon\Model
         //$data=array('creator'=>$workid,'json_detail'=>$detail);
         if (empty($orderid)) {
             $row=$this->db()->orders()->insert($data);
-        }else{
-            $row=$this->db()->order()->where('id',$order)->update($data);
+        } else {
+            $row=$this->db()->order()->where('id', $order)->update($data);
         }
         if (empty($parentid)) {
             $row['parentid']=$row['id'];
@@ -128,6 +155,19 @@ class Orders extends \Spoon\Model
             $row->update();
         }
         
+        // 更新订单列表
+        if (\is_array($order)===false) {
+            $order=array($order);
+        }
+        foreach ($order as $v) {
+            $data=array(
+                'dnei'=>$v,
+                'orderid'=>$row['id'],
+                'last_user'=>$workid,
+                'last_time'=>new \NotORM_Literal('now()')
+            );
+            $this->db()->orderlist()->insert($data);
+        }
         return $row['id'];
     }
 
@@ -157,18 +197,30 @@ class Orders extends \Spoon\Model
      */
     public function list($option)
     {
-        $rs=$this->db()->orders()->select('id,dnei,system,detail as json_detail,has_attachment,creator,create_time,level,status,assign,reject_reason,assign_time');
+        $rs=$this->db()->orders()->select('id,system,detail as json_detail,has_attachment,creator,create_time,level,status,assign,reject_reason,assign_time');
         //字段选择
 
         //提取筛选条件
         if (isset($option['filters'])) {
             foreach ($option['filters'] as $k=>$v) {
+
                 //处理key
                 $key=$this->ConvertFieldName($v['key']);
                 //处理value
                 $value=$v['value'];
                 //处理operator
                 $operator=$v['operator'];
+
+                // 处理单号查询
+                if ($key==='dnei') {
+                    if ($operator==='like') {
+                        $value='%'.trim($value, '%').'%';
+                    }
+                    $orderids=$this->db()->orderlist()->select('orderid')->where($key.' ' .$operator.' ?', $value);
+                    $rs->where('id', $orderids);
+                    continue;
+                }
+
                 switch ($operator) {
                     case '=':
                     case '>':
@@ -206,10 +258,20 @@ class Orders extends \Spoon\Model
             $rs->limit($pageCount, $pageIndex*$pageCount);
         }
 
+        // 补充单号
+        $list=$rs->fetchArray();
+        foreach ($list as &$row) {
+            $orders=$this->db()->orderlist()->select('dnei')->where('orderid', $row['id'])->fetchArray();
+            $row['dnei']=array();
+            foreach ($orders as $v) {
+                \array_push($row['dnei'], $v['dnei']);
+            }
+        }
+
         //返回结果
         return array(
             'total'=>$listCount,
-            'list'=>$rs->fetchPairs('id')
+            'list'=> $list //$rs->fetchArray()// fetchPairs('id')
         );
         // return $this->db()->detail()->select('id,dnei,json_detail,creator,create_time,level,status,assign,reject_reason')->fetchPairs('id');
     }
@@ -242,6 +304,18 @@ class Orders extends \Spoon\Model
             $data['reject_reason']=$reason;
         }
 
+        // 撤销附件
+        // if ($status==='pre_send') {
+        // $files=$this->getFiles($orderid);
+        // if ($files!==false) {
+        //     $f=new Files();
+        //     $f->clearUserFolder($workid);
+        //     foreach ($files as $file) {
+        //         $f->revokeFileToUserFolder($workid,$file['hashname'],$file['name']);
+        //     }
+        // }
+        // }
+
         $effect=$this->db()->orders()->where('id', $orderid)->update($data);
         if ($effect===0) {
             return false;
@@ -257,7 +331,29 @@ class Orders extends \Spoon\Model
      * @param array $detail
      * @return void
      */
-    public function updateOrder($workid,$orderid,$detail){
+    public function updateOrder($workid, $orderid, $detail)
+    {
+    }
 
+    /**
+     * 重置附件文件夹
+     *
+     * @param string $orderid
+     * @param string $workid
+     * @return void
+     */
+    public function resetAttachments($orderid, $workid)
+    {
+        $files=$this->getFiles($orderid);
+        $f=new Files();
+        $f->clearUserFolder($workid);
+        if ($files!==false) {
+            foreach ($files as $file) {
+                if (false===$f->revokeFileToUserFolder($workid, $file['hashname'], $file['name'])) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -58,7 +58,7 @@ class Roles extends \Spoon\Model
      */
     public function list()
     {
-        return $this->db()->roles()->select('id,rolename,description,create_time,update_time')->fetchPairs('id');
+        return $this->db()->roles()->select('id,rolename,description,create_time,update_time')->fetchArray();
     }
 
     /**

@@ -25,7 +25,12 @@ class Orders extends \Spoon\Controller
                 $this->updateOrder();
                 break;
             case 'patch'://
-                $this->updateStatus();
+                $ss=$this->get('orderid');
+                if ($this->view()->paramsCount()==1 && null!==$this->get('orderid')) {
+                    $this->resetAttachments();
+                } else {
+                    $this->updateStatus();
+                }
                 break;
             case 'delete'://
                 // $this->logout();
@@ -215,7 +220,12 @@ class Orders extends \Spoon\Controller
                 throw new Exception('only '.$originAssign.' can do it', 400);
             }
         }
-
+        if ($status==='pre_send') {
+            $originCreator=$this->model()->getCreator($orderid);
+            if ($originCreator!==$workid) {
+                throw new Exception('only '.$originCreator.' can do it', 400);
+            }
+        }
         //撤销功能需要匹配下单用户
         
 
@@ -269,5 +279,35 @@ class Orders extends \Spoon\Controller
             throw new Exception('update order failed', 400);
         }
         $this->view()->sendJSON(array('orderid'=>$orderid));
+    }
+
+    /**
+     * 重置附件
+     * @apiName ResetAttachments
+     * @api {PATCH} /linkcs/v1/orders ResetAttachments
+     * @apiDescription 重置附件
+     * @apiGroup LinkCS.Order
+     * @apiVersion 0.1.0
+     *
+     * @apiParam {string} orderid 订单号
+     *
+     *
+     * @apiSampleRequest /auth/v1/orders
+     * @apiPermission app_linkcs_orders_update_status_sended
+     */
+    private function resetAttachments()
+    {
+        $verify=\Spoon\DI::getDI('verify');
+        if (!empty($verify)) {
+            // $verify->CheckPermission('permissionname');
+        }
+        $workid=$verify->getWorkid();
+        $orderid=$this->get('orderid');
+        $this->view()->CheckParams(array('orderid'));
+        $result=$this->model()->resetAttachments($orderid, $workid);
+        if ($result===false) {
+            throw new Exception('reset attachments failed', 500);
+        }
+        $this->view()->sendJSON(array('result'=>'ok'));
     }
 }

@@ -8,7 +8,5 @@
         "email": "1032066879@qq.com"
     }],
     "require": {
-        "cboden/ratchet": "^0.4.1",
-        "doctrine/orm": "^2.6"
     }
 }

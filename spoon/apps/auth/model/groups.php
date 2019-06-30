@@ -67,9 +67,9 @@ class Groups extends \Spoon\Model
     {
         $roleids=$this->db()->groups()->select('roleid');
         $roles=$this->db()->roles()->select('id,rolename')->where('id', $roleids)->fetchPairs('id');
-        $groups=$this->db()->groups()->select('id,groupname,description,roleid,create_time,update_time')->fetchPairs('id');
+        $groups=$this->db()->groups()->select('id,groupname,description,roleid,create_time,update_time')->fetchArray();
         // var_dump($roles);
-        foreach ($groups as $k=>$v) {
+        foreach ($groups as $v) {
             $v['rolename']=$roles[$v['roleid']]['rolename'];
         }
         return $groups;
