@@ -20,10 +20,11 @@ class Verify extends \Spoon\Controller
      */
     public function getWorkid()
     {
-        if (!isset($_POST['auth_workid'])) {
+        $workid=$this->model()->GetWorkId($this->getToken());
+        if(empty($workid)){
             return false;
         }
-        return $_POST['auth_workid'];
+        return $workid;
     }
 
     /**
@@ -33,10 +34,10 @@ class Verify extends \Spoon\Controller
      */
     private function getToken()
     {
-        if (!isset($_POST['auth_token'])) {
+        if (!isset($_POST['_xtoken'])) {
             return false;
         }
-        return $_POST['auth_token'];
+        return $_POST['_xtoken'];
     }
 
     /**
@@ -46,7 +47,7 @@ class Verify extends \Spoon\Controller
      */
     public function CheckIsOnline()
     {
-        return $this->model()->IsOnline($this->getWorkid(), $this->getToken());
+        return $this->model()->IsOnline($this->getToken());
     }
 
     /**
@@ -60,7 +61,7 @@ class Verify extends \Spoon\Controller
         if ($this->CheckIsOnline()===false) {
             throw new \Spoon\Exception('please login first', 401);
         }
-        if ($this->model()->HasPermission($this->getWorkid(), $permission)===false) {
+        if ($this->model()->HasPermission($this->getToken(), $permission)===false) {
             throw new \Spoon\Exception('need permission ['.$permission.']', 403);
         }
         return true;

@@ -4,7 +4,7 @@
  */
 namespace Spoon\Extensions;
 
-require __DIR__.'/notorm/NotORM.php';
+require __DIR__.'/packages/notorm/NotORM.php';
 
 class NotORM extends \NotORM
 {

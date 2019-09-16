@@ -189,6 +189,100 @@ class Orders extends \Spoon\Model
             return 'json_unquote(json_extract(`detail`,\'$.'.$name.'\'))';
         }
     }
+
+    /**
+     * 转化筛选条件
+     *
+     * @param object $condition
+     * @return void
+     */
+    private function ConvertFilters($condition)
+    {
+        if (isset($condition['key'])) {
+            $key=$condition['key'];
+            $op=$condition['op'];
+            $val=$condition['val'];
+
+            if ($key==='dnei') {
+                // $key='dnei';
+                if ($op==='like') {
+                    $val='%'. \trim($val, '%').'%';
+                }
+                
+                $orderlist=$this->db()->orderlist()->select('orderid')->where($key.' ' .$op.' ?', $val)->fetchArray();
+                $val=[];
+                foreach ($orderlist as $value) {
+                    \array_push($val, $value['orderid']);
+                }
+                // $val=\array_values($val);
+                $key='id';
+                $op='in';
+            } else {
+                $key=$this->ConvertFieldName($condition['key']);
+            }
+
+            $arg=[];
+            $sql="$key $op ?";
+
+            switch ($op) {
+                case 'like':
+                    $val='%'. \trim($val, '%').'%';
+                    // no break
+                case '!=':
+                case '=':
+                case '>':
+                case '<':
+                case '>=':
+                case '<=':
+                    if (!\is_string($val)) {
+                        \Spoon\Logger::error('<=无效值 '.$val);
+                    }
+                    \array_push($arg, $val);
+                    break;
+                case 'in':
+                    if (!\is_array($val)) {
+                        \Spoon\Logger::error('in 无效值 '. $val);
+                    }
+                    $place_holders = implode(',', array_fill(0, count($val), '?'));
+                    $sql="$key $op ($place_holders)";
+                    $arg=\array_merge($arg, $val);
+                    break;
+                case 'between':
+                    if (!\is_array($val)) {
+                        \Spoon\Logger::error('between 无效值 '. $val);
+                    }
+                    $sql="$key $op ? and ?";
+                    \array_push($arg, $val[0]);
+                    \array_push($arg, $val[1]);
+                    break;
+            }
+            return array(
+                'sql'=>$sql,
+                'arg'=>$arg
+            );
+        } else {
+            $op=\array_keys($condition)[0]; // and | or
+            $sql='';
+            $arg=[];
+
+            foreach ($condition[$op] as $con) {
+                $rs=$this->ConvertFilters($con);
+                if ($rs!==null) {
+                    $sql.=$op.' '.$rs['sql'];
+                    $arg=\array_merge($arg, $rs['arg']);
+                }
+            }
+            if ($sql==='') {
+                return null;
+            }
+            $sql='('.\substr($sql, \strlen($op)).')';
+            return array(
+                'sql'=>$sql,
+                'arg'=>$arg
+            );
+        }
+    }
+
     /**
      * 获取订单列表
      *
@@ -197,64 +291,74 @@ class Orders extends \Spoon\Model
      */
     public function list($option)
     {
-        $rs=$this->db()->orders()->select('id,system,detail as json_detail,has_attachment,creator,create_time,level,status,assign,reject_reason,assign_time');
         //字段选择
-
-        //提取筛选条件
-        if (isset($option['filters'])) {
-            foreach ($option['filters'] as $k=>$v) {
-
-                //处理key
-                $key=$this->ConvertFieldName($v['key']);
-                //处理value
-                $value=$v['value'];
-                //处理operator
-                $operator=$v['operator'];
-
-                // 处理单号查询
-                if ($key==='dnei') {
-                    if ($operator==='like') {
-                        $value='%'.trim($value, '%').'%';
-                    }
-                    $orderids=$this->db()->orderlist()->select('orderid')->where($key.' ' .$operator.' ?', $value);
-                    $rs->where('id', $orderids);
-                    continue;
-                }
-
-                switch ($operator) {
-                    case '=':
-                    case '>':
-                    case '<':
-                    case '>=':
-                    case '<=':
-                    case '!=':
-                        $rs->where($key.' ' .$operator.' ?', $value);
-                    break;
-                    case 'like':
-                        $value='%'.trim($value, '%').'%';
-                        $rs->where($key.' ' .$operator.' ?', $value);
-                    break;
-                    case 'in':
-                        $rs->where($key, $value);
-                    break;
-                    case '!in':
-                        $rs->where($key.' not in ?', $value);
-                    break;
-                }
+        $rs=$this->db()->orders()->select('id,system,detail as json_detail,has_attachment,creator,create_time,level,status,assign,reject_reason,assign_time');
+        // 提取筛选条件2
+        if (isset($option['filter'])) {
+            $condition=$this->ConvertFilters($option['filter']);
+            if ($condition!==null) {
+                $rs->where($condition['sql'], $condition['arg']);
             }
         }
+
+        //提取筛选条件
+        // if (isset($option['filters'])) {
+        //     foreach ($option['filters'] as $k=>$v) {
+
+        //         //处理key
+        //         $key=$this->ConvertFieldName($v['key']);
+        //         //处理value
+        //         $value=$v['value'];
+        //         //处理operator
+        //         $operator=$v['operator'];
+
+        //         // 处理单号查询
+        //         if ($key==='dnei') {
+        //             if ($operator==='like') {
+        //                 $value='%'.trim($value, '%').'%';
+        //             }
+        //             $orderids=$this->db()->orderlist()->select('orderid')->where($key.' ' .$operator.' ?', $value);
+        //             $rs->where('id', $orderids);
+        //             continue;
+        //         }
+
+        //         switch ($operator) {
+        //             case '=':
+        //             case '>':
+        //             case '<':
+        //             case '>=':
+        //             case '<=':
+        //             case '!=':
+        //                 $rs->where($key.' ' .$operator.' ?', $value);
+        //                 break;
+        //             case 'like':
+        //                 $value='%'.trim($value, '%').'%';
+        //                 $rs->where($key.' ' .$operator.' ?', $value);
+        //                 break;
+        //             case 'in':
+        //                 $rs->where($key, $value);
+        //                 break;
+        //             case '!in':
+        //                 $rs->where($key.' not in ?', $value);
+        //                 break;
+        //             case 'between':
+        //                 $rs->where($key.' between ? and ?', $value[0], $value[1]);
+        //                 break;
+        //         }
+        //     }
+        // }
         //提取排序规则
-        if (isset($option['sorts'])) {
-            foreach ($option['sorts'] as $k=>$v) {
-                $rs->order($this->ConvertFieldName($v['key']).' '.$v['order']);
+        if (isset($option['sort'])) {
+            foreach ($option['sort'] as $k=>$v) {
+                $rs->order($this->ConvertFieldName($k).' '.$v);
             }
         }
         //总行数
         $listCount=$rs->count();
         //分页处理
-        if (isset($option['page'])) {
-            $pageIndex=$option['page']['index'];
-            $pageCount=$option['page']['count'];
+        if (isset($option['pagebreak'])) {
+            $pageIndex=$option['pagebreak']['index'];
+            $pageCount=$option['pagebreak']['size'];
             $rs->limit($pageCount, $pageIndex*$pageCount);
         }
 
@@ -292,7 +396,7 @@ class Orders extends \Spoon\Model
             'last_user'=>$workid,
             'last_time'=>new \NotORM_Literal('now()')
         );
-        if ($status==='lock') {
+        if ($status==='received') {
             $data['assign']=$workid;
             $data['assign_time']=new \NotORM_Literal('now()');
         }

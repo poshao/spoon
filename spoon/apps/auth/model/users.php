@@ -98,7 +98,7 @@ class Users extends \Spoon\Model
      * 获取用户信息
      *
      * @param string $workid
-     * @param array $fields 字段名称
+     * @param string $fields 字段名称
      * @return array
      */
     public function getUser($workid, $fields=null)
@@ -198,7 +198,7 @@ class Users extends \Spoon\Model
      *
      * @param string $workid
      * @param string $password
-     * @return void
+     * @return boolean
      */
     public function resetPassword($workid, $password)
     {
@@ -215,7 +215,7 @@ class Users extends \Spoon\Model
             return true;
         }
     }
-    
+
     /**
      * 关联用户分组
      *

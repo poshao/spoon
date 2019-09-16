@@ -66,7 +66,7 @@ class Tokens extends \Spoon\Controller
         $password=\Spoon\Encrypt::hashPassword($this->get('password'), $salt);
         $token=$this->model()->login($workid, $password);
         if ($token===false) {
-            throw new Exception('login failed', 400);
+            throw new Exception('login failed', 401);
         }
         $this->view()->sendJSON(array('token'=>$token));
     }
@@ -172,8 +172,8 @@ class Tokens extends \Spoon\Controller
 
         $workid=$this->get('workid');
         $socktetIdlist=$this->model()->getSocketId($workid);
-        if($socktetIdlist===false){
-            throw new Exception('user\'s socketid not found',404);
+        if ($socktetIdlist===false) {
+            throw new Exception('user\'s socketid not found', 404);
         }
         $this->view()->sendJSON(array('list'=>$socktetIdlist));
     }

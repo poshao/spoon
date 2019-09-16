@@ -106,10 +106,12 @@ class Orders extends \Spoon\Controller
      * @apiParamExample {json} Request-Example:
      * {
      *  option:{
-     *      filters:[
-     *          {operator:'=',key:'status',value:'s'},
-     *          {operator:'in',key:'status',value:['a','b']}
-     *      ],
+     *      filter:{
+     *          "and":[
+     *              {op:'=',key:'status',val:'s'},
+     *              {op:'in',key:'status',val:['a','b']}
+     *          ]
+     *      },
      *      sorts:[
      *          {key:'id',order:'asc'},
      *          {key:'status',order:'desc'}
@@ -129,10 +131,10 @@ class Orders extends \Spoon\Controller
     private function list()
     {
         //检查登录状态及权限
-        $verify=\Spoon\DI::getDI('verify');
-        if (!empty($verify)) {
-            $verify->CheckPermission('app_linkcs_list_request');
-        }
+        // $verify=\Spoon\DI::getDI('verify');
+        // if (!empty($verify)) {
+        //     $verify->CheckPermission('app_linkcs_list_request');
+        // }
 
         $option=$this->get('option');
         if (!empty($option)) {
@@ -185,20 +187,20 @@ class Orders extends \Spoon\Controller
 
         //状态检查
         /**
-         * pre_send <--> sended --> lock --> pass --> finish
-         *                           |--> reject --> resend
-         *                                  |--> cancel
+         * pre_send <--> sended --> received --> finish
+         *                             |--> reject --> resend
+         *                                    |--> cancel
          *
          */
         $permissionlist=array(
             'pre_send>sended'=>'app_linkcs_orders_update_status_sended',
             'pre_send>cancel'=>'app_linkcs_orders_update_status_cancel',
-            'sended>lock'=>'app_linkcs_orders_update_status_lock',
+            'sended>received'=>'app_linkcs_orders_update_status_lock',
             'sended>pre_send'=>'app_linkcs_orders_update_status_presend',
             'sended>cancel'=>'app_linkcs_orders_update_status_cancel',
-            'lock>pass'=>'app_linkcs_orders_update_status_pass',
-            'pass>finish'=>'app_linkcs_orders_update_status_finish',
-            'lock>reject'=>'app_linkcs_orders_update_status_reject',
+            // 'lock>pass'=>'app_linkcs_orders_update_status_pass',
+            'received>finish'=>'app_linkcs_orders_update_status_finish',
+            'received>reject'=>'app_linkcs_orders_update_status_reject',
             'reject>resend'=>'app_linkcs_orders_update_status_resend',
             'reject>cancel'=>'app_linkcs_orders_update_status_cancel'
         );
@@ -214,22 +216,34 @@ class Orders extends \Spoon\Controller
         $verify->CheckPermission($permissionlist[$statusRoute]);
         
         //针对锁定状态必须由操作用户解除
-        if ($status==='pass' || $status==='reject') {
+        if ($status==='finish' || $status==='reject') {
             $originAssign=$this->model()->getAssign($orderid);
             if ($originAssign!==$workid) {
                 throw new Exception('only '.$originAssign.' can do it', 400);
             }
         }
+        //撤销功能需要匹配下单用户
         if ($status==='pre_send') {
             $originCreator=$this->model()->getCreator($orderid);
             if ($originCreator!==$workid) {
                 throw new Exception('only '.$originCreator.' can do it', 400);
             }
         }
-        //撤销功能需要匹配下单用户
-        
 
         $orderid=$this->model()->updateStatus($workid, $orderid, $status, $reason);
+
+        // 拒绝状态通知下单用户
+        if($status==='reject'){
+            $createId=$this->model()->getCreator($orderid);
+            $user=new \App\Auth\Model\Users();
+            $email=$user->getUser($createId,'email')['email'];
+            if(!empty($email)){
+                $tool=new \App\Common\Model\Tools();
+                $url=\Spoon\Config::getByApps('linkcs')['host'].'list?orderid=';
+                $body='<h3>Order '.$orderid.' rejected</h3><p>'.$reason.'</p><p><i>detail please click <a href="'.$url.$orderid.'">here</a></i></p>';
+                $tool->SendEmail('byron.gong@ap.averydennison.com',$email,'[Notice](LIS) Order Release',$body,null,null,null,true);
+            }
+        }
 
         if ($orderid===false) {
             throw new Exception('update status failed', 400);

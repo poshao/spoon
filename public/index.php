@@ -4,9 +4,12 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 //处理跨域访问
 header('Access-Control-Allow-Origin:*');
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept , X-Token,authorization");
+header('Access-Control-Allow-Headers:*');
+header('Access-Control-Allow-Methods:*');
+header('Access-Control-Expose-Headers:Content-Disposition');
+// header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept , X-Token,authorization");
 // header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE, OPTION');
-// if(strtoupper($_SERVER['REQUEST_METHOD'])== 'OPTIONS'){ 
+// if(strtoupper($_SERVER['REQUEST_METHOD'])== 'OPTIONS'){
 //     exit;
 // }
 
@@ -36,24 +39,29 @@ require SitePath.'/autoload.php';
 
 //验证代码解析(Authorization)
 //spoon + base64(id=123456&token=124==)
-if (function_exists('apache_request_headers')) {
+if (strpos(PHP_SAPI, 'apache')>0) {
+    // if (function_exists('apache_request_headers')) {
     //apache Server
     $headers=apache_request_headers();
-    $auth=isset($headers['Authorization'])?$headers['Authorization']:null;
+    // $auth=isset($headers['Authorization'])?$headers['Authorization']:null;
+    $xtoken=isset($headers['xtoken'])?$headers['xtoken']:null;
 } else {
     //针对IIS的处理办法
-    $auth=isset($_SERVER['HTTP_AUTHORIZATION'])?$_SERVER['HTTP_AUTHORIZATION']:null;
+    // $auth=isset($_SERVER['HTTP_AUTHORIZATION'])?$_SERVER['HTTP_AUTHORIZATION']:null;
+    $xtoken=isset($_SERVER['HTTP_XTOKEN'])?$_SERVER['HTTP_XTOKEN']:null;
 }
-if ($auth!=null && \strpos($auth, 'spoon ')===0) {
-    $params=\explode('&', base64_decode(substr($auth, 6)));
-    $p=array();
-    foreach ($params as $k=>$v) {
-        $kv=\explode('=', $v, 2);
-        $p[$kv[0]]=$kv[1];
-    }
-    $_POST['auth_workid']=$p['id'];
-    $_POST['auth_token']=$p['token'];
-}
+$_POST['_xtoken']=$xtoken;
+
+// if ($auth!=null && \strpos($auth, 'spoon ')===0) {
+//     $params=\explode('&', base64_decode(substr($auth, 6)));
+//     $p=array();
+//     foreach ($params as $k=>$v) {
+//         $kv=\explode('=', $v, 2);
+//         $p[$kv[0]]=$kv[1];
+//     }
+//     $_POST['auth_workid']=$p['id'];
+//     $_POST['auth_token']=$p['token'];
+// }
 
 //注入验证模块
 \Spoon\DI::setDI('verify', new \App\Auth\Controller\Verify());

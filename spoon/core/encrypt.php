@@ -40,4 +40,22 @@ class Encrypt
         $data=\uniqid($salt.\microtime(true));
         return \base64_encode(\md5($data));
     }
+
+    /**
+     * 生成指定长度的验证码
+     *
+     * @param int $len
+     * @return void
+     */
+    public static function RandomCode(int $len,string $charlist=""){
+        if(empty($charlist)){
+            $charlist='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        }
+        $rlst='';
+        \mt_srand();
+        for($i=0;$i<$len;$i++){
+            $rlst.=$charlist[\mt_rand(0, \strlen($charlist)-1)];
+        }
+        return $rlst;
+    }
 }

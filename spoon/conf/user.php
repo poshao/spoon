@@ -70,6 +70,8 @@ return array(
             'data_dir'=>__DIR__.'/../../data/linkcs/store' ,
             //用户临时存放附件的文件夹
             'temp_dir'=>__DIR__.'/../../data/linkcs/temp',
+            //用户回调显示列表
+            'host'=>'http://localhost:9527/#/linkcs/'
         ),
         // VBA加载管理
         'vba'=>array(
@@ -103,7 +105,8 @@ return array(
         'common'=>array(
             'db'=>array(
                 'driver'=>'mysql',
-                'dbname'=>'avery_logistics',
+                // 'dbname'=>'avery_logistics',
+                'dbname'=>'spoon',
                 'host'=>'localhost',
                 'user'=>'root',
                 'password'=>'123456',

@@ -56,13 +56,16 @@ abstract class View
 
         $payload=file_get_contents('php://input');//请求原始数据
         if (!empty($payload)) {
-            if ($contentType['mime']==='application/json') {
-                $this->_params=array_merge($this->_params, json_decode($payload, true));
-            } else {
-                Logger::error('无效输入格式,['+$_SERVER['CONTENT_TYPE']+']');
+            switch($contentType['mime']){
+                case 'application/json':
+                    $this->_params=array_merge($this->_params, json_decode($payload, true));
+                    break;
+                // case 'multipart/form-data':
+                //     break;
+                default:
+                    Logger::error('无效输入格式,['+$_SERVER['CONTENT_TYPE']+']');
             }
         }
-        // }
     }
 
     /**
@@ -103,6 +106,9 @@ abstract class View
             $ignoreCount++;
         }
         if (isset($this->_params['auth_token'])) {
+            $ignoreCount++;
+        }
+        if (isset($this->_params['_xtoken'])) {
             $ignoreCount++;
         }
 

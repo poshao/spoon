@@ -21,7 +21,7 @@ create table `auth_users`(
     `avator` varchar(200) comment '用户头像',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_users` ADD UNIQUE INDEX `workid_unique` (`workid` ASC);
 
 #创建角色表
@@ -32,7 +32,7 @@ create table `auth_roles`(
     `description` varchar(100) comment '描述',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_roles` ADD UNIQUE INDEX `rolename_unique`(`rolename` ASC);
 
 #创建分组表
@@ -44,7 +44,7 @@ create table `auth_groups`(
     `roleid` int(11) not null default 0 comment '默认角色',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_groups` ADD UNIQUE INDEX `groupname_unique`(`groupname` ASC);
 
 #创建权限表
@@ -55,7 +55,7 @@ create table `auth_permissions`(
     `description` varchar(100) comment '描述',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_permissions` ADD UNIQUE INDEX `permissionname_unique`(`permissionname` ASC);
 
 #创建登录状态表
@@ -69,7 +69,7 @@ create table `auth_sessions`(
     `valid_time` datetime not null comment '有效时间',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_sessions` ADD UNIQUE INDEX `session_unique`(`userid` ASC,`ip` ASC);
 
 #创建用户角色关联表
@@ -80,7 +80,7 @@ create table `auth_ref_user_role`(
     `roleid` int(11) not null comment '角色ID',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_ref_user_role` ADD UNIQUE INDEX `userrole_unique`(`userid` ASC,`roleid` ASC);
 
 #创建角色权限关联表
@@ -91,7 +91,7 @@ create table `auth_ref_role_permission`(
     `permissionid` int(11) not null comment '权限ID',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_ref_role_permission`ADD UNIQUE INDEX `rolepermission_unique`(`roleid` ASC,`permissionid` ASC);
 
 #创建用户分组关联表
@@ -102,7 +102,7 @@ create table `auth_ref_user_group`(
     `groupid` int(11) not null comment '分组ID',
     `create_time` datetime not null default CURRENT_TIMESTAMP,
     `update_time` datetime not null default CURRENT_TIMESTAMP
-)engine=innodb;
+)engine=innodb DEFAULT CHARSET=utf8;
 ALTER TABLE `auth_ref_user_group` ADD UNIQUE INDEX `usergroup_unique`(`userid` ASC,`groupid` ASC);
 
 ################################

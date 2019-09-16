@@ -38,6 +38,8 @@ class Users extends \Spoon\Controller
                 }
                 break;
             case 'patch'://更新部分用户信息
+                // $this->resetPasswordByEmail();
+
                 if (!empty($this->get('password'))) {
                     $this->resetPassword();
                 } elseif (!empty($this->get('workid'))) {
